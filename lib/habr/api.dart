@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:habr_app/log.dart';
 import 'package:http/http.dart' as http;
 import 'dto.dart';
 
@@ -6,7 +7,9 @@ import 'dto.dart';
 class Habr {
   static const api_url = "https://m.habr.com/kek/v2";
   Future<PostPreviews> posts() async {
-    final response = await http.get("$api_url/articles/?date=day&sort=date&fl=ru&hl=ru&page=1");
+    final url = "$api_url/articles/?date=day&sort=date&fl=ru&hl=ru&page=1";
+    logInfo("Get articles by $url");
+    final response = await http.get(url);
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
       return PostPreviews(
@@ -33,7 +36,9 @@ class Habr {
   }
 
   Future<Post> article(String id) async {
-    final response = await http.get("$api_url/article/$id");
+    final url = "$api_url/articles/$id";
+    logInfo("Get article by $url");
+    final response = await http.get(url);
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
       return Post(
