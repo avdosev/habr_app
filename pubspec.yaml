@@ -30,6 +30,7 @@ dependencies:
   cupertino_icons: ^0.1.3
   http: ">=0.12.0"
   equatable: ">=0.1.1"
+  incrementally_loading_listview: "0.3.0"
 
 dev_dependencies:
   flutter_test:
