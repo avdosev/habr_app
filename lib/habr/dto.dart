@@ -35,3 +35,10 @@ class PostPreview extends Equatable {
   @override
   List<Object> get props => [id];
 }
+
+class PostPreviews {
+  final int maxCountPages;
+  final List<PostPreview> previews;
+
+  const PostPreviews({this.previews, this.maxCountPages});
+}

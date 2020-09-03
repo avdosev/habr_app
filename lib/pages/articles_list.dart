@@ -53,7 +53,7 @@ class ArticlePreview extends StatelessWidget {
 
 class _ArticlesListState extends State<ArticlesList> {
   int pages = 0;
-  int maxPages = -1; // TODO: dynamic update field;
+  int maxPages = -1;
   bool loadingItems = false;
   List<PostPreview> previews = [];
   Future _initialLoad;
@@ -67,7 +67,8 @@ class _ArticlesListState extends State<ArticlesList> {
   Future _loadPosts(int page) {
     return Habr().posts().then((value) {
       setState(() {
-        previews.addAll(value);
+        previews.addAll(value.previews);
+        maxPages = value.maxCountPages;
         pages += 1;
       });
     }).catchError(logError);
@@ -100,7 +101,10 @@ class _ArticlesListState extends State<ArticlesList> {
                             CircularProgressIndicator()
                           ]
                         ) :
-                        preview;
+                        Column(children: [
+                          preview,
+                          const Divider()
+                        ]);
                       return item;
                     },
                     loadMore: () => _loadPosts(pages+1),
