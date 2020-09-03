@@ -1,9 +1,7 @@
 import 'package:equatable/equatable.dart';
 
-typedef String Id();
-
 class Post extends Equatable {
-  final Id id;
+  final String id;
   final String title;
   final String body;
 
@@ -14,7 +12,7 @@ class Post extends Equatable {
 }
 
 class PostPreview extends Equatable {
-  final Id id;
+  final String id;
   final String title;
 
   const PostPreview({this.id, this.title});
