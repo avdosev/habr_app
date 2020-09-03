@@ -45,15 +45,19 @@ class ArticlePreview extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return new Container(
-      color: Colors.black12,
       child: new Column(
         children: [
-          new Row(children: [
-            new Expanded(child: new Container(padding: new EdgeInsets.all(5.0),
-              child: new Text(_postPreview.title,  style: new TextStyle(fontSize: 20.0), overflow: TextOverflow.visible, softWrap: true, textAlign: TextAlign.left)
-          ))
-          ])
-        ]
+          Row(
+            children: [
+              Text(_postPreview.publishDate.toString()),
+              Text(_postPreview.author.alias)
+            ],
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          ),
+          Text(_postPreview.title,  style: new TextStyle(fontSize: 20.0), overflow: TextOverflow.visible, softWrap: true, textAlign: TextAlign.left),
+          Text(_postPreview.tags.join(', '), overflow: TextOverflow.ellipsis, textAlign: TextAlign.left)
+        ],
+        crossAxisAlignment: CrossAxisAlignment.start,
       )
     );
   }
@@ -80,11 +84,14 @@ class _ArticlesListState extends State<MyHomePage> {
         // the App.build method, and use it to set our appbar title.
         title: Text(widget.title),
       ),
-      body: Center(
-        child: ListView(
-          children: previews.map((postPreview) {
-            return new ArticlePreview(postPreview);
-          }).toList(),
+      body: Container(
+        padding: EdgeInsets.all(5.0),
+        child: ListView.separated(
+          itemCount: previews.length,
+          itemBuilder: (BuildContext context, int index) {
+            return ArticlePreview(previews[index]);
+          },
+          separatorBuilder: (BuildContext context, int index) => const Divider(),
         ),
       ),
     );

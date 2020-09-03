@@ -11,9 +11,17 @@ class Habr {
       final data = json.decode(response.body);
       return data['articleIds'].map<PostPreview>((id) {
         final article = data['articleRefs'][id];
+        final author = article['author'];
         return new PostPreview(
           id: id,
-          title: article['titleHtml']
+          title: article['titleHtml'],
+          tags: article['flows'].map<String>((flow) => flow['title'] as String).toList(),
+          publishDate: DateTime.parse(article['timePublished']),
+          author: Author(
+            id: author['id'],
+            alias: author['alias'],
+            avatarUrl: author['avatarUrl']
+          )
         );
       }).toList();
     } else {
