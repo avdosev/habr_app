@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:habr_app/html_view/html_view.dart';
 
 import '../habr/dto.dart';
 import '../habr/api.dart';
@@ -69,9 +70,10 @@ class ArticleView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListView(
+      padding: EdgeInsets.all(5),
       children: [
         Text(article.title, style: TextStyle(fontSize: 20)),
-        Text(article.body)
+        HtmlView(article.body)
       ],
     );
   }

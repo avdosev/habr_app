@@ -31,6 +31,7 @@ dependencies:
   http: ">=0.12.0"
   equatable: ">=0.1.1"
   incrementally_loading_listview: "0.3.0"
+  html: "0.14.0+3"
 
 dev_dependencies:
   flutter_test:
