@@ -8,9 +8,7 @@ import '../habr/api.dart';
 import '../log.dart';
 
 class ArticlesList extends StatefulWidget {
-  ArticlesList({Key key, this.title}) : super(key: key);
-
-  final String title;
+  ArticlesList({Key key}) : super(key: key);
 
   @override
   createState() => _ArticlesListState();
@@ -78,7 +76,7 @@ class _ArticlesListState extends State<ArticlesList> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
+        title: Text("Articles"),
       ),
       body: FutureBuilder(
         future: _initialLoad,
