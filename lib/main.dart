@@ -13,12 +13,17 @@ class MyApp extends StatelessWidget {
       title: 'Habr',
       theme: ThemeData(
         primarySwatch: Colors.blueGrey,
-        // This makes the visual density adapt to the platform that you run
-        // the app on. For desktop platforms, the controls will be smaller and
-        // closer together (more dense) than on mobile platforms.
+        primaryColor: Colors.blueGrey,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: ArticlesList(title: 'Flutter Demo Home Page'),
+      darkTheme: ThemeData(
+        primarySwatch: Colors.blueGrey,
+        primaryColor: Colors.blueGrey[600],
+        colorScheme: ColorScheme.dark(),
+        visualDensity: VisualDensity.adaptivePlatformDensity,
+      ),
+      themeMode: ThemeMode.system,
+      home: ArticlesList(),
     );
   }
 }
