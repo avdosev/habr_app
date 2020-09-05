@@ -98,7 +98,9 @@ List<Widget> buildTree(dom.Element element) {
         case 'h2':
         case 'h3':
         case 'h4':
-          widgets.add(Text(child.text, textScaleFactor: 1.2,));
+        case 'h5':
+        case 'h6':
+          widgets.add(Text(child.text, textScaleFactor: 1.2, style: TextStyle(fontWeight: FontWeight.bold),));
           break;
         case 'p': // TODO: support bold and italic
         case 'code': // TODO: special element for code elements

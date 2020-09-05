@@ -73,6 +73,7 @@ class ArticleView extends StatelessWidget {
       padding: EdgeInsets.all(5),
       children: [
         Text(article.title, style: TextStyle(fontSize: 20)),
+        SizedBox(height: 20,),
         HtmlView(article.body)
       ],
     );
