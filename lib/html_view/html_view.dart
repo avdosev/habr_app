@@ -5,7 +5,7 @@ import 'package:html/dom.dart' as dom;
 import 'package:html/dom_parsing.dart' as dom_parser;
 import 'package:html/parser.dart';
 
-import '../log.dart';
+import '../utils/log.dart';
 
 class WrappedContainer extends StatelessWidget {
   final List<Widget> children;

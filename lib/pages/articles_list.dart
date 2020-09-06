@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:habr_app/pages/article.dart';
 import 'package:incrementally_loading_listview/incrementally_loading_listview.dart';
 
+import 'package:habr_app/utils/date_to_text.dart';
 import '../habr/dto.dart';
 import '../habr/api.dart';
 
-import '../log.dart';
+import '../utils/log.dart';
 
 class ArticlesList extends StatefulWidget {
   ArticlesList({Key key}) : super(key: key);
@@ -28,7 +29,7 @@ class ArticlePreview extends StatelessWidget {
           children: [
             Row(
               children: [
-                Text(_postPreview.publishDate.toString()),
+                Text(dateToStr(_postPreview.publishDate, Localizations.localeOf(context))),
                 Text(_postPreview.author.alias)
               ],
               mainAxisAlignment: MainAxisAlignment.spaceBetween,

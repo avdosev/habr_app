@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'pages/articles_list.dart';
 
 void main() {
@@ -24,6 +25,15 @@ class MyApp extends StatelessWidget {
       ),
       themeMode: ThemeMode.system,
       home: ArticlesList(),
+      supportedLocales: [
+        const Locale('ru'),
+        const Locale('en'),
+      ],
+      localizationsDelegates: [
+        // ... app-specific localization delegate[s] here
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+      ],
     );
   }
 }

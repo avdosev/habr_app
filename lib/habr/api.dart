@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'package:habr_app/log.dart';
+import 'file:///C:/projects/android/habr_app/lib/utils/log.dart';
 import 'package:http/http.dart' as http;
 import 'dto.dart';
 

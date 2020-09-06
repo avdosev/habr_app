@@ -5,7 +5,7 @@ import 'package:share/share.dart';
 import '../habr/dto.dart';
 import '../habr/api.dart';
 
-import '../log.dart';
+import '../utils/log.dart';
 
 class ArticlePage extends StatefulWidget {
   ArticlePage({Key key, this.articleId}) : super(key: key);
