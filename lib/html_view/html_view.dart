@@ -14,9 +14,14 @@ class WrappedContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Wrap(
-      children: children,
-      runSpacing: 20,
+    final wrapedChildren = <Widget>[];
+    for (int i = 0; i < children.length; i++) {
+      wrapedChildren.add(children[i]);
+      if (i != children.length - 1) wrapedChildren.add(SizedBox(height: 20));
+    }
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: wrapedChildren,
     );
   }
 }
@@ -88,8 +93,11 @@ List<Widget> buildTree(dom.Element element) {
   int index = 0;
   for (var node in element.nodes) {
     if (node.nodeType == dom.Node.TEXT_NODE) {
-      logInfo('text node');
-      widgets.add(Text(node.text));
+      final text = node.text.trim();
+      if (text.length != 0) {
+        logInfo('text node "$text"');
+        widgets.add(Text(text));
+      }
     } else if (node.nodeType == dom.Node.ELEMENT_NODE) {
       final child = element.children[index++];
       logInfo(child.localName);

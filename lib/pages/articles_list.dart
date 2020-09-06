@@ -8,6 +8,77 @@ import '../habr/api.dart';
 
 import '../utils/log.dart';
 
+class StatisticsFavoritesIcon extends StatelessWidget {
+  final int favorites;
+  final double size;
+  StatisticsFavoritesIcon(this.favorites, {this.size = 20});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Icon(Icons.bookmark, size: size, color: Colors.grey,),
+        Text(favorites.toString()),
+      ]
+    );
+  }
+}
+class StatisticsScoreIcon extends StatelessWidget {
+  final int score;
+  final double size;
+  StatisticsScoreIcon(this.score, {this.size = 20});
+
+  @override
+  Widget build(BuildContext context) {
+    var iconText = score.toString();
+    if (score > 0) iconText = '+' + iconText;
+    final colors = {
+      -1: Colors.red[800],
+      0 : Colors.grey[600],
+      1 : Colors.green[800],
+    };
+    return Row(
+      children: [
+        Icon(Icons.equalizer, size: size, color: Colors.grey,),
+        // Icon(Icons.thumbs_up_down, size: size,), // maybe use this
+        Text(iconText, style: TextStyle(color: colors[score.sign])),
+      ]
+    );
+  }
+}
+
+class StatisticsViewsIcon extends StatelessWidget {
+  final int views;
+  final double size;
+  StatisticsViewsIcon(this.views, {this.size = 20});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Icon(Icons.remove_red_eye, size: size, color: Colors.grey,),
+        Text(views.toString(),),
+      ]
+    );
+  }
+}
+
+class StatisticsCommentsIcon extends StatelessWidget {
+  final int comments;
+  final double size;
+  StatisticsCommentsIcon(this.comments, {this.size = 20});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Icon(Icons.forum, size: size, color: Colors.grey,),
+        Text(comments.toString()),
+      ]
+    );
+  }
+}
+
 class ArticlesList extends StatefulWidget {
   ArticlesList({Key key}) : super(key: key);
 
@@ -30,12 +101,31 @@ class ArticlePreview extends StatelessWidget {
             Row(
               children: [
                 Text(dateToStr(_postPreview.publishDate, Localizations.localeOf(context))),
-                Text(_postPreview.author.alias)
+                Wrap(
+                  direction: Axis.horizontal,
+                  spacing: 10,
+                  children: [
+                    if (_postPreview.author.avatarUrl.length != 0) ClipRRect(
+                      borderRadius: BorderRadius.all(Radius.circular(5)),
+                      child: Image.network(_postPreview.author.avatarUrl, height: 20, width: 20,),
+                    ),
+                    Text(_postPreview.author.alias),
+                  ]
+                )
               ],
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
             ),
             Text(_postPreview.title,  style: new TextStyle(fontSize: 20.0), overflow: TextOverflow.visible, softWrap: true, textAlign: TextAlign.left),
-            Text(_postPreview.tags.join(', '), overflow: TextOverflow.ellipsis, textAlign: TextAlign.left)
+            Text(_postPreview.tags.join(', '), overflow: TextOverflow.ellipsis, textAlign: TextAlign.left),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                StatisticsScoreIcon(_postPreview.statistics.score),
+                StatisticsViewsIcon(_postPreview.statistics.readingCount),
+                StatisticsFavoritesIcon(_postPreview.statistics.favoritesCount),
+                StatisticsCommentsIcon(_postPreview.statistics.commentsCount),
+              ],
+            )
           ],
           crossAxisAlignment: CrossAxisAlignment.start,
         )

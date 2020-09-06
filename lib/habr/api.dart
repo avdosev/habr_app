@@ -24,8 +24,9 @@ class Habr {
             author: Author(
               id: author['id'],
               alias: author['alias'],
-              avatarUrl: author['avatarUrl']
-            )
+              avatarUrl: author['avatarUrl'].toString().replaceFirst("//", "https://")
+            ),
+            statistics: Statistics.fromJson(article['statistics'])
           );
         }).toList(),
         maxCountPages: data['pagesCount']
