@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_highlight/flutter_highlight.dart';
+import 'package:flutter_highlight/themes/androidstudio.dart';
 
 import 'package:html/dom.dart' as dom;
 import 'package:html/dom_parsing.dart' as dom_parser;
@@ -111,8 +113,31 @@ List<Widget> buildTree(dom.Element element) {
           widgets.add(Text(child.text, textScaleFactor: 1.2, style: TextStyle(fontWeight: FontWeight.bold),));
           break;
         case 'p': // TODO: support bold and italic
-        case 'code': // TODO: special element for code elements
           widgets.add(Text(child.text));
+          break;
+        case 'code': // TODO: special element for code elements
+          final code = child.text;
+          if (child.classes.length > 0)
+            widgets.add(HighlightView(
+              // The original code to be highlighted
+              code,
+              // Specify language
+              // It is recommended to give it a value for performance
+              language: child.classes.lastWhere((element) => element != 'hljs'),
+              padding: EdgeInsets.all(10),
+
+              // Specify highlight theme
+              // All available themes are listed in `themes` folder
+              theme: androidstudioTheme,
+
+              // Specify text style
+              textStyle: TextStyle(
+                fontFamily: 'monospace',
+                fontSize: 14,
+              )
+            ));
+          else
+            widgets.add(Text(code));
           break;
         case 'img':
           widgets.add(Image.network(child.attributes['data-src'] ?? child.attributes['src']));
