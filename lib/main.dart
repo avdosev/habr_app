@@ -20,6 +20,7 @@ class MyApp extends StatelessWidget {
       darkTheme: ThemeData(
         primarySwatch: Colors.blueGrey,
         primaryColor: Colors.blueGrey[600],
+        scaffoldBackgroundColor: const Color.fromRGBO(57, 57, 57, 1),
         colorScheme: ColorScheme.dark(),
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),

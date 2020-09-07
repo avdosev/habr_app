@@ -18,6 +18,7 @@ class StatisticsFavoritesIcon extends StatelessWidget {
     return Row(
       children: [
         Icon(Icons.bookmark, size: size, color: Colors.grey,),
+        SizedBox(width: 5,),
         Text(favorites.toString()),
       ]
     );
@@ -40,6 +41,7 @@ class StatisticsScoreIcon extends StatelessWidget {
     return Row(
       children: [
         Icon(Icons.equalizer, size: size, color: Colors.grey,),
+        SizedBox(width: 5,),
         // Icon(Icons.thumbs_up_down, size: size,), // maybe use this
         Text(iconText, style: TextStyle(color: colors[score.sign])),
       ]
@@ -57,6 +59,7 @@ class StatisticsViewsIcon extends StatelessWidget {
     return Row(
       children: [
         Icon(Icons.remove_red_eye, size: size, color: Colors.grey,),
+        SizedBox(width: 5,),
         Text(views.toString(),),
       ]
     );
@@ -73,6 +76,7 @@ class StatisticsCommentsIcon extends StatelessWidget {
     return Row(
       children: [
         Icon(Icons.forum, size: size, color: Colors.grey,),
+        SizedBox(width: 5,),
         Text(comments.toString()),
       ]
     );
@@ -95,15 +99,15 @@ class ArticlePreview extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       child: Container(
-        padding: EdgeInsets.all(5.0),
-        child: new Column(
+        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+        child: Column(
           children: [
             Row(
               children: [
                 Text(dateToStr(_postPreview.publishDate, Localizations.localeOf(context))),
                 Wrap(
                   direction: Axis.horizontal,
-                  spacing: 10,
+                  spacing: 5,
                   children: [
                     if (_postPreview.author.avatarUrl.length != 0) ClipRRect(
                       borderRadius: BorderRadius.all(Radius.circular(5)),
@@ -115,8 +119,11 @@ class ArticlePreview extends StatelessWidget {
               ],
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
             ),
+            SizedBox(height: 7,),
             Text(_postPreview.title,  style: new TextStyle(fontSize: 20.0), overflow: TextOverflow.visible, softWrap: true, textAlign: TextAlign.left),
+            SizedBox(height: 10,),
             Text(_postPreview.tags.join(', '), overflow: TextOverflow.ellipsis, textAlign: TextAlign.left),
+            SizedBox(height: 5,),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
