@@ -3,11 +3,29 @@ import 'package:habr_app/utils/log.dart';
 import 'package:http/http.dart' as http;
 import 'dto.dart';
 
+enum ArticleFeeds {
+  dayTop,
+  weekTop,
+  yearTop,
+  time,
+  news
+}
+
+enum Flows {
+  my,
+  all,
+  develop,
+  admin,
+  design,
+  management,
+  marketing,
+  popular_science
+}
 
 class Habr {
   static const api_url = "https://m.habr.com/kek/v2";
-  Future<PostPreviews> posts() async {
-    final url = "$api_url/articles/?date=day&sort=date&fl=ru&hl=ru&page=1";
+  Future<PostPreviews> posts({int page = 1,}) async {
+    final url = "$api_url/articles/?date=day&sort=date&fl=ru&hl=ru&page=$page";
     logInfo("Get articles by $url");
     final response = await http.get(url);
     if (response.statusCode == 200) {

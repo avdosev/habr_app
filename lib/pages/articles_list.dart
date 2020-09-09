@@ -161,7 +161,7 @@ class _ArticlesListState extends State<ArticlesList> {
   }
 
   Future _loadPosts(int page) {
-    return Habr().posts().then((value) {
+    return Habr().posts(page: page).then((value) {
       setState(() {
         previews.addAll(value.previews);
         maxPages = value.maxCountPages;
@@ -184,37 +184,36 @@ class _ArticlesListState extends State<ArticlesList> {
               return Center(child: CircularProgressIndicator());
             case ConnectionState.done:
               return Container(
-                child:
-                  IncrementallyLoadingListView(
-                    itemCount: () => previews.length,
-                    hasMore: () => pages < maxPages,
-                    itemBuilder: (BuildContext context, int index) {
-                      final preview = ArticlePreview(previews[index]);
-                      Widget item = ((loadingItems ?? false) && index == previews.length - 1) ?
-                        Column(
-                          children: [
-                            preview,
-                            CircularProgressIndicator()
-                          ]
-                        ) :
-                        Column(children: [
+                child: IncrementallyLoadingListView(
+                  itemCount: () => previews.length,
+                  hasMore: () => pages < maxPages,
+                  itemBuilder: (BuildContext context, int index) {
+                    final preview = ArticlePreview(previews[index]);
+                    Widget item = ((loadingItems ?? false) && index == previews.length - 1) ?
+                      Column(
+                        children: [
                           preview,
-                          const Divider()
-                        ]);
-                      return item;
-                    },
-                    loadMore: () => _loadPosts(pages+1),
-                    onLoadMore: () {
-                      setState(() {
-                        loadingItems = true;
-                      });
-                    },
-                    onLoadMoreFinished: () {
-                      setState(() {
-                        loadingItems = false;
-                      });
-                    },
-                    // separatorBuilder: (BuildContext context, int index) => const Divider(),
+                          CircularProgressIndicator()
+                        ]
+                      ) :
+                      Column(children: [
+                        preview,
+                        const Divider()
+                      ]);
+                    return item;
+                  },
+                  loadMore: () => _loadPosts(pages+1),
+                  onLoadMore: () {
+                    setState(() {
+                      loadingItems = true;
+                    });
+                  },
+                  onLoadMoreFinished: () {
+                    setState(() {
+                      loadingItems = false;
+                    });
+                  },
+                  // separatorBuilder: (BuildContext context, int index) => const Divider(),
                   )
               );
             default:
