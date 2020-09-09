@@ -1,7 +1,7 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:habr_app/html_view/html_view.dart';
+import 'package:habr_app/widgets/html_view.dart';
+import 'package:habr_app/widgets/hide_floating_action_button.dart';
 import 'package:share/share.dart';
 import '../habr/dto.dart';
 import '../habr/api.dart';
@@ -19,7 +19,7 @@ class ArticlePage extends StatefulWidget {
 
 class _ArticlePageState extends State<ArticlePage> {
   final String articleId;
-  bool showFloatingActionButton = true;
+  ValueNotifier<bool> showFloatingActionButton = ValueNotifier(true);
   Post _post;
   Future _initialLoad;
   ScrollController _controller = ScrollController();
@@ -68,20 +68,16 @@ class _ArticlePageState extends State<ArticlePage> {
           }
         },
       ),
-      floatingActionButton: AnimatedSwitcher(
-        duration: const Duration(milliseconds: 500),
-        transitionBuilder: (Widget child, Animation<double> animation) {
-          return ScaleTransition(child: FadeTransition(child: child, opacity: animation), scale: animation);
-        },
-        child: Visibility(
-          visible: showFloatingActionButton,
-          key: UniqueKey(),
-          child: FloatingActionButton(
-            tooltip: 'Comment', // used by assistive technologies
+      floatingActionButton: ValueListenableBuilder(
+        valueListenable: showFloatingActionButton,
+        builder: (BuildContext context, bool value, Widget child) =>
+          HideFloatingActionButton(
+            tooltip: 'Comments',
+            visible: value,
             child: Icon(Icons.chat_bubble_outline),
-            onPressed: null, // TODO: Comments page
+            onPressed: () {}, // TODO: Comments page
+            duration: const Duration(milliseconds: 300),
           )
-        )
       )
     );
   }
@@ -89,10 +85,8 @@ class _ArticlePageState extends State<ArticlePage> {
 
   void floatingButtonShowListener() {
     final needShow = _controller.position.userScrollDirection == ScrollDirection.forward;
-    if (needShow != showFloatingActionButton)
-      setState(() {
-        showFloatingActionButton = needShow;
-      });
+    if (needShow != showFloatingActionButton.value)
+       showFloatingActionButton.value = needShow;
   }
 
   @override
