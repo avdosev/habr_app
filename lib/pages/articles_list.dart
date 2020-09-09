@@ -147,6 +147,16 @@ class ArticlePreview extends StatelessWidget {
   }
 }
 
+class CircularItem extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+        padding: EdgeInsets.all(10),
+        child: CircularProgressIndicator()
+    );
+  }
+}
+
 class _ArticlesListState extends State<ArticlesList> {
   int pages = 0;
   int maxPages = -1;
@@ -189,18 +199,14 @@ class _ArticlesListState extends State<ArticlesList> {
                   hasMore: () => pages < maxPages,
                   itemBuilder: (BuildContext context, int index) {
                     final preview = ArticlePreview(previews[index]);
-                    Widget item = ((loadingItems ?? false) && index == previews.length - 1) ?
-                      Column(
-                        children: [
-                          preview,
-                          CircularProgressIndicator()
-                        ]
-                      ) :
-                      Column(children: [
+                    final loadingInProgress = ((loadingItems ?? false) && index == previews.length - 1);
+                    return Column(
+                      children: [
                         preview,
-                        const Divider()
-                      ]);
-                    return item;
+                        const Divider(),
+                        if (loadingInProgress) CircularItem()
+                      ]
+                    );
                   },
                   loadMore: () => _loadPosts(pages+1),
                   onLoadMore: () {
