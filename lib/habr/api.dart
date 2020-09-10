@@ -33,17 +33,13 @@ class Habr {
       return PostPreviews(
         previews: data['articleIds'].map<PostPreview>((id) {
           final article = data['articleRefs'][id];
-          final author = article['author'];
+          final authorJson = article['author'];
           return PostPreview(
             id: id,
             title: article['titleHtml'],
             tags: article['flows'].map<String>((flow) => flow['title'] as String).toList(),
             publishDate: DateTime.parse(article['timePublished']),
-            author: Author(
-              id: author['id'],
-              alias: author['alias'],
-              avatarUrl: author['avatarUrl'].toString().replaceFirst("//", "https://")
-            ),
+            author: Author.fromJson(authorJson),
             statistics: Statistics.fromJson(article['statistics'])
           );
         }).toList(),
@@ -64,6 +60,21 @@ class Habr {
         id: data['id'],
         title: data['titleHtml'],
         body: data['textHtml']
+      );
+    } else {
+      return null;
+    }
+  }
+
+  Future<Comments> comments(String articleId) async {
+    final url = "$api_url/articles/$articleId/comments";
+    logInfo("Get comments by $url");
+    final response = await http.get(url);
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      return Comments(
+        threads: data['threads'] as List<int>,
+        comments: (data['comments'] as Map<String, dynamic>).map<int, Comment>((key, value) => MapEntry(int.parse(key), Comment.fromJson(value))),
       );
     } else {
       return null;

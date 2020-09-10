@@ -9,6 +9,11 @@ class Author extends Equatable {
 
   @override
   List<Object> get props => [id];
+
+  Author.fromJson(Map<String, dynamic> json) :
+      id = json['id'],
+      alias = json['alias'],
+      avatarUrl = json['avatarUrl'].toString().replaceFirst("//", "https://");
 }
 
 class Statistics {
@@ -26,11 +31,11 @@ class Statistics {
     this.votesCount});
 
   Statistics.fromJson(Map<String, dynamic> json) :
-    commentsCount = json['commentsCount'],
-    favoritesCount = json['favoritesCount'],
-    readingCount = json['readingCount'],
-    score = json['score'],
-    votesCount = json['votesCount'];
+      commentsCount = json['commentsCount'],
+      favoritesCount = json['favoritesCount'],
+      readingCount = json['readingCount'],
+      score = json['score'],
+      votesCount = json['votesCount'];
 }
 
 class Post extends Equatable {
@@ -63,4 +68,46 @@ class PostPreviews {
   final List<PostPreview> previews;
 
   const PostPreviews({this.previews, this.maxCountPages});
+}
+
+class Comment {
+  final int id;
+  final int parentId;
+  final int level;
+  final DateTime timePublished;
+  final DateTime timeChanged;
+  final List<int> children;
+  final Author author;
+  final String message;
+
+  Comment({
+    this.id,
+    this.parentId,
+    this.level,
+    this.timePublished,
+    this.timeChanged,
+    this.children,
+    this.author,
+    this.message,
+  });
+
+  Comment.fromJson(Map<String, dynamic> json):
+      id = json['id'],
+      parentId = json['parentId'],
+      level = json['level'],
+      timePublished = DateTime.parse(json['timePublished']),
+      timeChanged = DateTime.parse(json['timeChanged']),
+      children = json['children'] as List<int>,
+      author = Author.fromJson(json['author']),
+      message = json['message'];
+}
+
+class Comments {
+  final Map<int, Comment> comments;
+  final List<int> threads;
+
+  Comments({
+    this.comments,
+    this.threads,
+  });
 }
