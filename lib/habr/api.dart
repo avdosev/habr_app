@@ -1,4 +1,6 @@
 import 'dart:convert';
+import 'package:habr_app/habr/storage_interface.dart';
+import 'package:habr_app/utils/either.dart';
 import 'package:habr_app/utils/log.dart';
 import 'package:http/http.dart' as http;
 import 'dto.dart';
@@ -22,15 +24,15 @@ enum Flows {
   popular_science
 }
 
-class Habr {
+class Habr implements IStorage {
   static const api_url = "https://m.habr.com/kek/v2";
-  Future<PostPreviews> posts({int page = 1,}) async {
+  Future<Either<StorageError, PostPreviews>> posts({int page = 1,}) async {
     final url = "$api_url/articles/?date=day&sort=date&fl=ru&hl=ru&page=$page";
     logInfo("Get articles by $url");
     final response = await http.get(url);
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
-      return PostPreviews(
+      return Right(PostPreviews(
         previews: data['articleIds'].map<PostPreview>((id) {
           final article = data['articleRefs'][id];
           final authorJson = article['author'];
@@ -44,40 +46,40 @@ class Habr {
           );
         }).toList(),
         maxCountPages: data['pagesCount']
-      );
+      ));
     } else {
-      return null;
+      return Left(StorageError(errCode: ErrorType.BadRequest));
     }
   }
 
-  Future<Post> article(String id) async {
+  Future<Either<StorageError, Post>> article(String id) async {
     final url = "$api_url/articles/$id";
     logInfo("Get article by $url");
     final response = await http.get(url);
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
-      return Post(
+      return Right(Post(
         id: data['id'],
         title: data['titleHtml'],
         body: data['textHtml']
-      );
+      ));
     } else {
-      return null;
+      return Left(StorageError(errCode: ErrorType.BadRequest));
     }
   }
 
-  Future<Comments> comments(String articleId) async {
+  Future<Either<StorageError, Comments>> comments(String articleId) async {
     final url = "$api_url/articles/$articleId/comments";
     logInfo("Get comments by $url");
     final response = await http.get(url);
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
-      return Comments(
+      return Right(Comments(
         threads: data['threads'] as List<int>,
         comments: (data['comments'] as Map<String, dynamic>).map<int, Comment>((key, value) => MapEntry(int.parse(key), Comment.fromJson(value))),
-      );
+      ));
     } else {
-      return null;
+      return Left(StorageError(errCode: ErrorType.BadRequest));
     }
   }
 }

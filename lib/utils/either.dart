@@ -27,6 +27,7 @@ abstract class Either<L, R> {
   Either<TL, TR> either<TL, TR>(TL Function(L) fnL, TR Function(R) fnR);
   Either<L, TR> then<TR>(Either<L, TR> Function(R) fnR);
   Either<L, TR> map<TR>(TR Function(R) fnR);
+  T unit<T>(T Function(L) fnL, T Function(R) fnR);
 }
 
 class Left<L, R> extends Either<L, R> {
@@ -44,8 +45,13 @@ class Left<L, R> extends Either<L, R> {
   }
 
   @override
-  Either<L, TR> map<TR>(TR Function(R p1) fnR) {
+  Either<L, TR> map<TR>(TR Function(R) fnR) {
     return Left<L, TR>(value);
+  }
+
+  @override
+  T unit<T>(T Function(L) fnL, T Function(R) fnR) {
+    return fnL(value);
   }
 
 }
@@ -60,13 +66,18 @@ class Right<L, R> extends Either<L, R> {
   }
 
   @override
-  Either<L, TR> then<TR>(Either<L, TR> Function(R p1) fnR) {
+  Either<L, TR> then<TR>(Either<L, TR> Function(R) fnR) {
     return fnR(value);
   }
 
   @override
-  Either<L, TR> map<TR>(TR Function(R p1) fnR) {
+  Either<L, TR> map<TR>(TR Function(R) fnR) {
     return Right<L, TR>(fnR(value));
+  }
+
+  @override
+  T unit<T>(T Function(L) fnL, T Function(R) fnR) {
+    return fnR(value);
   }
 
 }

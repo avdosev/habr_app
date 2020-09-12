@@ -171,7 +171,9 @@ class _ArticlesListState extends State<ArticlesList> {
   }
 
   Future _loadPosts(int page) {
-    return Habr().posts(page: page).then((value) {
+    return Habr().posts(page: page).then((valueOrError) {
+      if (valueOrError.isLeft) return; // TODO: обработка ошибки
+      final value = valueOrError.right;
       setState(() {
         previews.addAll(value.previews);
         maxPages = value.maxCountPages;
