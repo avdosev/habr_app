@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:habr_app/habr/storage_interface.dart';
-import 'package:habr_app/utils/either.dart';
+import 'package:either_dart/either.dart';
 import 'package:habr_app/widgets/html_view.dart';
 import 'package:habr_app/widgets/hide_floating_action_button.dart';
 import 'package:share/share.dart';
@@ -64,7 +64,7 @@ class _ArticlePageState extends State<ArticlePage> {
             case ConnectionState.waiting:
               return Center(child: CircularProgressIndicator());
             case ConnectionState.done:
-              return _post.unit<Widget>(
+              return _post.unite<Widget>(
                 (err) => Text("Error"),
                 (post) => ArticleView(article: post, controller: _controller,)
               );

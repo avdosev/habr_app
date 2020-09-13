@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:habr_app/habr/storage_interface.dart';
-import 'package:habr_app/utils/either.dart';
+import 'package:either_dart/either.dart';
 import 'package:habr_app/utils/log.dart';
 import 'package:http/http.dart' as http;
 import 'dto.dart';

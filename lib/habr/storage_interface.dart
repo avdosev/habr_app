@@ -1,7 +1,5 @@
-import 'package:flutter/cupertino.dart';
-
 import 'dto.dart';
-import 'package:habr_app/utils/either.dart';
+import 'package:either_dart/either.dart';
 
 enum ErrorType {
   BadRequest,
@@ -13,7 +11,7 @@ class StorageError {
   final String message;
 
   const StorageError({
-    @required this.errCode,
+    this.errCode,
     this.message,
   });
 }
