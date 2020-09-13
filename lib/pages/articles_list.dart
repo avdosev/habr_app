@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:habr_app/pages/article.dart';
+import 'package:habr_app/widgets/internet_error_view.dart';
 import 'package:incrementally_loading_listview/incrementally_loading_listview.dart';
 
 import 'package:habr_app/utils/date_to_text.dart';
@@ -167,7 +168,17 @@ class _ArticlesListState extends State<ArticlesList> {
   @override
   void initState() {
     super.initState();
-    _initialLoad = _loadPosts(pages+1);
+    reload();
+  }
+
+  void reload() {
+    setState(() {
+      pages = 0;
+      maxPages = -1;
+      loadingItems = false;
+      previews = [];
+      _initialLoad = _loadPosts(pages+1);
+    });
   }
 
   Future _loadPosts(int page) {
@@ -179,7 +190,7 @@ class _ArticlesListState extends State<ArticlesList> {
         maxPages = value.maxCountPages;
         pages += 1;
       });
-    }).catchError(logError);
+    });
   }
 
   @override
@@ -195,6 +206,9 @@ class _ArticlesListState extends State<ArticlesList> {
             case ConnectionState.waiting:
               return Center(child: CircularProgressIndicator());
             case ConnectionState.done:
+              if (snapshot.hasError) {
+                return Center(child: LossInternetConnection(onPressReload: reload));
+              }
               return Container(
                 child: IncrementallyLoadingListView(
                   itemCount: () => previews.length,
