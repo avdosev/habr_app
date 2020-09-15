@@ -4,6 +4,7 @@ import 'package:habr_app/habr/storage_interface.dart';
 import 'package:either_dart/either.dart';
 import 'package:habr_app/widgets/html_view.dart';
 import 'package:habr_app/widgets/hide_floating_action_button.dart';
+import 'package:habr_app/widgets/internet_error_view.dart';
 import 'package:share/share.dart';
 import '../habr/dto.dart';
 import '../habr/api.dart';
@@ -11,32 +12,37 @@ import '../habr/api.dart';
 import '../utils/log.dart';
 
 class ArticlePage extends StatefulWidget {
-  ArticlePage({Key key, this.articleId}) : super(key: key);
-
   final String articleId;
 
+  ArticlePage({Key key, this.articleId}) : super(key: key);
+
   @override
-  createState() => _ArticlePageState(articleId);
+  createState() => _ArticlePageState();
 }
 
 class _ArticlePageState extends State<ArticlePage> {
-  final String articleId;
+  String get articleId => widget.articleId;
   ValueNotifier<bool> showFloatingActionButton = ValueNotifier(true);
-  Either<StorageError, Post> _post;
-  Future _initialLoad;
+  Future<Either<StorageError, Post>> _initialLoad;
   ScrollController _controller = ScrollController();
 
-  _ArticlePageState(this.articleId);
+  _ArticlePageState();
 
   @override
   void initState() {
     super.initState();
     _controller.addListener(floatingButtonShowListener);
-    _initialLoad = Habr().article(articleId).then((val) {
-      setState(() {
-        _post = val;
-      });
-    }).catchError(logError);
+    _initialLoad = loadArticle();
+  }
+
+  reload() async {
+    setState(() {
+      _initialLoad = loadArticle();
+    });
+  }
+
+  Future<Either<StorageError, Post>> loadArticle() async {
+    return Habr().article(articleId);
   }
 
   Future shareArticle(BuildContext context) async {
@@ -64,10 +70,10 @@ class _ArticlePageState extends State<ArticlePage> {
             case ConnectionState.waiting:
               return Center(child: CircularProgressIndicator());
             case ConnectionState.done:
-              return _post.unite<Widget>(
-                (err) => Text("Error"),
-                (post) => ArticleView(article: post, controller: _controller,)
-              );
+              final widget = (snapshot.hasError || snapshot.data.isLeft) ?
+                Center(child: LossInternetConnection(onPressReload: reload)) :
+                ArticleView(article: snapshot.data.right, controller: _controller,);
+              return widget;
             default:
               return Text('Something went wrong');
           }
