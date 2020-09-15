@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:habr_app/pages/article.dart';
+import 'package:habr_app/widgets/author_avatar_icon.dart';
 import 'package:habr_app/widgets/internet_error_view.dart';
 import 'package:incrementally_loading_listview/incrementally_loading_listview.dart';
 
@@ -108,12 +109,12 @@ class ArticlePreview extends StatelessWidget {
                 Text(dateToStr(_postPreview.publishDate, Localizations.localeOf(context))),
                 Wrap(
                   direction: Axis.horizontal,
+                  crossAxisAlignment: WrapCrossAlignment.center,
                   spacing: 5,
                   children: [
-                    if (_postPreview.author.avatarUrl.length != 0) ClipRRect(
-                      borderRadius: BorderRadius.all(Radius.circular(5)),
-                      child: Image.network(_postPreview.author.avatarUrl, height: 20, width: 20,),
-                    ),
+                    AuthorAvatarIcon(
+                      avatarUrl: _postPreview.author.avatarUrl,
+                      storeType: ImageStoreType.Network,),
                     Text(_postPreview.author.alias),
                   ]
                 )

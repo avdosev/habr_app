@@ -1,4 +1,11 @@
+import 'package:either_dart/either.dart';
 import 'package:equatable/equatable.dart';
+
+String prepareAvatarUrl(String url) {
+  if (url == null) return null;
+  if (url.startsWith("//")) url = url.replaceFirst("//", "https://");
+  return url;
+}
 
 class Author extends Equatable {
   final String id;
@@ -13,7 +20,7 @@ class Author extends Equatable {
   Author.fromJson(Map<String, dynamic> json) :
       id = json['id'],
       alias = json['alias'],
-      avatarUrl = json['avatarUrl'].toString().replaceFirst("//", "https://");
+      avatarUrl = prepareAvatarUrl(json['avatarUrl']);
 }
 
 class Statistics {
@@ -96,8 +103,8 @@ class Comment {
       parentId = json['parentId'],
       level = json['level'],
       timePublished = DateTime.parse(json['timePublished']),
-      timeChanged = DateTime.parse(json['timeChanged']),
-      children = json['children'] as List<int>,
+      timeChanged = json['timeChanged'] == null ? null : DateTime.parse(json['timeChanged']),
+      children = (json['children'] as List).cast<int>(),
       author = Author.fromJson(json['author']),
       message = json['message'];
 }

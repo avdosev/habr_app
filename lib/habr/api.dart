@@ -75,8 +75,10 @@ class Habr implements IStorage {
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
       return Right(Comments(
-        threads: data['threads'] as List<int>,
-        comments: (data['comments'] as Map<String, dynamic>).map<int, Comment>((key, value) => MapEntry(int.parse(key), Comment.fromJson(value))),
+        threads: (data['threads'] as List).cast<int>(),
+        comments: (data['comments'] as Map<String, dynamic>).map<int, Comment>((key, value) {
+          return MapEntry(int.parse(key), Comment.fromJson(value));
+        }),
       ));
     } else {
       return Left(StorageError(errCode: ErrorType.BadRequest));

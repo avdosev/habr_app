@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:habr_app/habr/storage_interface.dart';
 import 'package:either_dart/either.dart';
+import 'package:habr_app/pages/comments.dart';
 import 'package:habr_app/widgets/html_view.dart';
 import 'package:habr_app/widgets/hide_floating_action_button.dart';
 import 'package:habr_app/widgets/internet_error_view.dart';
@@ -86,7 +87,9 @@ class _ArticlePageState extends State<ArticlePage> {
             tooltip: 'Comments',
             visible: value,
             child: Icon(Icons.chat_bubble_outline),
-            onPressed: () {}, // TODO: Comments page
+            onPressed: () => Navigator.of(context).push(
+                MaterialPageRoute(builder: (context) => CommentsPage(articleId: articleId,))
+            ),
             duration: const Duration(milliseconds: 300),
           )
       )
