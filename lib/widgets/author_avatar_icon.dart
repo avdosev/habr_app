@@ -1,20 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'dart:math';
-
-enum ImageStoreType {
-  Cached,
-  Network,
-  Default
-}
+import '../habr/image_info.dart' as image;
+import '../habr/image_store.dart';
 
 class AuthorAvatarIcon extends StatelessWidget {
   final double height;
   final double width;
-  final String avatarUrl;
-  final ImageStoreType storeType;
+  final image.ImageInfo avatar;
+  get storeType => avatar.store;
 
-  AuthorAvatarIcon({this.avatarUrl, this.storeType, this.height = 20, this.width = 20});
+  AuthorAvatarIcon({this.avatar, this.height = 20, this.width = 20});
 
   @override
   Widget build(BuildContext context) {
@@ -22,8 +17,8 @@ class AuthorAvatarIcon extends StatelessWidget {
     Widget image;
     switch (storeType) {
       case ImageStoreType.Network:
-        if (avatarUrl != null && avatarUrl.length != 0) {
-          image = Image.network(avatarUrl, height: height, width: width,);
+        if (avatar != null && avatar.url.length != 0) {
+          image = Image.network(avatar.url, height: height, width: width,);
           break;
         }
         continue default_icon;

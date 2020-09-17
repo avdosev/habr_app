@@ -1,18 +1,19 @@
 import 'package:either_dart/either.dart';
 import 'package:equatable/equatable.dart';
+import 'image_info.dart';
 
-String prepareAvatarUrl(String url) {
-  if (url == null) return null;
+ImageInfo prepareAvatarUrl(String url) {
+  if (url == null) return ImageInfo(url: null, store: ImageStoreType.Default);
   if (url.startsWith("//")) url = url.replaceFirst("//", "https://");
-  return url;
+  return ImageInfo(url: url, store: ImageStoreType.Network);
 }
 
 class Author extends Equatable {
   final String id;
   final String alias;
-  final String avatarUrl;
+  final ImageInfo avatar;
 
-  const Author({this.id, this.alias, this.avatarUrl});
+  const Author({this.id, this.alias, this.avatar});
 
   @override
   List<Object> get props => [id];
@@ -20,7 +21,7 @@ class Author extends Equatable {
   Author.fromJson(Map<String, dynamic> json) :
       id = json['id'],
       alias = json['alias'],
-      avatarUrl = prepareAvatarUrl(json['avatarUrl']);
+      avatar = prepareAvatarUrl(json['avatarUrl']);
 }
 
 class Statistics {

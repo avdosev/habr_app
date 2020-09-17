@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:habr_app/pages/article.dart';
 import 'package:habr_app/widgets/author_avatar_icon.dart';
 import 'package:habr_app/widgets/internet_error_view.dart';
+import 'package:habr_app/widgets/small_author_preview.dart';
 import 'package:incrementally_loading_listview/incrementally_loading_listview.dart';
 
 import 'package:habr_app/utils/date_to_text.dart';
@@ -107,17 +108,7 @@ class ArticlePreview extends StatelessWidget {
             Row(
               children: [
                 Text(dateToStr(_postPreview.publishDate, Localizations.localeOf(context))),
-                Wrap(
-                  direction: Axis.horizontal,
-                  crossAxisAlignment: WrapCrossAlignment.center,
-                  spacing: 5,
-                  children: [
-                    AuthorAvatarIcon(
-                      avatarUrl: _postPreview.author.avatarUrl,
-                      storeType: ImageStoreType.Network,),
-                    Text(_postPreview.author.alias),
-                  ]
-                )
+                SmallAuthorPreview(_postPreview.author),
               ],
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
             ),

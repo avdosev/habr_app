@@ -3,10 +3,9 @@ import 'package:flutter/rendering.dart';
 import 'package:habr_app/habr/storage_interface.dart';
 import 'package:either_dart/either.dart';
 import 'package:habr_app/utils/date_to_text.dart';
+import 'package:habr_app/widgets/small_author_preview.dart';
 import 'package:habr_app/widgets/widgets.dart';
-import 'package:share/share.dart';
-import '../habr/dto.dart';
-import '../habr/api.dart';
+import 'package:habr_app/habr/habr.dart';
 
 import '../utils/log.dart';
 
@@ -81,12 +80,29 @@ class CommentsTree extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        CommentView(comments.comments[currentId]),
-        if (comments.comments[currentId].children.length != 0)
-          ...comments.comments[currentId].children.map<CommentsTree>((childId) => CommentsTree(comments, childId)).toList()
-      ],
+    ThemeData themeData = Theme.of(context);
+    return Container(
+      padding: EdgeInsets.all(5),
+      child: Column(
+        children: [
+          CommentView(comments.comments[currentId]),
+          SizedBox(height: 5,),
+          if (comments.comments[currentId].children.length != 0)
+            Container(
+              decoration: BoxDecoration(
+                border: Border(left: BorderSide(
+                  color: themeData.primaryColor,
+                  width: 1,
+                ))
+              ),
+              padding: EdgeInsets.only(left: 5),
+              child: Column(
+                children: comments.comments[currentId].children.map<CommentsTree>(
+                        (childId) => CommentsTree(comments, childId)).toList(),
+              ),
+            ),
+        ],
+      )
     );
   }
 }
@@ -98,12 +114,13 @@ class CommentView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(children: [
-          AuthorAvatarIcon(avatarUrl: comment.author.avatarUrl, storeType: ImageStoreType.Network,),
-          Text(comment.author.alias),
+          SmallAuthorPreview(comment.author),
           Text(dateToStr((comment.timeChanged ?? comment.timePublished), Localizations.localeOf(context))),
         ], mainAxisAlignment: MainAxisAlignment.spaceBetween,),
+        SizedBox(height: 5,),
         HtmlView(comment.message),
         // TODO: buttons
       ],
