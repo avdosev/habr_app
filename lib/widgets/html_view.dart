@@ -27,6 +27,61 @@ class HtmlView extends StatelessWidget {
   }
 }
 
+enum HeadLineType {
+  h1, h2, h3, h4, h5, h6
+}
+
+class HeadLine extends StatelessWidget {
+  final String text;
+  final HeadLineType type;
+  const HeadLine({this.text, this.type});
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(text, textScaleFactor: 1.2, style: TextStyle(fontWeight: FontWeight.bold),);
+  }
+
+}
+
+List<InlineSpan> buildInline(dom.Element element) {
+  final inline = <InlineSpan>[];
+  int index = 0;
+  for (var node in element.nodes) {
+    if (node.nodeType == dom.Node.TEXT_NODE) {
+      final text = node.text;
+      if (text.length != 0) {
+        logInfo('text node "$text"');
+        inline.add(TextSpan(text: text));
+      }
+    } else if (node.nodeType == dom.Node.ELEMENT_NODE) {
+      final child = element.children[index++];
+      logInfo(child.localName);
+      switch(child.localName) {
+        case 's':
+          inline.add(TextSpan(children: buildInline(child), style: TextStyle(decoration: TextDecoration.lineThrough)));
+          break;
+        case 'i':
+          inline.add(TextSpan(children: buildInline(child), style: TextStyle(fontStyle: FontStyle.italic)));
+          break;
+        case 'code':
+        case 'em':
+          inline.add(TextSpan(children: buildInline(child)));
+          break;
+        case 'b':
+        case 'strong':
+          inline.add(TextSpan(children: buildInline(child), style: TextStyle(fontWeight: FontWeight.w500),));
+          break;
+        case 'a':
+          inline.add(WidgetSpan(child: TextLink(title: child.text, url: child.attributes['href'])));
+          break;
+        default:
+          logInfo("Not found case for inline ${child.localName}");
+      }
+    }
+  }
+  return inline;
+}
+
 List<Widget> buildTree(dom.Element element) {
   final widgets = <Widget>[];
   int index = 0;
@@ -47,13 +102,29 @@ List<Widget> buildTree(dom.Element element) {
         case 'h4':
         case 'h5':
         case 'h6':
-          widgets.add(Text(child.text, textScaleFactor: 1.2, style: TextStyle(fontWeight: FontWeight.bold),));
+          widgets.add(
+            HeadLine(
+              text: child.text,
+              type: HeadLineType.values[int.parse(child.localName.substring(1))]
+            )
+          );
           break;
         case 'p': // TODO: support bold and italic
+          if (child.children.length > 0) widgets.add(Text.rich(TextSpan(children: buildInline(child))));
+          else widgets.add(Text(child.text));
+          break;
+        case 'i':
+        case 's':
+        case 'em':
           widgets.add(Text(child.text));
           break;
+        case 'b':
+        case 'strong':
+          widgets.add(Text(child.text, style: TextStyle(fontWeight: FontWeight.w500),));
+          break;
         case 'a':
-          widgets.add(TextLink(title: child.text, url: child.attributes['href']));
+          if (child.children.length > 0) widgets.add(Link(child: Text.rich(TextSpan(children: buildInline(child))), url: child.attributes['href'],));
+          else if (child.text.length != 0) widgets.add(TextLink(title: child.text, url: child.attributes['href']));
           break;
         case 'code': // TODO: special element for code elements
           final code = child.text;
@@ -100,6 +171,9 @@ List<Widget> buildTree(dom.Element element) {
         case 'figure':
         case 'pre': // hmm, maybe it has other type
           widgets.addAll(buildTree(child));
+          break;
+        case 'br':
+          // Nothing
           break;
         default:
           logInfo("Not found case for ${child.localName}");
