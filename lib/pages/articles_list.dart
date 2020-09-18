@@ -112,11 +112,11 @@ class ArticlePreview extends StatelessWidget {
               ],
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
             ),
-            SizedBox(height: 7,),
-            Text(_postPreview.title,  style: new TextStyle(fontSize: 20.0), overflow: TextOverflow.visible, softWrap: true, textAlign: TextAlign.left),
-            SizedBox(height: 10,),
+            const SizedBox(height: 7,),
+            Text(_postPreview.title,  style: const TextStyle(fontSize: 20.0, fontWeight: FontWeight.w600), overflow: TextOverflow.visible, softWrap: true, textAlign: TextAlign.left),
+            const SizedBox(height: 10,),
             Text(_postPreview.tags.join(', '), overflow: TextOverflow.ellipsis, textAlign: TextAlign.left),
-            SizedBox(height: 5,),
+            const SizedBox(height: 5,),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -141,11 +141,13 @@ class ArticlePreview extends StatelessWidget {
 }
 
 class CircularItem extends StatelessWidget {
+  const CircularItem();
+
   @override
   Widget build(BuildContext context) {
     return Container(
-        padding: EdgeInsets.all(10),
-        child: CircularProgressIndicator()
+        padding: const EdgeInsets.all(10),
+        child: const CircularProgressIndicator()
     );
   }
 }
@@ -211,8 +213,8 @@ class _ArticlesListState extends State<ArticlesList> {
                     return Column(
                       children: [
                         preview,
-                        const Divider(),
-                        if (loadingInProgress) CircularItem()
+                        if (index != previews.length-1 || loadingInProgress) const Divider(),
+                        if (loadingInProgress) const CircularItem()
                       ]
                     );
                   },

@@ -60,7 +60,10 @@ class _CommentsPageState extends State<CommentsPage> {
                   Center(child: LossInternetConnection(onPressReload: reload)) :
                   ListView.builder(
                     itemBuilder: (BuildContext context, int index) =>
-                      CommentsTree(snapshot.data.right, snapshot.data.right.threads[index]),
+                        Container(
+                          padding: const EdgeInsets.only(top: 5, bottom: 5, left: 7, right: 7),
+                          child: CommentsTree(snapshot.data.right, snapshot.data.right.threads[index]),
+                        ),
                     itemCount: snapshot.data.right.threads.length,
                   );
                 return widget;
@@ -82,27 +85,27 @@ class CommentsTree extends StatelessWidget {
   Widget build(BuildContext context) {
     ThemeData themeData = Theme.of(context);
     return Container(
-      padding: const EdgeInsets.all(5),
+      padding: const EdgeInsets.only(top: 5, bottom: 5),
       child: Column(
         children: [
           CommentView(comments.comments[currentId]),
-          SizedBox(height: 5,),
+          const SizedBox(height: 5,),
           if (comments.comments[currentId].children.length != 0)
             Container(
               decoration: BoxDecoration(
                 border: Border(left: BorderSide(
                   color: themeData.primaryColor,
-                  width: 1,
+                  width: 1.1,
                 ))
               ),
-              padding: EdgeInsets.only(left: 5),
+              padding: const EdgeInsets.only(left: 6),
               child: Column(
-                children: comments.comments[currentId].children.map<CommentsTree>(
+                children: comments.comments[currentId].children.map<Widget>(
                         (childId) => CommentsTree(comments, childId)).toList(),
               ),
             ),
         ],
-      )
+      ),
     );
   }
 }
@@ -120,7 +123,7 @@ class CommentView extends StatelessWidget {
           SmallAuthorPreview(comment.author),
           Text(dateToStr((comment.timePublished), Localizations.localeOf(context))),
         ], mainAxisAlignment: MainAxisAlignment.spaceBetween,),
-        SizedBox(height: 5,),
+        const SizedBox(height: 5,),
         HtmlView(comment.message),
         // TODO: buttons
       ],

@@ -86,7 +86,7 @@ class _ArticlePageState extends State<ArticlePage> {
           HideFloatingActionButton(
             tooltip: 'Comments',
             visible: value,
-            child: Icon(Icons.chat_bubble_outline),
+            child: const Icon(Icons.chat_bubble_outline),
             onPressed: () => Navigator.of(context).push(
                 MaterialPageRoute(builder: (context) => CommentsPage(articleId: articleId,))
             ),
@@ -119,7 +119,7 @@ class ArticleView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListView(
-      padding: EdgeInsets.all(5),
+      padding: EdgeInsets.all(10),
       controller: controller,
       children: [
         Text(article.title, style: TextStyle(fontSize: 20)),

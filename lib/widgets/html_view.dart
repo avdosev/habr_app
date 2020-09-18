@@ -16,14 +16,14 @@ class WrappedContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final wrapedChildren = <Widget>[];
+    final wrappedChildren = <Widget>[];
     for (int i = 0; i < children.length; i++) {
-      wrapedChildren.add(children[i]);
-      if (i != children.length - 1) wrapedChildren.add(SizedBox(height: 20));
+      wrappedChildren.add(children[i]);
+      if (i != children.length - 1) wrappedChildren.add(const SizedBox(height: 20));
     }
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: wrapedChildren,
+      children: wrappedChildren,
     );
   }
 }
@@ -53,11 +53,11 @@ class Blockquote extends StatelessWidget {
         border: Border(
           left: BorderSide(
             color: themeData.primaryColor,
-            width: 5,
+            width: 4,
           )
         )
       ),
-      padding: const EdgeInsets.all(10),
+      padding: const EdgeInsets.only(left: 10, top: 10, bottom: 10),
       child: WrappedContainer(
         children: children
       ),
