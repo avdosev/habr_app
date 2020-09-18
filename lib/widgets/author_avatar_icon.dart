@@ -30,7 +30,7 @@ class AuthorAvatarIcon extends StatelessWidget {
         image = Container(
           decoration: BoxDecoration(
             border: Border.all(color: colorForDefault),
-            borderRadius: BorderRadius.all(Radius.circular(5)),
+            borderRadius: const BorderRadius.all(Radius.circular(5)),
           ),
           child: SvgPicture.asset(
             "assets/images/default_avatar.svg",
@@ -40,7 +40,7 @@ class AuthorAvatarIcon extends StatelessWidget {
     }
 
     return ClipRRect(
-      borderRadius: BorderRadius.all(Radius.circular(5)),
+      borderRadius: const BorderRadius.all(Radius.circular(5)),
       child: image,
     );
   }

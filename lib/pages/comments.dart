@@ -82,7 +82,7 @@ class CommentsTree extends StatelessWidget {
   Widget build(BuildContext context) {
     ThemeData themeData = Theme.of(context);
     return Container(
-      padding: EdgeInsets.all(5),
+      padding: const EdgeInsets.all(5),
       child: Column(
         children: [
           CommentView(comments.comments[currentId]),
@@ -118,7 +118,7 @@ class CommentView extends StatelessWidget {
       children: [
         Row(children: [
           SmallAuthorPreview(comment.author),
-          Text(dateToStr((comment.timeChanged ?? comment.timePublished), Localizations.localeOf(context))),
+          Text(dateToStr((comment.timePublished), Localizations.localeOf(context))),
         ], mainAxisAlignment: MainAxisAlignment.spaceBetween,),
         SizedBox(height: 5,),
         HtmlView(comment.message),
