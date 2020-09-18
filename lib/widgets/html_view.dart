@@ -8,25 +8,10 @@ import 'package:html/dom_parsing.dart' as dom_parser;
 import 'package:html/parser.dart';
 
 import '../utils/log.dart';
+import 'dividing_block.dart';
+import 'quote_block.dart';
+import 'spoiler_block.dart';
 
-class WrappedContainer extends StatelessWidget {
-  final List<Widget> children;
-
-  WrappedContainer({this.children});
-
-  @override
-  Widget build(BuildContext context) {
-    final wrappedChildren = <Widget>[];
-    for (int i = 0; i < children.length; i++) {
-      wrappedChildren.add(children[i]);
-      if (i != children.length - 1) wrappedChildren.add(const SizedBox(height: 20));
-    }
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: wrappedChildren,
-    );
-  }
-}
 
 class HtmlView extends StatelessWidget {
   final String html;
@@ -37,55 +22,6 @@ class HtmlView extends StatelessWidget {
   Widget build(BuildContext context) {
     return WrappedContainer(
         children: parseHtml(html)
-    );
-  }
-}
-
-class Blockquote extends StatelessWidget {
-  final List<Widget> children;
-  Blockquote({this.children});
-
-  @override
-  Widget build(BuildContext context) {
-    ThemeData themeData = Theme.of(context);
-    return Container(
-      decoration: BoxDecoration(
-        border: Border(
-          left: BorderSide(
-            color: themeData.primaryColor,
-            width: 4,
-          )
-        )
-      ),
-      padding: const EdgeInsets.only(left: 10, top: 10, bottom: 10),
-      child: WrappedContainer(
-        children: children
-      ),
-    );
-  }
-}
-
-class Spoiler extends StatelessWidget {
-  final String title;
-  final List<Widget> children;
-
-  Spoiler({this.title, this.children});
-
-  @override
-  Widget build(BuildContext context) {
-    ThemeData themeData = Theme.of(context);
-    return WrappedContainer(
-      children: [
-        Text(title,
-          style: TextStyle(
-            color: themeData.primaryColor,
-            decorationColor: themeData.primaryColor,
-            decoration: TextDecoration.underline,
-            decorationStyle: TextDecorationStyle.dashed,
-          ),
-        ),
-        ...children // TODO: stealthy children
-      ],
     );
   }
 }
@@ -124,7 +60,7 @@ List<Widget> buildTree(dom.Element element) {
               // Specify language
               // It is recommended to give it a value for performance
               language: child.classes.lastWhere((element) => element != 'hljs'),
-              padding: EdgeInsets.all(10),
+              padding: const EdgeInsets.all(10),
 
               // Specify highlight theme
               // All available themes are listed in `themes` folder
@@ -143,7 +79,7 @@ List<Widget> buildTree(dom.Element element) {
           widgets.add(Image.network(child.attributes['data-src'] ?? child.attributes['src']));
           break;
         case 'blockquote':
-          widgets.add(Blockquote(children: buildTree(child),));
+          widgets.add(BlockQuote(child: WrappedContainer(children: buildTree(child),)));
           break;
         case 'div':
           if (child.classes.contains('spoiler')) {
