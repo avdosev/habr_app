@@ -41,9 +41,9 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
       - name: Download artifacts
-          uses: actions/download-artifact@v2
-          with:
-            name: apk
+        uses: actions/download-artifact@v2
+        with:
+          name: apk
       - name: Get release
         id: get_release
         uses: bruceadams/get-release@v1.2.1
