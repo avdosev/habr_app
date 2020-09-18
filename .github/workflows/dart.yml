@@ -5,10 +5,11 @@ on:
     branches: [ master ]
   pull_request:
     branches: [ master ]
+  release:
+    types: [created]
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
@@ -31,3 +32,31 @@ jobs:
       with:
         name: apk
         path: build/app/outputs/apk/release
+  deploy:
+    runs-on: ubuntu-latest
+
+    if: github.ref != 'refs/heads/master'
+    needs: [build]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Download artifacts
+          uses: actions/download-artifact@v2
+          with:
+            name: apk
+      - name: Get release
+        id: get_release
+        uses: bruceadams/get-release@v1.2.1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+
+      - name: Upload release binary
+        uses: actions/upload-release-asset@v1.0.2
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          upload_url: ${{ steps.get_release.outputs.upload_url }}
+            asset_path: ./apk.zip
+            asset_name: apk.zip
+            asset_content_type: application/zip
+
