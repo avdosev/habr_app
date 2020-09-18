@@ -39,7 +39,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
 
-#    if: github.ref != 'refs/heads/master'
+    if: github.ref != 'refs/heads/master'
     needs: [build]
     steps:
       - name: Checkout code
@@ -50,19 +50,19 @@ jobs:
           name: apk
       - name: Log files
         run: echo $(ls)
-#      - name: Get release
-#        id: get_release
-#        uses: bruceadams/get-release@v1.2.1
-#        env:
-#          GITHUB_TOKEN: ${{ github.token }}
-#
-#      - name: Upload release binary
-#        uses: actions/upload-release-asset@v1.0.2
-#        env:
-#          GITHUB_TOKEN: ${{ github.token }}
-#        with:
-#          upload_url: ${{ steps.get_release.outputs.upload_url }}
-#          asset_path: ./apk.zip
-#          asset_name: apk.zip
-#          asset_content_type: application/zip
+      - name: Get release
+        id: get_release
+        uses: bruceadams/get-release@v1.2.1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+
+      - name: Upload release binary
+        uses: actions/upload-release-asset@v1.0.2
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          upload_url: ${{ steps.get_release.outputs.upload_url }}
+          asset_path: ./apk.zip
+          asset_name: apk.zip
+          asset_content_type: application/zip
 
