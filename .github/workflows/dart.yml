@@ -35,7 +35,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
 
-    if: github.ref != 'refs/heads/master'
+#    if: github.ref != 'refs/heads/master'
     needs: [build]
     steps:
       - name: Checkout code
@@ -44,6 +44,8 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: apk
+      - name: Log files
+        run: ls
       - name: Get release
         id: get_release
         uses: bruceadams/get-release@v1.2.1
