@@ -27,11 +27,15 @@ jobs:
 #       run: pub run test
     - name: Build apk
       run: flutter build apk --split-per-abi
+    - name: Make zip with apks
+      run: |
+        cd build/app/outputs/apk/release
+        zip apk.zip app-arm64-v8a-release.apk app-armeabi-v7a-release.apk app-x86_64-release.apk
     - name: Upload apk
       uses: actions/upload-artifact@v2
       with:
         name: apk
-        path: build/app/outputs/apk/release
+        path: ./apk.zip
   deploy:
     runs-on: ubuntu-latest
 
