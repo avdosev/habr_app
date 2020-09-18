@@ -9,6 +9,7 @@ import 'package:html/parser.dart';
 
 import '../utils/log.dart';
 import 'dividing_block.dart';
+import 'link.dart';
 import 'quote_block.dart';
 import 'spoiler_block.dart';
 
@@ -50,6 +51,9 @@ List<Widget> buildTree(dom.Element element) {
           break;
         case 'p': // TODO: support bold and italic
           widgets.add(Text(child.text));
+          break;
+        case 'a':
+          widgets.add(TextLink(title: child.text, url: child.attributes['href']));
           break;
         case 'code': // TODO: special element for code elements
           final code = child.text;
