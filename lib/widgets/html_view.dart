@@ -161,12 +161,20 @@ List<Widget> buildTree(dom.Element element) {
             widgets.add(
                 Spoiler(
                   title: child.getElementsByClassName('spoiler_title')[0].text,
-                  children: buildTree(child),
+                  child: WrappedContainer(children: buildTree(child)),
                 )
             );
           } else {
             widgets.addAll(buildTree(child));
           }
+          break;
+        case 'details':
+          widgets.add(
+              Spoiler(
+                title: child.children[0].text,
+                child: WrappedContainer(children: buildTree(child.children[1])),
+              )
+          );
           break;
         case 'figure':
         case 'pre': // hmm, maybe it has other type
