@@ -75,6 +75,9 @@ List<InlineSpan> buildInline(dom.Element element) {
         case 'a':
           inline.add(WidgetSpan(child: TextLink(title: child.text, url: child.attributes['href'])));
           break;
+        case 'br':
+          inline.add(const TextSpan(text: '\n'));
+          break;
         default:
           logInfo("Not found case for inline ${child.localName}");
       }
