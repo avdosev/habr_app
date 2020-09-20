@@ -13,7 +13,7 @@ class WrappedContainer extends StatelessWidget {
       if (i != children.length - 1) wrappedChildren.add(const SizedBox(height: 20));
     }
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: wrappedChildren,
     );
   }
