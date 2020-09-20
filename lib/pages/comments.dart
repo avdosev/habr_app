@@ -3,6 +3,7 @@ import 'package:flutter/rendering.dart';
 import 'package:habr_app/habr/storage_interface.dart';
 import 'package:either_dart/either.dart';
 import 'package:habr_app/utils/date_to_text.dart';
+import 'package:habr_app/widgets/empty_content.dart';
 import 'package:habr_app/widgets/small_author_preview.dart';
 import 'package:habr_app/widgets/widgets.dart';
 import 'package:habr_app/habr/habr.dart';
@@ -56,16 +57,26 @@ class _CommentsPageState extends State<CommentsPage> {
               case ConnectionState.waiting:
                 return Center(child: CircularProgressIndicator());
               case ConnectionState.done:
-                final widget = (snapshot.hasError || snapshot.data.isLeft) ?
-                  Center(child: LossInternetConnection(onPressReload: reload)) :
-                  ListView.builder(
+                Widget widget;
+                if (snapshot.hasError || snapshot.data.isLeft) {
+                  widget = Center(
+                      child: LossInternetConnection(onPressReload: reload));
+                } else if (snapshot.data.right.threads.length == 0) {
+                  widget = Center(
+                    child: EmptyContent(),
+                  );
+                } else {
+                  widget = ListView.builder(
                     itemBuilder: (BuildContext context, int index) =>
                         Container(
-                          padding: const EdgeInsets.only(top: 5, bottom: 5, left: 7, right: 7),
-                          child: CommentsTree(snapshot.data.right, snapshot.data.right.threads[index]),
+                          padding: const EdgeInsets.only(
+                              top: 5, bottom: 5, left: 7, right: 7),
+                          child: CommentsTree(snapshot.data.right,
+                              snapshot.data.right.threads[index]),
                         ),
                     itemCount: snapshot.data.right.threads.length,
                   );
+                }
                 return widget;
               default:
                 return Text('Something went wrong');
