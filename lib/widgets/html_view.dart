@@ -105,7 +105,7 @@ List<Widget> buildTree(dom.Element element) {
           widgets.add(
             HeadLine(
               text: child.text,
-              type: HeadLineType.values[int.parse(child.localName.substring(1))]
+              type: HeadLineType.values[int.parse(child.localName.substring(1))-1]
             )
           );
           break;
