@@ -61,8 +61,10 @@ class _SpoilerState extends State<Spoiler> with TickerProviderStateMixin {
             ],),
             onTap: onTap,
           ),
-          if (visible) SizedBox(height: 10,),
-          if (visible) widget.child,
+          if (visible) ...[
+            SizedBox(height: 10,),
+            widget.child,
+          ],
         ],
       )
     );
