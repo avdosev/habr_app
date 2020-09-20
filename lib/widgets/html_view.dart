@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_highlight/flutter_highlight.dart';
 import 'package:flutter_highlight/themes/androidstudio.dart';
+import 'package:habr_app/widgets/unordered_list.dart';
 
 import 'package:html/dom.dart' as dom;
 import 'package:html/dom_parsing.dart' as dom_parser;
@@ -109,7 +110,7 @@ List<Widget> buildTree(dom.Element element) {
             )
           );
           break;
-        case 'p': // TODO: support bold and italic
+        case 'p':
           if (child.children.length > 0) widgets.add(Text.rich(TextSpan(children: buildInline(child))));
           else widgets.add(Text(child.text));
           break;
@@ -155,6 +156,12 @@ List<Widget> buildTree(dom.Element element) {
           break;
         case 'blockquote':
           widgets.add(BlockQuote(child: WrappedContainer(children: buildTree(child),)));
+          break;
+        case 'ol': // TODO: ordered list
+        case 'ul':
+          widgets.add(UnorderedList(children: child.children.map<Widget>((li) =>
+            WrappedContainer(children: buildTree(li))
+          ).toList()));
           break;
         case 'div':
           if (child.classes.contains('spoiler')) {
