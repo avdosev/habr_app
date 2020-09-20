@@ -91,7 +91,7 @@ packages:
       name: either_dart
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.0.2"
+    version: "0.0.3"
   equatable:
     dependency: "direct main"
     description:
@@ -181,7 +181,7 @@ packages:
       name: image
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.1.14"
+    version: "2.1.16"
   incrementally_loading_listview:
     dependency: "direct main"
     description:
@@ -396,7 +396,7 @@ packages:
       name: xml
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "4.2.0"
+    version: "4.5.1"
   yaml:
     dependency: transitive
     description:
