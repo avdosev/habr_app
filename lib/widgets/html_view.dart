@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_highlight/flutter_highlight.dart';
 import 'package:flutter_highlight/themes/androidstudio.dart';
 import 'package:habr_app/widgets/unordered_list.dart';
-
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:html/dom.dart' as dom;
 import 'package:html/dom_parsing.dart' as dom_parser;
 import 'package:html/parser.dart';
@@ -155,7 +155,12 @@ List<Widget> buildTree(dom.Element element) {
             widgets.add(Text(code));
           break;
         case 'img':
-          widgets.add(Image.network(child.attributes['data-src'] ?? child.attributes['src']));
+          final url = child.attributes['data-src'] ?? child.attributes['src'];
+          if (url.endsWith("svg")) {
+            widgets.add(SvgPicture.network(url));
+          } else {
+            widgets.add(Image.network(url));
+          }
           break;
         case 'blockquote':
           widgets.add(BlockQuote(child: WrappedContainer(children: buildTree(child),)));
