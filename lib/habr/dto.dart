@@ -50,8 +50,18 @@ class Post extends Equatable {
   final String id;
   final String title;
   final String body;
+  final DateTime publishDate;
+  final Author author;
 
-  const Post({this.id, this.title, this.body});
+  const Post({this.id, this.title, this.body, this.publishDate, this.author});
+
+  Post.fromJson(Map<String, dynamic> data):
+      id = data['id'],
+      title = data['titleHtml'],
+      body = data['textHtml'],
+      publishDate = DateTime.parse(data['timePublished']),
+      author = Author.fromJson(data['author'])
+      ;
 
   @override
   List<Object> get props => [id];

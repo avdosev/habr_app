@@ -26,7 +26,9 @@ jobs:
 #     - name: Run tests
 #       run: pub run test
     - name: Build apk
-      run: flutter build apk --split-per-abi
+      run: |
+        flutter pub run build_runner build
+        flutter build apk --split-per-abi
     - name: Make zip with apks
       run: |
         cd build/app/outputs/apk/release

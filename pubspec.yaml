@@ -39,12 +39,15 @@ dependencies:
   either_dart: ">=0.0.1"
   flutter_svg: "^0.19.0"
   url_launcher: "^5.6.0"
+  moor_flutter: ^3.1.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
 
   flutter_launcher_icons: "^0.7.3"
+  moor_generator: ^3.1.0
+  build_runner: ^1.8.1
 
 flutter_icons:
   android: true

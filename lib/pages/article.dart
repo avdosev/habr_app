@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:habr_app/habr/storage_interface.dart';
+import 'package:habr_app/habr_storage/habr_storage.dart';
 import 'package:either_dart/either.dart';
 import 'package:habr_app/pages/comments.dart';
 import 'package:habr_app/widgets/html_view.dart';
@@ -43,7 +43,7 @@ class _ArticlePageState extends State<ArticlePage> {
   }
 
   Future<Either<StorageError, Post>> loadArticle() async {
-    return Habr().article(articleId);
+    return HabrStorage().article(articleId);
   }
 
   Future shareArticle(BuildContext context) async {

@@ -4,6 +4,7 @@ import 'package:either_dart/either.dart';
 enum ErrorType {
   BadRequest,
   NotFound,
+  NotCached
 }
 
 class StorageError {
@@ -14,10 +15,4 @@ class StorageError {
     this.errCode,
     this.message,
   });
-}
-
-abstract class IStorage {
-  Future<Either<StorageError, PostPreviews>> posts({int page});
-  Future<Either<StorageError, Post>> article(String id);
-  Future<Either<StorageError, Comments>> comments(String articleId);
 }

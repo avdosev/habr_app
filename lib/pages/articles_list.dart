@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:habr_app/pages/article.dart';
-import 'package:habr_app/widgets/author_avatar_icon.dart';
-import 'package:habr_app/widgets/internet_error_view.dart';
-import 'package:habr_app/widgets/small_author_preview.dart';
+import 'package:habr_app/widgets/widgets.dart';
 import 'package:incrementally_loading_listview/incrementally_loading_listview.dart';
 
 import 'package:habr_app/utils/date_to_text.dart';
-import '../habr/dto.dart';
-import '../habr/api.dart';
 
+import 'package:habr_app/habr_storage/habr_storage.dart';
 import '../utils/log.dart';
 
 class StatisticsFavoritesIcon extends StatelessWidget {
@@ -176,7 +173,7 @@ class _ArticlesListState extends State<ArticlesList> {
   }
 
   Future _loadPosts(int page) {
-    return Habr().posts(page: page).then((valueOrError) {
+    return HabrStorage().posts(page: page).then((valueOrError) {
       if (valueOrError.isLeft) return; // TODO: обработка ошибки
       final value = valueOrError.right;
       setState(() {

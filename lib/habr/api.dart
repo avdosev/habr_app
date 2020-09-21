@@ -24,7 +24,7 @@ enum Flows {
   popular_science
 }
 
-class Habr implements IStorage {
+class Habr {
   static const api_url = "https://m.habr.com/kek/v2";
   Future<Either<StorageError, PostPreviews>> posts({int page = 1,}) async {
     final url = "$api_url/articles/?date=day&sort=date&fl=ru&hl=ru&page=$page";

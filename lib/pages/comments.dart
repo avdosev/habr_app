@@ -1,12 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:habr_app/habr/storage_interface.dart';
 import 'package:either_dart/either.dart';
+import 'package:habr_app/habr_storage/habr_storage.dart';
 import 'package:habr_app/utils/date_to_text.dart';
-import 'package:habr_app/widgets/empty_content.dart';
-import 'package:habr_app/widgets/small_author_preview.dart';
 import 'package:habr_app/widgets/widgets.dart';
-import 'package:habr_app/habr/habr.dart';
 
 import '../utils/log.dart';
 
@@ -38,7 +34,7 @@ class _CommentsPageState extends State<CommentsPage> {
   }
 
   Future<Either<StorageError, Comments>> loadComments() async {
-    return Habr().comments(articleId).catchError(logError);
+    return HabrStorage().comments(articleId).catchError(logError);
   }
 
   @override
