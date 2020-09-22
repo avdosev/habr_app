@@ -192,8 +192,14 @@ List<Widget> buildTree(dom.Element element) {
           );
           break;
         case 'figure':
-        case 'pre': // hmm, maybe it has other type
           widgets.addAll(buildTree(child));
+          break;
+        case 'pre': // hmm, maybe it has other type
+          final c = buildTree(child).first;
+          widgets.add(SingleChildScrollView(
+            child: c,
+            scrollDirection: Axis.horizontal,
+          ));
           break;
         case 'br':
           // Nothing
