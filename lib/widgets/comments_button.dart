@@ -8,7 +8,7 @@ class CommentsButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final mainColor = color ?? Theme.of(context).primaryColor;
+    final mainColor = color ?? Theme.of(context).colorScheme.secondary;
     return FlatButton(
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12.0),

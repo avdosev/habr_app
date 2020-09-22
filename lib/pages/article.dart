@@ -3,6 +3,7 @@ import 'package:flutter/rendering.dart';
 import 'package:habr_app/habr_storage/habr_storage.dart';
 import 'package:either_dart/either.dart';
 import 'package:habr_app/pages/comments.dart';
+import 'package:habr_app/utils/date_to_text.dart';
 import 'package:habr_app/widgets/widgets.dart';
 import 'package:share/share.dart';
 import 'dart:math' as math;
@@ -113,6 +114,30 @@ class _ArticlePageState extends State<ArticlePage> {
   }
 }
 
+class ArticleInfo extends StatelessWidget {
+  final Post article;
+
+  const ArticleInfo({this.article});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Row(
+          children: [
+            Text(dateToStr(article.publishDate, Localizations.localeOf(context))),
+            SmallAuthorPreview(article.author),
+          ],
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        ),
+        const SizedBox(height: 7,),
+        Text(article.title, style: TextStyle(fontSize: 24), textAlign: TextAlign.center,),
+      ],
+    );
+  }
+}
+
 class ArticleView extends StatelessWidget {
   final Post article;
   final ScrollController controller;
@@ -125,8 +150,8 @@ class ArticleView extends StatelessWidget {
       padding: EdgeInsets.all(10).copyWith(bottom: 20),
       controller: controller,
       children: [
-        Text(article.title, style: TextStyle(fontSize: 20)),
-        SizedBox(height: 20,),
+        ArticleInfo(article: article,),
+        SizedBox(height: 30,),
         HtmlView(article.body),
         SizedBox(height: 20,),
         CommentsButton(onPressed: () => openCommentsPage(context, article.id),)

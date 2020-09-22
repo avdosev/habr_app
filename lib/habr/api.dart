@@ -58,11 +58,7 @@ class Habr {
     final response = await http.get(url);
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
-      return Right(Post(
-        id: data['id'],
-        title: data['titleHtml'],
-        body: data['textHtml']
-      ));
+      return Right(Post.fromJson(data));
     } else {
       return Left(StorageError(errCode: ErrorType.BadRequest));
     }
