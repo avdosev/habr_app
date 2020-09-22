@@ -3,10 +3,9 @@ import 'package:flutter/rendering.dart';
 import 'package:habr_app/habr_storage/habr_storage.dart';
 import 'package:either_dart/either.dart';
 import 'package:habr_app/pages/comments.dart';
-import 'package:habr_app/widgets/html_view.dart';
-import 'package:habr_app/widgets/hide_floating_action_button.dart';
-import 'package:habr_app/widgets/internet_error_view.dart';
+import 'package:habr_app/widgets/widgets.dart';
 import 'package:share/share.dart';
+import 'dart:math' as math;
 import '../habr/dto.dart';
 import '../habr/api.dart';
 
@@ -19,6 +18,12 @@ class ArticlePage extends StatefulWidget {
 
   @override
   createState() => _ArticlePageState();
+}
+
+void openCommentsPage(BuildContext context, String articleId) {
+  Navigator.of(context).push(
+      MaterialPageRoute(builder: (context) => CommentsPage(articleId: articleId,))
+  );
 }
 
 class _ArticlePageState extends State<ArticlePage> {
@@ -87,9 +92,7 @@ class _ArticlePageState extends State<ArticlePage> {
             tooltip: 'Comments',
             visible: value,
             child: const Icon(Icons.chat_bubble_outline),
-            onPressed: () => Navigator.of(context).push(
-                MaterialPageRoute(builder: (context) => CommentsPage(articleId: articleId,))
-            ),
+            onPressed: () => openCommentsPage(context, articleId),
             duration: const Duration(milliseconds: 300),
           )
       )
@@ -119,12 +122,14 @@ class ArticleView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListView(
-      padding: EdgeInsets.all(10),
+      padding: EdgeInsets.all(10).copyWith(bottom: 20),
       controller: controller,
       children: [
         Text(article.title, style: TextStyle(fontSize: 20)),
         SizedBox(height: 20,),
-        HtmlView(article.body)
+        HtmlView(article.body),
+        SizedBox(height: 20,),
+        CommentsButton(onPressed: () => openCommentsPage(context, article.id),)
       ],
     );
   }
