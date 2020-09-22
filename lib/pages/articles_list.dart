@@ -97,7 +97,7 @@ class ArticlePreview extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return InkWell(
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
         child: Column(
