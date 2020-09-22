@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 String dateToStr(DateTime date, Locale locale) {
-  if (locale.languageCode != 'ru')
-    return date.toIso8601String();
   date = date.toLocal();
+  if (locale.languageCode != 'ru')
+    return DateFormat('MMMM dd yyyy HH:mm').format(date);
   final now = DateTime.now();
   String str;
   final nearlyDay = date.year == now.year && date.month == now.month;
