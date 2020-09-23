@@ -69,6 +69,7 @@ flutter:
     - assets/images/ufo.png
     - assets/images/default_avatar.svg
     - assets/images/empty_comments.svg
+    - assets/images/background.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

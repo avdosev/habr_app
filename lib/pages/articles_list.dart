@@ -187,6 +187,7 @@ class _ArticlesListState extends State<ArticlesList> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: MainMenu(),
       appBar: AppBar(
         title: Text("Articles"),
       ),
