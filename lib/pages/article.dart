@@ -30,7 +30,6 @@ void openCommentsPage(BuildContext context, String articleId) {
 class _ArticlePageState extends State<ArticlePage> {
   String get articleId => widget.articleId;
   ValueNotifier<bool> showFloatingActionButton = ValueNotifier(true);
-  Future<Either<StorageError, Post>> _initialLoad;
   ScrollController _controller = ScrollController();
 
   _ArticlePageState();
@@ -39,17 +38,6 @@ class _ArticlePageState extends State<ArticlePage> {
   void initState() {
     super.initState();
     _controller.addListener(floatingButtonShowListener);
-    _initialLoad = loadArticle();
-  }
-
-  reload() async {
-    setState(() {
-      _initialLoad = loadArticle();
-    });
-  }
-
-  Future<Either<StorageError, Post>> loadArticle() async {
-    return HabrStorage().article(articleId);
   }
 
   Future shareArticle(BuildContext context) async {
@@ -70,22 +58,7 @@ class _ArticlePageState extends State<ArticlePage> {
           )
         ],
       ),
-      body: FutureBuilder(
-        future: _initialLoad,
-        builder: (context, snapshot) {
-          switch (snapshot.connectionState) {
-            case ConnectionState.waiting:
-              return Center(child: CircularProgressIndicator());
-            case ConnectionState.done:
-              final widget = (snapshot.hasError || snapshot.data.isLeft) ?
-                Center(child: LossInternetConnection(onPressReload: reload)) :
-                ArticleView(article: snapshot.data.right, controller: _controller,);
-              return widget;
-            default:
-              return Text('Something went wrong');
-          }
-        },
-      ),
+      body: LoadableArticleView(articleId: articleId, controller: _controller,),
       floatingActionButton: ValueListenableBuilder(
         valueListenable: showFloatingActionButton,
         builder: (BuildContext context, bool value, Widget child) =>
@@ -134,6 +107,58 @@ class ArticleInfo extends StatelessWidget {
         const SizedBox(height: 7,),
         Text(article.title, style: TextStyle(fontSize: 24), textAlign: TextAlign.center,),
       ],
+    );
+  }
+}
+
+class LoadableArticleView extends StatefulWidget {
+  final String articleId;
+  final ScrollController controller;
+
+  LoadableArticleView({this.articleId, this.controller});
+
+  @override
+  State<StatefulWidget> createState() => _LoadableArticleViewState();
+}
+
+class _LoadableArticleViewState extends State<LoadableArticleView> {
+  Future<Either<StorageError, Post>> _initialLoad;
+  String get articleId => widget.articleId;
+
+  _LoadableArticleViewState();
+
+  @override
+  initState() {
+    super.initState();
+    _initialLoad = loadArticle();
+  }
+
+  reload() async {
+    setState(() {
+      _initialLoad = loadArticle();
+    });
+  }
+
+  Future<Either<StorageError, Post>> loadArticle() async {
+    return HabrStorage().article(articleId);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder(
+      future: _initialLoad,
+      builder: (context, snapshot) {
+        switch (snapshot.connectionState) {
+          case ConnectionState.waiting:
+            return Center(child: CircularProgressIndicator());
+          case ConnectionState.done:
+            if (snapshot.hasError || snapshot.data.isLeft)
+             return Center(child: LossInternetConnection(onPressReload: reload));
+            return ArticleView(article: snapshot.data.right, controller: widget.controller,);
+          default:
+            return Text('Something went wrong');
+        }
+      },
     );
   }
 }

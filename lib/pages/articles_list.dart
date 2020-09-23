@@ -197,7 +197,7 @@ class _ArticlesListState extends State<ArticlesList> {
             case ConnectionState.waiting:
               return Center(child: CircularProgressIndicator());
             case ConnectionState.done:
-              if (snapshot.hasError) {
+              if (snapshot.hasError || previews.length == 0) { // TODO: Null using because loadPost not work with isLeft
                 return Center(child: LossInternetConnection(onPressReload: reload));
               }
               return Container(
