@@ -28,16 +28,17 @@ class Bullet extends StatelessWidget{
   const Bullet({
     this.height = 5,
     this.width = 5,
-    this.color = Colors.black,
+    this.color
   });
 
   @override
   Widget build(BuildContext context) {
+    final bulletColor = color ?? Theme.of(context).iconTheme.color;
     return Container(
       height: height,
       width: width,
       decoration: BoxDecoration(
-        color: color,
+        color: bulletColor,
         shape: BoxShape.circle,
       ),
     );
