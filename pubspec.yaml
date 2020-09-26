@@ -49,6 +49,7 @@ dev_dependencies:
 
   flutter_launcher_icons: "^0.7.3"
   moor_generator: ^3.1.0
+  hive_generator: ^0.7.2+1
   build_runner: ^1.8.1
 
 flutter_icons:
