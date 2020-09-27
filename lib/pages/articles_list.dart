@@ -4,7 +4,7 @@ import 'package:habr_app/widgets/widgets.dart';
 import 'package:incrementally_loading_listview/incrementally_loading_listview.dart';
 
 import 'package:habr_app/utils/date_to_text.dart';
-
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:habr_app/habr_storage/habr_storage.dart';
 import '../utils/log.dart';
 
@@ -206,7 +206,10 @@ class _ArticlesListState extends State<ArticlesList> {
                   itemCount: () => previews.length,
                   hasMore: () => pages < maxPages,
                   itemBuilder: (BuildContext context, int index) {
-                    final preview = ArticlePreview(previews[index]);
+                    final preview = SlidableArchive(
+                      child: ArticlePreview(previews[index]),
+                      onArchive: () => HabrStorage().addArticleInCache(previews[index].id),
+                    );
                     final loadingInProgress = ((loadingItems ?? false) && index == previews.length - 1);
                     return Column(
                       children: [

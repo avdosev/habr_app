@@ -55,11 +55,17 @@ class HabrStorage {
     }
   }
 
+  Future addArticleInCache(String id) {
+    return article(id).then((postOrError) => {
+      postOrError.map((post) => _cacheArticle(post))
+    });
+  }
+
   Future<Either<StorageError, Comments>> comments(String articleId) async {
     return api.comments(articleId);
   }
 
-  Future cacheAuthor(Author author) async {
+  Future _cacheAuthor(Author author) async {
     return await cache.cachedAuthorDao.insertAuthor(
         CachedAuthor(
             id: author.id,
@@ -69,9 +75,9 @@ class HabrStorage {
     );
   }
 
-  Future cacheArticle(Post post) async {
-    if (await cache.cachedAuthorDao.getAuthor(post.author.id) != null)
-      await cacheAuthor(post.author);
+  Future _cacheArticle(Post post) async {
+    if (await cache.cachedAuthorDao.getAuthor(post.author.id) == null)
+      await _cacheAuthor(post.author);
     await cache.cachedPostDao.insertPost(CachedPost(
       id: post.id,
       authorId: post.author.id,

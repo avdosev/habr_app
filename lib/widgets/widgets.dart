@@ -6,3 +6,4 @@ export 'small_author_preview.dart';
 export 'empty_content.dart';
 export 'comments_button.dart';
 export 'home_menu.dart';
+export 'slidable.dart';
