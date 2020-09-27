@@ -3,85 +3,9 @@ import 'package:habr_app/pages/article.dart';
 import 'package:habr_app/widgets/widgets.dart';
 import 'package:incrementally_loading_listview/incrementally_loading_listview.dart';
 
-import 'package:habr_app/utils/date_to_text.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
+
 import 'package:habr_app/habr_storage/habr_storage.dart';
 import '../utils/log.dart';
-
-class StatisticsFavoritesIcon extends StatelessWidget {
-  final int favorites;
-  final double size;
-  StatisticsFavoritesIcon(this.favorites, {this.size = 20});
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Icon(Icons.bookmark, size: size, color: Colors.grey,),
-        SizedBox(width: 5,),
-        Text(favorites.toString()),
-      ]
-    );
-  }
-}
-class StatisticsScoreIcon extends StatelessWidget {
-  final int score;
-  final double size;
-  StatisticsScoreIcon(this.score, {this.size = 20});
-
-  @override
-  Widget build(BuildContext context) {
-    var iconText = score.toString();
-    if (score > 0) iconText = '+' + iconText;
-    final colors = {
-      -1: Colors.red[800],
-      0 : Colors.grey[600],
-      1 : Colors.green[800],
-    };
-    return Row(
-      children: [
-        Icon(Icons.equalizer, size: size, color: Colors.grey,),
-        SizedBox(width: 5,),
-        // Icon(Icons.thumbs_up_down, size: size,), // maybe use this
-        Text(iconText, style: TextStyle(color: colors[score.sign])),
-      ]
-    );
-  }
-}
-
-class StatisticsViewsIcon extends StatelessWidget {
-  final int views;
-  final double size;
-  StatisticsViewsIcon(this.views, {this.size = 20});
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Icon(Icons.remove_red_eye, size: size, color: Colors.grey,),
-        SizedBox(width: 5,),
-        Text(views.toString(),),
-      ]
-    );
-  }
-}
-
-class StatisticsCommentsIcon extends StatelessWidget {
-  final int comments;
-  final double size;
-  StatisticsCommentsIcon(this.comments, {this.size = 20});
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Icon(Icons.forum, size: size, color: Colors.grey,),
-        SizedBox(width: 5,),
-        Text(comments.toString()),
-      ]
-    );
-  }
-}
 
 class ArticlesList extends StatefulWidget {
   ArticlesList({Key key}) : super(key: key);
@@ -90,51 +14,10 @@ class ArticlesList extends StatefulWidget {
   createState() => _ArticlesListState();
 }
 
-class ArticlePreview extends StatelessWidget {
-  final PostPreview _postPreview;
-
-  ArticlePreview(this._postPreview);
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-        child: Column(
-          children: [
-            Row(
-              children: [
-                Text(dateToStr(_postPreview.publishDate, Localizations.localeOf(context))),
-                SmallAuthorPreview(_postPreview.author),
-              ],
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            ),
-            const SizedBox(height: 7,),
-            Text(_postPreview.title,  style: const TextStyle(fontSize: 20.0, fontWeight: FontWeight.w600), overflow: TextOverflow.visible, softWrap: true, textAlign: TextAlign.left),
-            const SizedBox(height: 10,),
-            Text(_postPreview.tags.join(', '), overflow: TextOverflow.ellipsis, textAlign: TextAlign.left),
-            const SizedBox(height: 5,),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                StatisticsScoreIcon(_postPreview.statistics.score),
-                StatisticsViewsIcon(_postPreview.statistics.readingCount),
-                StatisticsFavoritesIcon(_postPreview.statistics.favoritesCount),
-                StatisticsCommentsIcon(_postPreview.statistics.commentsCount),
-              ],
-            )
-          ],
-          crossAxisAlignment: CrossAxisAlignment.start,
-        )
-      ),
-      onLongPress: () {}, // TODO: Настройки поста при долгом нажатии
-      onTap: () {
-        Navigator.of(context).push(
-            MaterialPageRoute(builder: (context) => ArticlePage(articleId: _postPreview.id))
-        );
-      },
-    );
-  }
+openArticle(BuildContext context, String articleId) {
+  Navigator.of(context).push(
+      MaterialPageRoute(builder: (context) => ArticlePage(articleId: articleId))
+  );
 }
 
 class CircularItem extends StatelessWidget {
@@ -207,7 +90,10 @@ class _ArticlesListState extends State<ArticlesList> {
                   hasMore: () => pages < maxPages,
                   itemBuilder: (BuildContext context, int index) {
                     final preview = SlidableArchive(
-                      child: ArticlePreview(previews[index]),
+                      child: ArticlePreview(
+                        postPreview: previews[index],
+                        onPressed: (articleId) => openArticle(context, articleId),
+                      ),
                       onArchive: () => HabrStorage().addArticleInCache(previews[index].id),
                     );
                     final loadingInProgress = ((loadingItems ?? false) && index == previews.length - 1);
