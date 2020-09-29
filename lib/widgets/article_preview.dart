@@ -18,7 +18,7 @@ class ArticlePreview extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       child: Container(
-          padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
           child: Column(
             children: [
               Row(

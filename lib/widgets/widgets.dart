@@ -8,5 +8,5 @@ export 'comments_button.dart';
 export 'home_menu.dart';
 export 'slidable.dart';
 export 'statistics_icons.dart';
-export 'incrementaly_loading_article_view.dart';
+export 'incrementally_loading_article_view.dart';
 export 'article_preview.dart';
