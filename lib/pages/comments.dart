@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:either_dart/either.dart';
 import 'package:habr_app/habr_storage/habr_storage.dart';
 import 'package:habr_app/utils/date_to_text.dart';
+import 'package:habr_app/widgets/dividing_block.dart';
 import 'package:habr_app/widgets/widgets.dart';
 
 import '../utils/log.dart';
@@ -92,11 +93,11 @@ class CommentsTree extends StatelessWidget {
   Widget build(BuildContext context) {
     ThemeData themeData = Theme.of(context);
     return Container(
-      padding: const EdgeInsets.only(top: 5, bottom: 5),
+      padding: const EdgeInsets.only(top: 5),
       child: Column(
         children: [
           CommentView(comments.comments[currentId]),
-          const SizedBox(height: 5,),
+          const SizedBox(height: 10,), // distance between all comments
           if (comments.comments[currentId].children.length != 0)
             Container(
               decoration: BoxDecoration(
@@ -130,7 +131,7 @@ class CommentView extends StatelessWidget {
           SmallAuthorPreview(comment.author),
           Text(dateToStr((comment.timePublished), Localizations.localeOf(context))),
         ], mainAxisAlignment: MainAxisAlignment.spaceBetween,),
-        const SizedBox(height: 5,),
+        const SizedBox(height: 10,),
         HtmlView(comment.message),
         // TODO: buttons
       ],
