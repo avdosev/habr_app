@@ -47,38 +47,26 @@ class _CommentsPageState extends State<CommentsPage> {
 
           ],
         ),
-        body: FutureBuilder<Either<StorageError, Comments>>(
+        body: LoadBuilder(
           future: _initialLoad,
-          builder: (context, snapshot) {
-            switch (snapshot.connectionState) {
-              case ConnectionState.waiting:
-                return Center(child: CircularProgressIndicator());
-              case ConnectionState.done:
-                Widget widget;
-                if (snapshot.hasError || snapshot.data.isLeft) {
-                  widget = Center(
-                      child: LossInternetConnection(onPressReload: reload));
-                } else if (snapshot.data.right.threads.length == 0) {
-                  widget = Center(
-                    child: EmptyContent(),
-                  );
-                } else {
-                  widget = ListView.builder(
-                    itemBuilder: (BuildContext context, int index) =>
-                        Container(
-                          padding: const EdgeInsets.only(
-                              top: 5, bottom: 5, left: 7, right: 7),
-                          child: CommentsTree(snapshot.data.right,
-                              snapshot.data.right.threads[index]),
-                        ),
-                    itemCount: snapshot.data.right.threads.length,
-                  );
-                }
-                return widget;
-              default:
-                return Text('Something went wrong');
-            }
+          onRightBuilder: (context, data) {
+            if (data.threads.length == 0)
+              return Center(
+                child: EmptyContent(),
+              );
+
+            return ListView.builder(
+              itemBuilder: (BuildContext context, int index) =>
+                  Container(
+                    padding: const EdgeInsets.only(
+                        top: 5, bottom: 5, left: 7, right: 7),
+                    child: CommentsTree(data, data.threads[index]),
+                  ),
+              itemCount: data.threads.length,
+            );
           },
+          onErrorBuilder: (context, err) => Center(
+             child: LossInternetConnection(onPressReload: reload)),
         ),
     );
   }
@@ -107,7 +95,8 @@ class CommentsTree extends StatelessWidget {
                 ))
               ),
               padding: const EdgeInsets.only(left: 6),
-              child: Column(
+              child: WrappedContainer(
+                distance: 5,
                 children: comments.comments[currentId].children.map<Widget>(
                         (childId) => CommentsTree(comments, childId)).toList(),
               ),
