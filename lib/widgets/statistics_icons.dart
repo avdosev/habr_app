@@ -1,77 +1,95 @@
 import 'package:flutter/material.dart';
+import 'package:habr_app/utils/integer_to_text.dart';
 
-class StatisticsFavoritesIcon extends StatelessWidget {
-  final int favorites;
+typedef ValueToStringTransformer = String Function(int);
+
+class StatisticsIcon extends StatelessWidget {
+  final IconData iconData;
+  final int value;
   final double size;
-  StatisticsFavoritesIcon(this.favorites, {this.size = 20});
+  final TextStyle textStyle;
+  final  valueToStringTransformer;
+
+  const StatisticsIcon({
+    @required this.value,
+    @required this.iconData,
+    this.textStyle,
+    ValueToStringTransformer valueTransformer,
+    this.size = 20})
+      :
+    valueToStringTransformer = valueTransformer ?? intToMetricPrefix
+  ;
 
   @override
   Widget build(BuildContext context) {
     return Row(
         children: [
-          Icon(Icons.bookmark, size: size, color: Colors.grey,),
+          Icon(iconData, size: size, color: Colors.grey,),
           SizedBox(width: 5,),
-          Text(favorites.toString()),
+          Text(intToMetricPrefix(value), style: textStyle,),
         ]
     );
   }
 }
 
-class StatisticsScoreIcon extends StatelessWidget {
-  final int score;
-  final double size;
-  StatisticsScoreIcon(this.score, {this.size = 20});
+class StatisticsFavoritesIcon extends StatelessWidget {
+  final int favorites;
+  StatisticsFavoritesIcon(this.favorites);
 
   @override
   Widget build(BuildContext context) {
-    var iconText = score.toString();
-    if (score > 0) iconText = '+' + iconText;
+    return StatisticsIcon(value: favorites, iconData: Icons.bookmark);
+  }
+}
+
+class StatisticsScoreIcon extends StatelessWidget {
+  final int score;
+  StatisticsScoreIcon(this.score);
+
+  @override
+  Widget build(BuildContext context) {
+
     final colors = {
       -1: Colors.red[800],
       0 : Colors.grey[600],
       1 : Colors.green[800],
     };
-    return Row(
-        children: [
-          Icon(Icons.equalizer, size: size, color: Colors.grey,),
-          SizedBox(width: 5,),
-          // Icon(Icons.thumbs_up_down, size: size,), // maybe use this
-          Text(iconText, style: TextStyle(color: colors[score.sign])),
-        ]
+    final textStyle = TextStyle(color: colors[score.sign]);
+    return StatisticsIcon(
+      iconData: Icons.equalizer,
+      value: score,
+      textStyle: textStyle,
+      valueTransformer: (value) {
+        String res = intToMetricPrefix(value);
+        if (value > 0) res = '+' + res;
+        return res;
+      },
     );
   }
 }
 
 class StatisticsViewsIcon extends StatelessWidget {
   final int views;
-  final double size;
-  StatisticsViewsIcon(this.views, {this.size = 20});
+  StatisticsViewsIcon(this.views);
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-        children: [
-          Icon(Icons.remove_red_eye, size: size, color: Colors.grey,),
-          SizedBox(width: 5,),
-          Text(views.toString(),),
-        ]
+    return StatisticsIcon(
+      iconData: Icons.remove_red_eye,
+      value: views,
     );
   }
 }
 
 class StatisticsCommentsIcon extends StatelessWidget {
   final int comments;
-  final double size;
-  StatisticsCommentsIcon(this.comments, {this.size = 20});
+  StatisticsCommentsIcon(this.comments);
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-        children: [
-          Icon(Icons.forum, size: size, color: Colors.grey,),
-          SizedBox(width: 5,),
-          Text(comments.toString()),
-        ]
+    return StatisticsIcon(
+      iconData: Icons.forum,
+      value: comments,
     );
   }
 }

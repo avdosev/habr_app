@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:habr_app/pages/article.dart';
 import 'package:habr_app/widgets/widgets.dart';
 
-
 import 'package:habr_app/habr_storage/habr_storage.dart';
 import '../utils/log.dart';
 
@@ -15,13 +14,12 @@ class ArticlesList extends StatefulWidget {
 }
 
 openArticle(BuildContext context, String articleId) {
-  Navigator.of(context).push(
-      MaterialPageRoute(builder: (context) => ArticlePage(articleId: articleId))
-  );
+  Navigator.of(context).push(MaterialPageRoute(
+      builder: (context) => ArticlePage(articleId: articleId)));
 }
 
 class _ArticlesListState extends State<ArticlesList> {
-  Future _initialLoad;
+  Future<Either<StorageError, PostPreviews>> _initialLoad;
 
   @override
   void initState() {
@@ -31,12 +29,29 @@ class _ArticlesListState extends State<ArticlesList> {
 
   void reload() {
     setState(() {
-      _initialLoad = loadPosts(1);
+      _initialLoad = loadFirstPage();
     });
   }
 
-  Future<Either<StorageError, PostPreviews>> loadPosts(int page) async {
-    return await HabrStorage().posts(page: page);
+  Future<Either<StorageError, PostPreviews>> loadFirstPage() async {
+    return await HabrStorage().posts(page: 1);
+  }
+
+  Future<PostPreviews> loadPosts(int page) async {
+    final postOrError = await HabrStorage().posts(page: page);
+    return postOrError.unite<PostPreviews>((err) {
+      // TODO: informing user
+      return PostPreviews(previews: [], maxCountPages: -1);
+    }, (posts) => posts);
+  }
+
+  addArticleInCache(String id) {
+    HabrStorage().addArticleInCache(id);
+  }
+
+  Widget errorWidget() {
+    return Center(
+        child: LossInternetConnection(onPressReload: reload));
   }
 
   @override
@@ -46,41 +61,23 @@ class _ArticlesListState extends State<ArticlesList> {
       appBar: AppBar(
         title: Text("Articles"),
       ),
-      body: FutureBuilder<Either<StorageError, PostPreviews>>(
+      body: LoadBuilder<StorageError, PostPreviews>(
         future: _initialLoad,
-        builder: (context, snapshot) {
-          switch (snapshot.connectionState) {
-            case ConnectionState.waiting:
-              return Center(child: CircularProgressIndicator());
-            case ConnectionState.done:
-              if (snapshot.hasError || snapshot.data.isLeft) {
-                return Center(child: LossInternetConnection(onPressReload: reload));
-              }
-              return Container(
-                child: IncrementallyLoadingArticleView(
-                  postPreviewBuilder: (context, preview) => SlidableArchive(
-                    child: ArticlePreview(
-                      postPreview: preview,
-                      onPressed: (articleId) => openArticle(context, articleId),
-                    ),
-                    onArchive: () => HabrStorage().addArticleInCache(preview.id),
-                  ),
-                  load: (int page) async {
-                    final postOrError = await loadPosts(page);
-                    return postOrError.unite<PostPreviews>((err) {
-                      // TODO: informing user
-                      return PostPreviews(
-                        previews: [],
-                        maxCountPages: -1
-                      );
-                    }, (posts) => posts);
-                  },
-                  initPage: snapshot.data.right,
-                )
-              );
-            default:
-              return Text('Something went wrong');
-          }
+        onRightBuilder: (context, data) =>
+          IncrementallyLoadingArticleView(
+            postPreviewBuilder: (context, preview) => SlidableArchive(
+              child: ArticlePreview(
+                postPreview: preview,
+                onPressed: (articleId) => openArticle(context, articleId),
+              ),
+              onArchive: () => addArticleInCache(preview.id),
+            ),
+            load: loadPosts,
+            initPage: data,
+          ),
+        onErrorBuilder: (context, err) {
+          logError(err);
+          return errorWidget();
         },
       )
     );
