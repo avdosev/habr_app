@@ -3,9 +3,16 @@ import 'package:intl/intl.dart';
 
 String dateToStr(DateTime date, Locale locale) {
   date = date.toLocal();
-  if (locale.languageCode != 'ru')
-    return DateFormat('MMMM dd yyyy HH:mm').format(date);
   final now = DateTime.now();
+  if (locale.languageCode != 'ru') {
+    String format = '';
+    format += 'MMMM dd';
+    if (now.year != date.year)
+      format += ' yyyy';
+    final dayDate = DateFormat(format).format(date);
+    final time = DateFormat.Hm().format(date);
+    return "$dayDate at $time";
+  }
   String str;
   final nearlyDay = date.year == now.year && date.month == now.month;
   final subDay = now.day - date.day;
