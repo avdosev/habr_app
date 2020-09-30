@@ -145,20 +145,12 @@ class _LoadableArticleViewState extends State<LoadableArticleView> {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
+    return LoadBuilder(
       future: _initialLoad,
-      builder: (context, snapshot) {
-        switch (snapshot.connectionState) {
-          case ConnectionState.waiting:
-            return Center(child: CircularProgressIndicator());
-          case ConnectionState.done:
-            if (snapshot.hasError || snapshot.data.isLeft)
-             return Center(child: LossInternetConnection(onPressReload: reload));
-            return ArticleView(article: snapshot.data.right, controller: widget.controller,);
-          default:
-            return Text('Something went wrong');
-        }
-      },
+      onRightBuilder: (context, data) =>
+          ArticleView(article: data, controller: widget.controller,),
+      onErrorBuilder: (context, err) =>
+          Center(child: LossInternetConnection(onPressReload: reload)),
     );
   }
 }
