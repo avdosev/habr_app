@@ -44,6 +44,14 @@ class Statistics {
       readingCount = json['readingCount'],
       score = json['score'],
       votesCount = json['votesCount'];
+
+  Statistics.zero() :
+      commentsCount = 0,
+      favoritesCount = 0,
+      readingCount = 0,
+      score = 0,
+      votesCount = 0
+  ;
 }
 
 class Post extends Equatable {

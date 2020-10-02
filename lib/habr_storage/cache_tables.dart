@@ -50,26 +50,31 @@ class CachedPostDao extends DatabaseAccessor<Cache> with _$CachedPostDaoMixin {
   // Called by the AppDatabase class
   CachedPostDao(this.db) : super(db);
 
-  Stream<List<CachedPostWithAuthor>> watchAllPosts() {
+  Future<List<CachedPostWithAuthor>> getAllPosts({int page = 1, int count = 10}) {
     // Wrap the whole select statement in parenthesis
     return
-      select(cachedPosts)
+      (select(cachedPosts)
+      ..limit(count, offset: (page-1)*count))
       .join([
         leftOuterJoin(cachedAuthors, cachedAuthors.id.equalsExp(cachedPosts.authorId)),
       ],)
-      .watch()
       .map(
-        (rows) => rows.map(
-          (row) {
-            return CachedPostWithAuthor(
-              post: row.readTable(cachedPosts),
-              author: row.readTable(cachedAuthors),
-            );
-          },
-        ).toList(),
-    );
+        (row) {
+          return CachedPostWithAuthor(
+            post: row.readTable(cachedPosts),
+            author: row.readTable(cachedAuthors),
+          );
+        }
+    ).get();
   }
-  
+
+  Future<int> count() async {
+    final countExp = cachedPosts.id.count(distinct: true);
+    final query = selectOnly(cachedPosts)..addColumns([countExp]);
+    final result = await query.map((row) => row.read(countExp)).getSingle();
+    return result;
+  }
+
   Future<CachedPost> getPost(String id) => (select(cachedPosts)..where((posts) => posts.id.equals(id))).getSingle();
   Future insertPost(Insertable<CachedPost> post) => into(cachedPosts).insert(post);
   Future updatePost(Insertable<CachedPost> post) => update(cachedPosts).replace(post);

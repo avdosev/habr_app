@@ -27,7 +27,7 @@ class MyApp extends StatelessWidget {
           themeMode: settings.get("ThemeMode", defaultValue: ThemeMode.system),
           supportedLocales: [
             const Locale('ru'),
-            const Locale('en'),
+            const Locale('en', 'US'),
           ],
           localizationsDelegates: [
             // ... app-specific localization delegate[s] here
@@ -37,6 +37,7 @@ class MyApp extends StatelessWidget {
           routes: {
             "settings": (BuildContext context) => SettingsPage(),
             "articles": (BuildContext context) => ArticlesList(),
+            "articles/cached": (BuildContext context) => CachedArticlesList(),
           },
           initialRoute: "articles",
         );

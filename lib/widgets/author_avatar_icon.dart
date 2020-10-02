@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../habr/image_info.dart' as image;
 import '../habr/image_store.dart';
+import 'package:habr_app/colors/colors.dart';
 
 class AuthorAvatarIcon extends StatelessWidget {
   final double height;
@@ -13,7 +14,7 @@ class AuthorAvatarIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Color colorForDefault = Colors.deepPurple;
+    Color colorForDefault = DefaultAvatarColors.lilac;
     Widget image;
     switch (storeType) {
       case ImageStoreType.Network:
@@ -29,6 +30,7 @@ class AuthorAvatarIcon extends StatelessWidget {
       default:
         image = Container(
           decoration: BoxDecoration(
+            // color: Colors.white,
             border: Border.all(color: colorForDefault),
             borderRadius: const BorderRadius.all(Radius.circular(5)),
           ),

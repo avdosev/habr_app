@@ -29,6 +29,14 @@ class MainMenu extends StatelessWidget {
               Navigator.pushNamed(context, "settings");
             },
           ),
+          ListTile(
+            trailing: const Icon(Icons.archive),
+            title: Text("Cached articles"),
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.pushNamed(context, 'articles/cached');
+            },
+          )
         ],
       ),
     );
