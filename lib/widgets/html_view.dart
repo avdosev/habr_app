@@ -23,7 +23,7 @@ class HtmlView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return WrappedContainer(
-        children: parseHtml(html)
+        children: parseHtml(html, context)
     );
   }
 }
@@ -44,7 +44,7 @@ class HeadLine extends StatelessWidget {
 
 }
 
-List<InlineSpan> buildInline(dom.Element element) {
+List<InlineSpan> buildInline(dom.Element element, BuildContext context) {
   final inline = <InlineSpan>[];
   int index = 0;
   for (var node in element.nodes) {
@@ -59,21 +59,21 @@ List<InlineSpan> buildInline(dom.Element element) {
       logInfo(child.localName);
       switch(child.localName) {
         case 's':
-          inline.add(TextSpan(children: buildInline(child), style: TextStyle(decoration: TextDecoration.lineThrough)));
+          inline.add(TextSpan(children: buildInline(child, context), style: TextStyle(decoration: TextDecoration.lineThrough)));
           break;
         case 'i':
-          inline.add(TextSpan(children: buildInline(child), style: TextStyle(fontStyle: FontStyle.italic)));
+          inline.add(TextSpan(children: buildInline(child, context), style: TextStyle(fontStyle: FontStyle.italic)));
           break;
         case 'code':
         case 'em':
-          inline.add(TextSpan(children: buildInline(child)));
+          inline.add(TextSpan(children: buildInline(child, context)));
           break;
         case 'b':
         case 'strong':
-          inline.add(TextSpan(children: buildInline(child), style: TextStyle(fontWeight: FontWeight.w500),));
+          inline.add(TextSpan(children: buildInline(child, context), style: TextStyle(fontWeight: FontWeight.w500),));
           break;
         case 'a':
-          inline.add(WidgetSpan(child: TextLink(title: child.text, url: child.attributes['href'])));
+          inline.add(InlineTextLink(title: child.text, url: child.attributes['href'], context: context));
           break;
         case 'br':
           inline.add(const TextSpan(text: '\n'));
@@ -86,7 +86,7 @@ List<InlineSpan> buildInline(dom.Element element) {
   return inline;
 }
 
-List<Widget> buildTree(dom.Element element) {
+List<Widget> buildTree(dom.Element element, BuildContext context) {
   final widgets = <Widget>[];
   int index = 0;
   for (var node in element.nodes) {
@@ -114,7 +114,7 @@ List<Widget> buildTree(dom.Element element) {
           );
           break;
         case 'p':
-          if (child.children.length > 0) widgets.add(Text.rich(TextSpan(children: buildInline(child))));
+          if (child.children.length > 0) widgets.add(Text.rich(TextSpan(children: buildInline(child, context))));
           else widgets.add(Text(child.text));
           break;
         case 'i':
@@ -127,7 +127,7 @@ List<Widget> buildTree(dom.Element element) {
           widgets.add(Text(child.text, style: TextStyle(fontWeight: FontWeight.w500),));
           break;
         case 'a':
-          if (child.children.length > 0) widgets.add(Link(child: Text.rich(TextSpan(children: buildInline(child))), url: child.attributes['href'],));
+          if (child.children.length > 0) widgets.add(Link(child: Text.rich(TextSpan(children: buildInline(child, context))), url: child.attributes['href'],));
           else if (child.text.length != 0) widgets.add(TextLink(title: child.text, url: child.attributes['href']));
           break;
         case 'code': // TODO: special element for code elements
@@ -163,12 +163,12 @@ List<Widget> buildTree(dom.Element element) {
           }
           break;
         case 'blockquote':
-          widgets.add(BlockQuote(child: WrappedContainer(children: buildTree(child),)));
+          widgets.add(BlockQuote(child: WrappedContainer(children: buildTree(child, context),)));
           break;
         case 'ol': // TODO: ordered list
         case 'ul':
           widgets.add(UnorderedList(children: child.children.map<Widget>((li) =>
-            WrappedContainer(children: buildTree(li))
+            WrappedContainer(children: buildTree(li, context))
           ).toList()));
           break;
         case 'div':
@@ -176,26 +176,26 @@ List<Widget> buildTree(dom.Element element) {
             widgets.add(
                 Spoiler(
                   title: child.getElementsByClassName('spoiler_title')[0].text,
-                  child: WrappedContainer(children: buildTree(child)),
+                  child: WrappedContainer(children: buildTree(child, context)),
                 )
             );
           } else {
-            widgets.addAll(buildTree(child));
+            widgets.addAll(buildTree(child, context));
           }
           break;
         case 'details':
           widgets.add(
               Spoiler(
                 title: child.children[0].text,
-                child: WrappedContainer(children: buildTree(child.children[1])),
+                child: WrappedContainer(children: buildTree(child.children[1], context)),
               )
           );
           break;
         case 'figure':
-          widgets.addAll(buildTree(child));
+          widgets.addAll(buildTree(child, context));
           break;
         case 'pre': // hmm, maybe it has other type
-          final c = buildTree(child).first;
+          final c = buildTree(child, context).first;
           widgets.add(SingleChildScrollView(
             child: c,
             scrollDirection: Axis.horizontal,
@@ -212,8 +212,8 @@ List<Widget> buildTree(dom.Element element) {
   return widgets;
 }
 
-List<Widget> parseHtml(String html) {
+List<Widget> parseHtml(String html, BuildContext context) {
   final doc = parse(html);
   final body = doc.getElementsByTagName('body')[0];
-  return buildTree(body);
+  return buildTree(body, context);
 }

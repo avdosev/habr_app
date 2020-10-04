@@ -18,7 +18,6 @@ class HideFloatingActionButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print("Button build");
     return AnimatedSwitcher(
         duration: duration,
         transitionBuilder: (Widget child, Animation<double> animation) {

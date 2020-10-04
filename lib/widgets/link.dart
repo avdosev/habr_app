@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import '../utils/url_open.dart';
 
@@ -13,6 +14,18 @@ class Link extends StatelessWidget {
       child: child,
     );
   }
+}
+
+
+
+TextSpan InlineTextLink({@required String title, @required String url, @required BuildContext context}) {
+  final theme = Theme.of(context);
+  return TextSpan(
+      text: title,
+      style: TextStyle(decoration: TextDecoration.underline, color: theme.primaryColor),
+      recognizer: TapGestureRecognizer()
+        ..onTap = () => launchUrl(url),
+  );
 }
 
 class TextLink extends StatelessWidget {
