@@ -62,6 +62,14 @@ List<InlineSpan> buildInline(dom.Element element, BuildContext context) {
         case 'br':
           inline.add(const TextSpan(text: '\n'));
           break;
+        case 'img':
+          final url = child.attributes['data-src'] ?? child.attributes['src'];
+          final image = url.endsWith("svg") ? SvgPicture.network(url) : Image.network(url);
+          inline.add(WidgetSpan(child: image));
+          break;
+        case 'div':
+          inline.add(WidgetSpan(child: WrappedContainer(children: buildTree(child, context),)));
+          break;
         default:
           logInfo("Not found case for inline ${child.localName}");
       }
@@ -140,11 +148,8 @@ List<Widget> buildTree(dom.Element element, BuildContext context) {
           break;
         case 'img':
           final url = child.attributes['data-src'] ?? child.attributes['src'];
-          if (url.endsWith("svg")) {
-            widgets.add(SvgPicture.network(url));
-          } else {
-            widgets.add(Image.network(url));
-          }
+          final image = url.endsWith("svg") ? SvgPicture.network(url) : Image.network(url);
+          widgets.add(image);
           break;
         case 'blockquote':
           widgets.add(BlockQuote(child: WrappedContainer(children: buildTree(child, context),)));
