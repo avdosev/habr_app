@@ -11,3 +11,4 @@ export 'statistics_icons.dart';
 export 'incrementally_loading_article_view.dart';
 export 'article_preview.dart';
 export 'load_builder.dart';
+export 'picture.dart';

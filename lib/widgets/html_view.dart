@@ -2,8 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_highlight/flutter_highlight.dart';
 import 'package:flutter_highlight/themes/androidstudio.dart';
-import 'package:habr_app/widgets/unordered_list.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:html/dom.dart' as dom;
 import 'package:html/dom_parsing.dart' as dom_parser;
 import 'package:html/parser.dart';
@@ -14,6 +12,8 @@ import 'link.dart';
 import 'quote_block.dart';
 import 'spoiler_block.dart';
 import 'headline.dart';
+import 'picture.dart';
+import 'unordered_list.dart';
 
 class HtmlView extends StatelessWidget {
   final String html;
@@ -64,8 +64,7 @@ List<InlineSpan> buildInline(dom.Element element, BuildContext context) {
           break;
         case 'img':
           final url = child.attributes['data-src'] ?? child.attributes['src'];
-          final image = url.endsWith("svg") ? SvgPicture.network(url) : Image.network(url);
-          inline.add(WidgetSpan(child: image));
+          inline.add(WidgetSpan(child: Picture.network(url)));
           break;
         case 'div':
           inline.add(WidgetSpan(child: WrappedContainer(children: buildTree(child, context),)));
@@ -148,8 +147,7 @@ List<Widget> buildTree(dom.Element element, BuildContext context) {
           break;
         case 'img':
           final url = child.attributes['data-src'] ?? child.attributes['src'];
-          final image = url.endsWith("svg") ? SvgPicture.network(url) : Image.network(url);
-          widgets.add(image);
+          widgets.add(Picture.network(url));
           break;
         case 'blockquote':
           widgets.add(BlockQuote(child: WrappedContainer(children: buildTree(child, context),)));
