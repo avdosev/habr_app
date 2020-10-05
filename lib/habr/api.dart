@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'package:habr_app/habr/storage_interface.dart';
 import 'package:either_dart/either.dart';
 import 'package:habr_app/utils/log.dart';
@@ -32,10 +31,11 @@ class Habr {
     final url = "$api_url/articles/?date=day&sort=date&fl=ru&hl=ru&page=$page";
     logInfo("Get articles by $url");
     final response = await safe(http.get(url));
-    return response.then((response) {
-      if (response.statusCode == 200) {
-        final data = json.decode(response.body);
-        return Right(PostPreviews(
+    return response
+      .then(checkHttpStatus)
+      .map(parseJson)
+      .map((data) {
+        return PostPreviews(
             previews: data['articleIds'].map<PostPreview>((id) {
               final article = data['articleRefs'][id];
               final authorJson = article['author'];
@@ -50,44 +50,36 @@ class Habr {
               );
             }).toList(),
             maxCountPages: data['pagesCount']
-        ));
-      } else {
-        return Left(StorageError(errCode: ErrorType.BadResponse));
+        );
       }
-    });
+    );
   }
 
   Future<Either<StorageError, Post>> article(String id) async {
     final url = "$api_url/articles/$id";
     logInfo("Get article by $url");
     final response = await safe(http.get(url));
-    return response.then((response) {
-      if (response.statusCode == 200) {
-        final data = json.decode(response.body);
-        return Right(Post.fromJson(data));
-      } else {
-        return Left(StorageError(errCode: ErrorType.BadResponse));
-      }
-    });
+    return response
+      .then(checkHttpStatus)
+      .map(parseJson)
+      .map((data) => Post.fromJson(data));
   }
 
   Future<Either<StorageError, Comments>> comments(String articleId) async {
     final url = "$api_url/articles/$articleId/comments";
     logInfo("Get comments by $url");
     final response = await safe(http.get(url));
-    return response.then((response) {
-      if (response.statusCode == 200) {
-        final data = json.decode(response.body);
-        return Right(Comments(
+    return response
+      .then(checkHttpStatus)
+      .map(parseJson)
+      .map((data) {
+        return Comments(
           threads: (data['threads'] as List).cast<int>(),
           comments: (data['comments'] as Map<String, dynamic>).map<int,
               Comment>((key, value) {
             return MapEntry(int.parse(key), Comment.fromJson(value));
           }),
-        ));
-      } else {
-        return Left(StorageError(errCode: ErrorType.BadResponse));
-      }
+        );
     });
   }
 }
