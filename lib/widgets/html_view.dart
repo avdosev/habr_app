@@ -13,7 +13,7 @@ import 'dividing_block.dart';
 import 'link.dart';
 import 'quote_block.dart';
 import 'spoiler_block.dart';
-
+import 'headline.dart';
 
 class HtmlView extends StatelessWidget {
   final String html;
@@ -26,22 +26,6 @@ class HtmlView extends StatelessWidget {
         children: parseHtml(html, context)
     );
   }
-}
-
-enum HeadLineType {
-  h1, h2, h3, h4, h5, h6
-}
-
-class HeadLine extends StatelessWidget {
-  final String text;
-  final HeadLineType type;
-  const HeadLine({this.text, this.type});
-
-  @override
-  Widget build(BuildContext context) {
-    return Text(text, textScaleFactor: 1.2, style: TextStyle(fontWeight: FontWeight.bold),);
-  }
-
 }
 
 List<InlineSpan> buildInline(dom.Element element, BuildContext context) {

@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
+import 'text_theme.dart';
 
 final darkTheme = ThemeData(
-  textTheme: TextTheme(
-      bodyText2: TextStyle(color: Colors.white70)
-  ),
+  textTheme: buildTextTheme(Colors.white70, 16),
   accentColor: Colors.grey,
   primarySwatch: Colors.blueGrey,
   primaryColor: Colors.blueGrey[600],
