@@ -26,7 +26,7 @@ class StatisticsIcon extends StatelessWidget {
         children: [
           Icon(iconData, size: size, color: Colors.grey,),
           SizedBox(width: 5,),
-          Text(intToMetricPrefix(value), style: textStyle,),
+          Text(valueToStringTransformer(value), style: textStyle,),
         ]
     );
   }
