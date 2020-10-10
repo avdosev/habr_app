@@ -9,5 +9,7 @@ TextTheme buildTextTheme(Color color, double mainSize) {
     headline5: TextStyle(color: color, fontSize: mainSize+2, fontWeight: FontWeight.w500),
     headline6: TextStyle(color: color, fontSize: mainSize, fontWeight: FontWeight.w500),
     bodyText2: TextStyle(color: color, fontSize: mainSize),
+    subtitle1: TextStyle(color: color, fontSize: mainSize),
+    subtitle2: TextStyle(color: color, fontSize: mainSize-2),
   );
 }

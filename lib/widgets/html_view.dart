@@ -105,6 +105,8 @@ List<Widget> buildTree(dom.Element element, BuildContext context) {
           );
           break;
         case 'figcaption':
+          widgets.add(Text.rich(TextSpan(children: buildInline(child, context), style: Theme.of(context).textTheme.subtitle2)));
+          break;
         case 'p':
           if (child.children.length > 0) widgets.add(Text.rich(TextSpan(children: buildInline(child, context))));
           else if (child.text.length > 0) widgets.add(Text(child.text));

@@ -48,12 +48,10 @@ class _IncrementallyLoadingArticleViewState extends State<IncrementallyLoadingAr
         return Column(
           children: [
             preview,
-            if (index != previews.length-1)
+            if (index != previews.length-1 || loadingInProgress)
               const Divider(height: 1,),
-            if (loadingInProgress) ...[
-              const Divider(height: 1,),
+            if (loadingInProgress)
               const CircularItem()
-            ]
           ]
         );
       },
