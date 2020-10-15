@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:incrementally_loading_listview/incrementally_loading_listview.dart';
+import 'package:habr_app/widgets/incrementally_loading_listview.dart';
 import 'package:habr_app/habr_storage/habr_storage.dart';
 
 import 'circular_item.dart';
@@ -37,24 +37,25 @@ class _IncrementallyLoadingArticleViewState extends State<IncrementallyLoadingAr
         pages = initPage == null ? 0 : 1
   ;
 
+  Widget itemBuilder(BuildContext context, int index) {
+    final isLoadItem = (loadingItems && index == previews.length);
+    if (isLoadItem) return Center(child: const CircularItem());
+    final preview = widget.postPreviewBuilder(context, previews[index]);
+    return preview;
+  }
+
+  int itemCount() {
+    return previews.length + (loadingItems ? 1 : 0);
+  }
+
   @override
   Widget build(BuildContext context) {
-    return IncrementallyLoadingListView(
-      itemCount: () => previews.length,
+    return SeparatedIncrementallyLoadingListView(
+      itemCount: itemCount,
       hasMore: () => pages < maxPages,
-      itemBuilder: (BuildContext context, int index) {
-        final loadingInProgress = ((loadingItems ?? false) && index == previews.length - 1);
-        final preview = widget.postPreviewBuilder(context, previews[index]);
-        return Column(
-          children: [
-            preview,
-            if (index != previews.length-1 || loadingInProgress)
-              const Divider(height: 1,),
-            if (loadingInProgress)
-              const CircularItem()
-          ]
-        );
-      },
+      itemBuilder: itemBuilder,
+      separatorBuilder: (BuildContext context, int index) =>
+        const Divider(height: 1),
       loadMore: () async {
         final loaded = pages+1;
         final posts = await widget.load(loaded);
@@ -74,7 +75,6 @@ class _IncrementallyLoadingArticleViewState extends State<IncrementallyLoadingAr
           loadingItems = false;
         });
       },
-      // separatorBuilder: (BuildContext context, int index) => const Divider(),
     );
   }
 
