@@ -78,6 +78,10 @@ class HabrStorage {
     });
   }
 
+  Future removeArticleFromCache(String id) {
+    return _uncacheArticle(id);
+  }
+
   Future<Either<StorageError, Comments>> comments(String articleId) async {
     return api.comments(articleId);
   }
@@ -116,6 +120,10 @@ class HabrStorage {
             avatarUrl: author.avatar.url
         )
     );
+  }
+
+  Future _uncacheArticle(String articleId) async {
+    await cache.cachedPostDao.deletePost(articleId);
   }
 
   Future _cacheArticle(Post post) async {

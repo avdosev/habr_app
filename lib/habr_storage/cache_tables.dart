@@ -78,7 +78,7 @@ class CachedPostDao extends DatabaseAccessor<Cache> with _$CachedPostDaoMixin {
   Future<CachedPost> getPost(String id) => (select(cachedPosts)..where((posts) => posts.id.equals(id))).getSingle();
   Future insertPost(Insertable<CachedPost> post) => into(cachedPosts).insert(post);
   Future updatePost(Insertable<CachedPost> post) => update(cachedPosts).replace(post);
-  Future deletePost(Insertable<CachedPost> post) => delete(cachedPosts).delete(post);
+  Future deletePost(String id) => (delete(cachedPosts)..where((posts) => posts.id.equals(id))).go();
 }
 
 // DB
