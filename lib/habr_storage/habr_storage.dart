@@ -91,7 +91,7 @@ class HabrStorage {
     final postsCount = await cache.cachedPostDao.count();
     final maxPages = (postsCount / pageSize).ceil();
 
-    final cachedPosts = await cache.cachedPostDao.getAllPosts(page: 1, count: pageSize);
+    final cachedPosts = await cache.cachedPostDao.getAllPosts(page: page, count: pageSize);
     if (cachedPosts == null) return Left(StorageError(errCode: ErrorType.NotFound));
     return Right(
       PostPreviews(

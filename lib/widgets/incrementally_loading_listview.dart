@@ -32,7 +32,12 @@ class SeparatedIncrementallyLoadingListView extends StatelessWidget {
   }
 
   int itemCountSeparated() {
-    return itemCount() * 2 - 1;
+    final count =  itemCount();
+    if (count == 0) {
+      return 0;
+    } else {
+      return count * 2 - 1;
+    }
   }
 
   @override
