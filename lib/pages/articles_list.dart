@@ -1,6 +1,6 @@
 import 'package:either_dart/either.dart';
 import 'package:flutter/material.dart';
-import 'package:habr_app/pages/article.dart';
+import 'package:habr_app/routing/routing.dart';
 import 'package:habr_app/widgets/widgets.dart';
 
 import 'package:habr_app/habr_storage/habr_storage.dart';
@@ -11,11 +11,6 @@ class ArticlesList extends StatefulWidget {
 
   @override
   createState() => _ArticlesListState();
-}
-
-openArticle(BuildContext context, String articleId) {
-  Navigator.of(context).push(MaterialPageRoute(
-      builder: (context) => ArticlePage(articleId: articleId)));
 }
 
 class _ArticlesListState extends State<ArticlesList> {
