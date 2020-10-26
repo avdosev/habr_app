@@ -1,6 +1,9 @@
 import 'package:either_dart/either.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:habr_app/routing/routing.dart';
+import 'package:habr_app/stores/article_store.dart';
+import 'package:habr_app/widgets/incrementally_loading_listview.dart';
 import 'package:habr_app/widgets/widgets.dart';
 
 import 'package:habr_app/habr_storage/habr_storage.dart';
@@ -14,39 +17,51 @@ class ArticlesList extends StatefulWidget {
 }
 
 class _ArticlesListState extends State<ArticlesList> {
-  Future<Either<StorageError, PostPreviews>> _initialLoad;
+  ArticlesStorage store = ArticlesStorage();
 
-  @override
-  void initState() {
-    super.initState();
-    reload();
-  }
-
-  void reload() {
-    setState(() {
-      _initialLoad = loadFirstPage();
-    });
-  }
-
-  Future<Either<StorageError, PostPreviews>> loadFirstPage() async {
-    return await HabrStorage().posts(page: 1);
-  }
-
-  Future<PostPreviews> loadPosts(int page) async {
-    final postOrError = await HabrStorage().posts(page: page);
-    return postOrError.unite<PostPreviews>((err) {
-      // TODO: informing user
-      return PostPreviews(previews: [], maxCountPages: -1);
-    }, (posts) => posts);
+  _ArticlesListState() {
+    store.changeFlow(PostsFlow.dayTop);
   }
 
   addArticleInCache(String id) {
     HabrStorage().addArticleInCache(id);
   }
 
-  Widget errorWidget() {
-    return Center(
-        child: LossInternetConnection(onPressReload: reload));
+  Widget bodyWidget() {
+    return Observer(
+      builder:(context) {
+        Widget widget;
+        switch (store.firstLoading) {
+          case LoadingState.isFinally:
+            widget = SeparatedIncrementallyLoadingListView(
+              itemBuilder: (context, index) {
+                if (index >= store.previews.length && store.loadItems)
+                  return Center(child: const CircularItem());
+                final preview = store.previews[index];
+                return SlidableArchive(
+                  child: ArticlePreview(
+                    postPreview: preview,
+                    onPressed: (articleId) => openArticle(context, articleId),
+                  ),
+                  onArchive: () => addArticleInCache(preview.id),
+                );
+              },
+              separatorBuilder: (context, index) => const Hr(),
+              itemCount: () => store.previews.length + (store.loadItems ? 1 : 0),
+              loadMore: store.loadNextPage,
+              hasMore: store.hasNextPages,
+            );
+            break;
+          case LoadingState.inProgress:
+            widget = Center(child: CircularProgressIndicator());
+            break;
+          case LoadingState.isCorrupted:
+            widget = LossInternetConnection(onPressReload: store.reload);
+            break;
+        }
+        return widget;
+      }
+    );
   }
 
   @override
@@ -56,25 +71,7 @@ class _ArticlesListState extends State<ArticlesList> {
       appBar: AppBar(
         title: Text("Articles"),
       ),
-      body: LoadBuilder<StorageError, PostPreviews>(
-        future: _initialLoad,
-        onRightBuilder: (context, data) =>
-          IncrementallyLoadingArticleView(
-            postPreviewBuilder: (context, preview) => SlidableArchive(
-              child: ArticlePreview(
-                postPreview: preview,
-                onPressed: (articleId) => openArticle(context, articleId),
-              ),
-              onArchive: () => addArticleInCache(preview.id),
-            ),
-            load: loadPosts,
-            initPage: data,
-          ),
-        onErrorBuilder: (context, err) {
-          logError(err);
-          return errorWidget();
-        },
-      )
+      body: bodyWidget(),
     );
   }
 }

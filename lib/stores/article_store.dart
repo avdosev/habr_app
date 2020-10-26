@@ -16,6 +16,18 @@ abstract class ArticlesStorageBase with Store {
   bool loadItems = false;
   @observable
   List<PostPreview> previews = [];
+  @observable
+  PostsFlow _flow = PostsFlow.saved;
+
+  PostsFlow get flow => _flow;
+
+  @action
+  changeFlow(PostsFlow postsFlow) {
+    if (_flow != postsFlow) {
+      _flow = postsFlow;
+      reload();
+    }
+  }
 
   int maxPages = -1;
   int pages = 0;
@@ -31,7 +43,7 @@ abstract class ArticlesStorageBase with Store {
   @action
   Future loadFirstPage() async {
     firstLoading = LoadingState.inProgress;
-    final firstPage = await HabrStorage().posts(page: 1, flow: PostsFlow.saved);
+    final firstPage = await HabrStorage().posts(page: 1, flow: flow);
     firstLoading = firstPage.unite<LoadingState>((left) {
       return LoadingState.isCorrupted;
     }, (right) {
@@ -43,7 +55,7 @@ abstract class ArticlesStorageBase with Store {
   }
 
   Future<PostPreviews> loadPosts(int page) async {
-    final postOrError = await HabrStorage().posts(page: page, flow: PostsFlow.saved);
+    final postOrError = await HabrStorage().posts(page: page, flow: flow);
     return postOrError.unite<PostPreviews>((err) {
       // TODO: informing user
       return PostPreviews(previews: [], maxCountPages: -1);
