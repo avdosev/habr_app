@@ -6,14 +6,12 @@ import 'package:html/dom.dart' as dom;
 import 'package:html/dom_parsing.dart' as dom_parser;
 import 'package:html/parser.dart';
 
+import 'html_elements/html_elements.dart';
+
 import '../utils/log.dart';
 import 'dividing_block.dart';
 import 'link.dart';
-import 'quote_block.dart';
-import 'spoiler_block.dart';
-import 'headline.dart';
 import 'picture.dart';
-import 'unordered_list.dart';
 
 class HtmlView extends StatelessWidget {
   final String html;

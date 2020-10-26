@@ -1,11 +1,9 @@
 export 'hide_floating_action_button.dart';
 export 'html_view.dart';
-export 'internet_error_view.dart';
 export 'author_avatar_icon.dart';
 export 'small_author_preview.dart';
-export 'empty_content.dart';
 export 'comments_button.dart';
-export 'home_menu.dart';
+export 'routing/home_menu.dart';
 export 'slidable.dart';
 export 'statistics_icons.dart';
 export 'article_preview.dart';
@@ -13,3 +11,7 @@ export 'load_builder.dart';
 export 'picture.dart';
 export 'circular_item.dart';
 export 'hr.dart';
+
+// local packages
+export 'informing/informing.dart';
+export 'html_elements/html_elements.dart';

@@ -1,6 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import '../utils/url_open.dart';
+import 'package:habr_app/utils/url_open.dart';
 
 class Link extends StatelessWidget {
   final Widget child;
