@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:habr_app/habr_storage/habr_storage.dart';
 import 'package:habr_app/widgets/incrementally_loading_listview.dart';
 import 'package:habr_app/widgets/widgets.dart';
 import 'package:habr_app/stores/article_store.dart';
@@ -22,6 +23,7 @@ class _CachedArticlesListState extends State<CachedArticlesList> {
   Widget bodyWidget() {
     return Observer(
       builder:(context) {
+        print("REBUILD");
         Widget widget;
         switch (store.firstLoading) {
           case LoadingState.isFinally:
@@ -30,9 +32,22 @@ class _CachedArticlesListState extends State<CachedArticlesList> {
                 if (index >= store.previews.length && store.loadItems)
                   return Center(child: const CircularItem());
                 final preview = store.previews[index];
-                return ArticlePreview(
-                  postPreview: preview,
-                  onPressed: (articleId) => openArticle(context, articleId),
+                return SlidableDelete(
+                  key: Key(preview.id),
+                  child: ArticlePreview(
+                    postPreview: preview,
+                    onPressed: (articleId) => openArticle(context, articleId),
+                  ),
+                  onDelete: () {
+                    final articleId = preview.id;
+                    store.removePreview(articleId);
+                    HabrStorage().removeArticleFromCache(articleId)
+                      .then((value) {
+                        Scaffold.of(context).showSnackBar(
+                          SnackBar(content: Text("${preview.title} удалено"))
+                        );
+                      });
+                  },
                 );
               },
               separatorBuilder: (context, index) => const Hr(),

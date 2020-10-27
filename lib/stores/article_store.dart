@@ -77,8 +77,8 @@ abstract class ArticlesStorageBase with Store {
   }
 
   @action
-  removeArticleFromCache(String id) {
-    previews.removeWhere((preview) => preview.id == id);
-    HabrStorage().removeArticleFromCache(id);
+  removePreview(String id) {
+    previews.removeWhere((element) => element.id == id);
+    previews = List()..addAll(previews);
   }
 }
