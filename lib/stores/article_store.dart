@@ -81,4 +81,9 @@ abstract class ArticlesStorageBase with Store {
     previews.removeWhere((element) => element.id == id);
     previews = List()..addAll(previews);
   }
+
+  @action
+  removeAllPreviews() {
+    previews = [];
+  }
 }

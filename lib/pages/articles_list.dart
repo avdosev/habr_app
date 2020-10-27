@@ -23,10 +23,6 @@ class _ArticlesListState extends State<ArticlesList> {
     store.changeFlow(PostsFlow.dayTop);
   }
 
-  addArticleInCache(String id) {
-    HabrStorage().addArticleInCache(id);
-  }
-
   Widget bodyWidget() {
     return Observer(
       builder:(context) {
@@ -43,7 +39,11 @@ class _ArticlesListState extends State<ArticlesList> {
                     postPreview: preview,
                     onPressed: (articleId) => openArticle(context, articleId),
                   ),
-                  onArchive: () => addArticleInCache(preview.id),
+                  onArchive: () => HabrStorage().addArticleInCache(preview.id).then((_) {
+                    Scaffold.of(context).showSnackBar(
+                        SnackBar(content: Text("${preview.title} скачено"))
+                    );
+                  }),
                 );
               },
               separatorBuilder: (context, index) => const Hr(),

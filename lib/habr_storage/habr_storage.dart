@@ -82,6 +82,14 @@ class HabrStorage {
     return _uncacheArticle(id);
   }
 
+  Future removeAllArticlesFromCache() async {
+    final postsCount = await cache.cachedPostDao.count();
+    final cachedPosts = await cache.cachedPostDao.getAllPosts(page: 1, count: postsCount);
+    for (var post in cachedPosts) {
+      await removeArticleFromCache(post.post.id);
+    }
+  }
+
   Future<Either<StorageError, Comments>> comments(String articleId) async {
     return api.comments(articleId);
   }

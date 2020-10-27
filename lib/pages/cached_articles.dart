@@ -72,6 +72,16 @@ class _CachedArticlesListState extends State<CachedArticlesList> {
     return Scaffold(
         appBar: AppBar(
           title: Text("Cached articles"),
+          actions: [
+            IconButton(
+              tooltip: "Unarchive",
+              icon: const Icon(Icons.unarchive),
+              onPressed: () {
+                store.removeAllPreviews();
+                HabrStorage().removeAllArticlesFromCache();
+              }
+            )
+          ],
         ),
         body: bodyWidget()
     );
