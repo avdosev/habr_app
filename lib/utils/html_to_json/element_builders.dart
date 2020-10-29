@@ -1,18 +1,11 @@
+import 'text_mode.dart';
+export 'text_mode.dart';
+
 Map<String, dynamic> buildWithChildren(String type, List<dynamic> children) =>
     {'type': type, 'children': children};
 
 Map<String, dynamic> buildWithChild(String type, dynamic child) =>
     {'type': type, 'child': child};
-
-enum TextMode {
-  bold,
-  italic,
-  emphasis,
-  underline,
-  strikethrough,
-  anchor,
-  strong
-}
 
 enum ListType { unordered, ordered }
 
@@ -38,7 +31,7 @@ Map<String, dynamic> buildTextSpan(String text,
     {
       'type': 'span',
       'text': text,
-      'mode': modes.map((mode) => mode.toString()).toList(),
+      'mode': modes.map((mode) => mode.toString().substring('TextMode'.length + 1)).toList(),
     };
 
 Map<String, dynamic> buildHeadLine(String text, String headline) => {
@@ -70,7 +63,7 @@ Map<String, dynamic> buildDetails(String title, child) =>
 Map<String, dynamic> buildPre(dynamic child) => buildWithChild('pre', child);
 
 Map<String, dynamic> buildDiv(List<dynamic> children) =>
-    buildWithChildren('division', children);
+    buildWithChildren('div', children);
 
 Map<String, dynamic> buildBlockQuote(List<dynamic> children) =>
     buildWithChildren('blockquote', children);

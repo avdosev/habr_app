@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:html/parser.dart';
 import 'transformer.dart';
 
-dynamic htmlAsParsedJson(String input) {
+Map<String, dynamic> htmlAsParsedJson(String input) {
   final doc = parse(input);
   return prepareHtmlBlocElement(doc.body.children.first);
 }

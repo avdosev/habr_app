@@ -43,7 +43,7 @@ const nameToType = <String, TextMode>{
 Map<String, dynamic> optimizeParagraph(Map<String, dynamic> p) {
   if (p['children'].length == 1) {
     final span = p['children'][0];
-    if (span['mode'].isEmpty) {
+    if (span['type'] == 'span' && span['mode'].isEmpty) {
       return buildTextParagraph(span['text']);
     }
   }
@@ -102,7 +102,7 @@ List<Map<String, dynamic>> prepareChildrenHtmlBlocElement(dom.Element element) {
     if (node.nodeType == dom.Node.TEXT_NODE) {
       final text = node.text.replaceAll('\n', '');
       if (text.isNotEmpty) {
-        print('text node "$text"');
+        print('text node');
         final pch = (paragraph['children'] as List);
         // may be this branch is not popular or not active
         if (pch.isNotEmpty &&
@@ -154,7 +154,7 @@ Map<String, dynamic> prepareHtmlBlocElement(dom.Element element) {
       return p;
     case 'p':
       final p = buildDefaultParagraph();
-      addSpanToParagraph(p, prepareHtmlInlineElement(element));
+      prepareHtmlInlineElement(element).forEach((span) => addSpanToParagraph(p, span));
       return p;
     case 'code':
       final code = element.text;
