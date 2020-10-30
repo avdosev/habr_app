@@ -92,7 +92,7 @@ List<Map<String, dynamic>> prepareChildrenHtmlBlocElement(dom.Element element) {
   var paragraph = buildDefaultParagraph();
 
   void makeNewParagraphAndInsertOlder() {
-    if (!paragraphIsEmpty(paragraph)) {
+    if (paragraph['children'].isNotEmpty) {
       children.add(optimizeParagraph(paragraph));
       paragraph = buildDefaultParagraph();
     }
@@ -119,7 +119,11 @@ List<Map<String, dynamic>> prepareChildrenHtmlBlocElement(dom.Element element) {
       print(child.localName);
       if (blockElements.contains(child.localName)) {
         makeNewParagraphAndInsertOlder();
-        children.add(prepareHtmlBlocElement(child));
+        final block = prepareHtmlBlocElement(child);
+        // block optimization
+        if (block['type'] == 'paragraph' && block['children'].isEmpty)
+          continue;
+        children.add(block);
       } else if (inlineElements.contains(child.localName)) {
         if (child.localName == 'a' && !child.attributes.containsKey('href')) {
           continue;
@@ -197,7 +201,9 @@ Map<String, dynamic> prepareHtmlBlocElement(dom.Element element) {
       final img = element.getElementsByTagName('img')[0];
       final caption = element.getElementsByTagName('figcaption')[0];
       final imgBloc = prepareHtmlBlocElement(img);
-      addCaption(imgBloc, caption.text);
+      if (caption.text.isNotEmpty) {
+        addCaption(imgBloc, caption.text);
+      }
       return imgBloc;
     case 'pre':
       return buildPre(prepareHtmlBlocElement(element.children.first));

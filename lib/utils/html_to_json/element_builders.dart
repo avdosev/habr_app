@@ -17,10 +17,6 @@ void addSpanToParagraph(p, span) {
   pch.add(span);
 }
 
-bool paragraphIsEmpty(p) {
-  return p['children'].isEmpty;
-}
-
 Map<String, dynamic> buildTextParagraph(String text) => {
   'type': 'tp',
   'text': text,
