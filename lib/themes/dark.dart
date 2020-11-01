@@ -9,4 +9,7 @@ final darkTheme = ThemeData(
   scaffoldBackgroundColor: const Color.fromRGBO(57, 57, 57, 1),
   colorScheme: ColorScheme.dark(secondary: Colors.grey),
   visualDensity: VisualDensity.adaptivePlatformDensity,
+  snackBarTheme: SnackBarThemeData(
+    backgroundColor: Colors.blueGrey[400],
+  )
 );
