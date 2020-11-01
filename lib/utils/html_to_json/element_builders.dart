@@ -48,6 +48,10 @@ void addCaption(image, String caption) {
   image['caption'] = caption;
 }
 
+void addLink(image, String link) {
+  image['link'] = link;
+}
+
 Map<String, dynamic> buildList(ListType listType, List<dynamic> children) =>
     buildWithChildren(
         listType.toString().substring('ListType'.length + 1) + '_list',

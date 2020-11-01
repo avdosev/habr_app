@@ -67,7 +67,15 @@ List<Map<String, dynamic>> prepareHtmlInlineElement(dom.Element element) {
           walk(child, modes);
           modes.removeLast();
         } else if (child.localName == 'a') {
-          children.add(buildInlineLink(child.text, child.attributes['href']));
+          if (child.text.isEmpty && child.children.length > 0) {
+            walk(child, modes);
+          } else {
+            children.add(buildInlineLink(child.text, child.attributes['href']));
+          }
+        } else if (child.localName == 'img') {
+          final el = prepareHtmlBlocElement(child);
+          el['type'] += '_span';
+          children.add(el);
         } else {
           walk(child, modes);
         }
@@ -78,7 +86,7 @@ List<Map<String, dynamic>> prepareHtmlInlineElement(dom.Element element) {
   final defaultStyles = <TextMode>[];
   if (nameToType.containsKey(element.localName)) {
     defaultStyles.add(nameToType[element.localName]);
-  } else if (element.localName == 'a') {
+  } else if (element.localName == 'a' && element.text.isNotEmpty) {
     return [buildInlineLink(element.text, element.attributes['href'])];
   }
 
