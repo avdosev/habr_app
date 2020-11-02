@@ -42,7 +42,7 @@ InlineSpan buildInline(Map<String, dynamic> element, BuildContext context) {
   } else if (type == 'link_span') {
     span = InlineTextLink(title: element['text'], url: element['src'], context: context);
   } else if (type == 'image_span') {
-    span = WidgetSpan(child: Picture.network(element['src']));
+    span = WidgetSpan(child: Picture.network(element['src'], clickable: true,));
   }
 
   return span;
@@ -77,7 +77,7 @@ Widget buildTree(Map<String, dynamic> element, BuildContext context) {
       scrollDirection: Axis.horizontal,
     );
   } else if (type == 'image') {
-    widget = Picture.network(element['src']);
+    widget = Picture.network(element['src'], clickable: true,);
     if (element.containsKey('caption')) {
       widget = WrappedContainer(
         children: [
