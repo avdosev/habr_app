@@ -13,16 +13,17 @@ String dateToStr(DateTime date, Locale locale) {
     final time = DateFormat.Hm().format(date);
     return "$dayDate at $time";
   }
-  String str;
-  final nearlyDay = date.year == now.year && date.month == now.month;
-  final subDay = now.day - date.day;
 
-  if (nearlyDay && subDay == 1) {
-    // вчера
-    str = 'вчера';
-  } else if (nearlyDay && subDay == 0) {
+  String str;
+  final currentDay = DateTime(now.year, now.month, now.day);
+  final yesterday = currentDay.add(Duration(days: -1));
+
+  if (date.isAfter(currentDay)) {
     // сегодня
     str = 'сегодня';
+  } else if (date.isAfter(yesterday)) {
+    // вчера
+    str = 'вчера';
   } else {
     const month = [
       'Января',
