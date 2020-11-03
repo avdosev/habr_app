@@ -93,7 +93,7 @@ Widget buildTree(Map<String, dynamic> element, BuildContext context) {
         element['text'],
         // Specify language
         // It is recommended to give it a value for performance
-        language: element['language'].first,
+        language: element['language'].isNotEmpty ? element['language'].first : "",
         padding: const EdgeInsets.all(10),
 
         // Specify highlight theme
