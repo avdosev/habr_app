@@ -50,6 +50,25 @@ Map<String, dynamic> optimizeParagraph(Map<String, dynamic> p) {
   return p;
 }
 
+void optimizeBlock(Map<String, dynamic> block) {
+  if (block['type'] == 'div' ||
+      block['type'] == 'unordered_list' ||
+      block['type'] == 'ordered_list') {
+    final children = block['children'] as List;
+    for (int i = 0; i < children.length; i++) {
+      final child = children[i];
+      final childType = child['type'] as String;
+      if (childType == 'div') {
+        if (child['children'].length == 1) {
+          children[i] = child['children'][0];
+        }
+      } else if (childType == 'unordered_list' || childType == 'ordered_list') {
+        optimizeBlock(child);
+      }
+    }
+  }
+}
+
 List<Map<String, dynamic>> prepareHtmlInlineElement(dom.Element element) {
   final children = <Map<String, dynamic>>[];
 
@@ -108,7 +127,7 @@ List<Map<String, dynamic>> prepareChildrenHtmlBlocElement(dom.Element element) {
 
   for (var node in element.nodes) {
     if (node.nodeType == dom.Node.TEXT_NODE) {
-      final text = node.text.replaceAll('\n', '');
+      final text = node.text.trim();
       if (text.isNotEmpty) {
         print('text node');
         final pch = (paragraph['children'] as List);
@@ -129,8 +148,7 @@ List<Map<String, dynamic>> prepareChildrenHtmlBlocElement(dom.Element element) {
         makeNewParagraphAndInsertOlder();
         final block = prepareHtmlBlocElement(child);
         // block optimization
-        if (block['type'] == 'paragraph' && block['children'].isEmpty)
-          continue;
+        if (block['type'] == 'paragraph' && block['children'].isEmpty) continue;
         children.add(block);
       } else if (inlineElements.contains(child.localName)) {
         if (child.localName == 'a' && !child.attributes.containsKey('href')) {
@@ -166,7 +184,8 @@ Map<String, dynamic> prepareHtmlBlocElement(dom.Element element) {
       return p;
     case 'p':
       final p = buildDefaultParagraph();
-      prepareHtmlInlineElement(element).forEach((span) => addSpanToParagraph(p, span));
+      prepareHtmlInlineElement(element)
+          .forEach((span) => addSpanToParagraph(p, span));
       return p;
     case 'code':
       final code = element.text;
@@ -183,7 +202,7 @@ Map<String, dynamic> prepareHtmlBlocElement(dom.Element element) {
     case 'ol':
     case 'ul':
       final type =
-      element.localName == 'ol' ? ListType.ordered : ListType.unordered;
+          element.localName == 'ol' ? ListType.ordered : ListType.unordered;
       return buildList(type,
           element.children.map((li) => prepareHtmlBlocElement(li)).toList());
       break;

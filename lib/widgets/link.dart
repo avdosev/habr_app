@@ -10,7 +10,7 @@ class Link extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () => launchUrl(url),
+      onTap: () => launchUrl(context, url),
       child: child,
     );
   }
@@ -24,7 +24,7 @@ TextSpan InlineTextLink({@required String title, @required String url, @required
       text: title,
       style: TextStyle(decoration: TextDecoration.underline, color: theme.primaryColor),
       recognizer: TapGestureRecognizer()
-        ..onTap = () => launchUrl(url),
+        ..onTap = () => launchUrl(context, url),
   );
 }
 
