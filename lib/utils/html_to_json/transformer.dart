@@ -51,9 +51,10 @@ Map<String, dynamic> optimizeParagraph(Map<String, dynamic> p) {
 }
 
 void optimizeBlock(Map<String, dynamic> block) {
-  if (block['type'] == 'div' ||
-      block['type'] == 'unordered_list' ||
-      block['type'] == 'ordered_list') {
+  String blockType = block['type'];
+  if (blockType == 'div' ||
+      blockType == 'unordered_list' ||
+      blockType == 'ordered_list') {
     final children = block['children'] as List;
     for (int i = 0; i < children.length; i++) {
       final child = children[i];
@@ -62,9 +63,16 @@ void optimizeBlock(Map<String, dynamic> block) {
         if (child['children'].length == 1) {
           children[i] = child['children'][0];
         }
-      } else if (childType == 'unordered_list' || childType == 'ordered_list') {
-        optimizeBlock(child);
       }
+      optimizeBlock(child);
+    }
+  } else if (blockType == 'details') {
+    final child = block['child'];
+    final childType = child['type'] as String;
+    if (childType == 'div' && child['children'].length == 1) {
+      block['child'] = child['children'][0];
+    } else {
+      optimizeBlock(child);
     }
   }
 }
