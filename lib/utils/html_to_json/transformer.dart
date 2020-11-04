@@ -30,6 +30,7 @@ const inlineElements = {
   'b',
   'a',
   'um',
+  'sup'
 };
 
 const nameToType = <String, TextMode>{

@@ -7,7 +7,8 @@ class UnorderedList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context).textTheme.bodyText2;
-    final centerBaseline = theme.fontSize / 2;
+    final bulletSize = 5;
+    final centerBaseline = (theme.fontSize*theme.height-bulletSize/2) / 2;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: children.map<Widget>((child) =>
@@ -15,9 +16,10 @@ class UnorderedList extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-          Container(child: const Bullet(), padding: EdgeInsets.only(right: 10, top: centerBaseline),),
-          Expanded(child: child)
-        ],)
+            Container(child: const Bullet(), padding: EdgeInsets.only(right: 10, top: centerBaseline),),
+            Expanded(child: child)
+          ]
+        )
       ).toList(),
     );
   }

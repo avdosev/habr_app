@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:habr_app/routing/routing.dart';
 import 'package:habr_app/widgets/widgets.dart';
 import '../habr/api.dart';
 
@@ -8,6 +9,16 @@ class SearchPage extends StatefulWidget {
 
   @override
   createState() => _SearchPageState();
+}
+
+class SearchData {
+  String query;
+  Order order;
+
+  SearchData({
+    @required this.query,
+    @required this.order
+  });
 }
 
 class _SearchPageState extends State<SearchPage> {
@@ -22,7 +33,8 @@ class _SearchPageState extends State<SearchPage> {
   }
 
   void _onSearch() {
-    print('search');
+    final info = SearchData(query: queryController.text, order: orderBy.value);
+    openSearchResult(context, info);
   }
 
   @override

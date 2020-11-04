@@ -15,7 +15,7 @@ class SmallAuthorPreview extends StatelessWidget {
       children: [
         AuthorAvatarIcon(avatar: author.avatar,),
         SizedBox(width: 5,),
-        Text(author.alias),
+        Text(author.alias, style: TextStyle(fontSize: 15),),
       ]
     );
   }

@@ -1,6 +1,7 @@
 import 'package:either_dart/either.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:habr_app/article_preview_loader/preview_loader.dart';
 import 'package:habr_app/routing/routing.dart';
 import 'package:habr_app/stores/article_store.dart';
 import 'package:habr_app/widgets/incrementally_loading_listview.dart';
@@ -16,16 +17,9 @@ class ArticlesList extends StatefulWidget {
   createState() => _ArticlesListState();
 }
 
-class _ArticlesListState extends State<ArticlesList> {
-  ArticlesStorage store = ArticlesStorage();
-
-  _ArticlesListState() {
-    store.changeFlow(PostsFlow.dayTop);
-  }
-
-  Widget bodyWidget() {
-    return Observer(
-      builder:(context) {
+Widget bodyWidget(ArticlesStorage store) {
+  return Observer(
+      builder: (context) {
         Widget widget;
         switch (store.firstLoading) {
           case LoadingState.isFinally:
@@ -61,8 +55,11 @@ class _ArticlesListState extends State<ArticlesList> {
         }
         return widget;
       }
-    );
-  }
+  );
+}
+
+class _ArticlesListState extends State<ArticlesList> {
+  ArticlesStorage store = ArticlesStorage(FlowPreviewLoader(PostsFlow.dayTop));
 
   @override
   Widget build(BuildContext context) {
@@ -78,7 +75,7 @@ class _ArticlesListState extends State<ArticlesList> {
           )
         ],
       ),
-      body: bodyWidget(),
+      body: bodyWidget(store),
     );
   }
 }

@@ -1,14 +1,25 @@
+import 'package:either_dart/either.dart';
+import 'package:habr_app/article_preview_loader/page_loader.dart';
 import 'package:habr_app/habr_storage/habr_storage.dart';
 import 'package:mobx/mobx.dart';
 
 part 'article_store.g.dart';
 
-class ArticlesStorage = ArticlesStorageBase with _$ArticlesStorage;
+class ArticlesStorage extends ArticlesStorageBase with _$ArticlesStorage {
+  final PageLoader<Either<StorageError, PostPreviews>> loader;
+
+  ArticlesStorage(this.loader) {
+    loadFirstPage();
+  }
+
+  Future<Either<StorageError, PostPreviews>> loadPage(int page) {
+    return loader.load(page);
+  }
+}
 
 enum LoadingState {
   inProgress, isFinally, isCorrupted
 }
-
 abstract class ArticlesStorageBase with Store {
   @observable
   LoadingState firstLoading;
@@ -16,18 +27,6 @@ abstract class ArticlesStorageBase with Store {
   bool loadItems = false;
   @observable
   List<PostPreview> previews = [];
-  @observable
-  PostsFlow _flow = PostsFlow.saved;
-
-  PostsFlow get flow => _flow;
-
-  @action
-  changeFlow(PostsFlow postsFlow) {
-    if (_flow != postsFlow) {
-      _flow = postsFlow;
-      reload();
-    }
-  }
 
   int maxPages = -1;
   int pages = 0;
@@ -40,10 +39,12 @@ abstract class ArticlesStorageBase with Store {
     loadFirstPage();
   }
 
+  Future<Either<StorageError, PostPreviews>> loadPage(int page);
+
   @action
   Future loadFirstPage() async {
     firstLoading = LoadingState.inProgress;
-    final firstPage = await HabrStorage().posts(page: 1, flow: flow);
+    final firstPage = await loadPage(1);
     firstLoading = firstPage.unite<LoadingState>((left) {
       return LoadingState.isCorrupted;
     }, (right) {
@@ -55,7 +56,7 @@ abstract class ArticlesStorageBase with Store {
   }
 
   Future<PostPreviews> loadPosts(int page) async {
-    final postOrError = await HabrStorage().posts(page: page, flow: flow);
+    final postOrError = await loadPage(page);
     return postOrError.unite<PostPreviews>((err) {
       // TODO: informing user
       return PostPreviews(previews: [], maxCountPages: -1);
