@@ -94,6 +94,21 @@ class PostPreviews {
   final List<PostPreview> previews;
 
   const PostPreviews({this.previews, this.maxCountPages});
+
+  PostPreviews.fromJson(Map<String, dynamic> data):
+    previews = data['articleIds'].map<PostPreview>((id) {
+      final article = data['articleRefs'][id];
+      return PostPreview(
+        id: id,
+        title: article['titleHtml'],
+        tags: article['flows'].map<String>(
+                (flow) => flow['title'] as String).toList(),
+        publishDate: DateTime.parse(article['timePublished']),
+        author: Author.fromJson(article['author']),
+        statistics: Statistics.fromJson(article['statistics'])
+      );
+    }).toList(),
+    maxCountPages = data['pagesCount'];
 }
 
 class Comment {

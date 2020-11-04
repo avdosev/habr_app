@@ -24,39 +24,43 @@ enum Flows {
   popular_science
 }
 
+enum Order {
+  Date,
+  Relevance,
+  Rating
+}
+
+const orderToText = {
+  Order.Date: 'date',
+  Order.Rating: 'rating',
+  Order.Relevance: 'relevance'
+};
+
 class Habr {
-  static const api_url = "https://m.habr.com/kek/v2";
+  static const api_url_v2 = "https://m.habr.com/kek/v2";
+
+  Future<Either<StorageError, PostPreviews>> findPosts(String query, {int page = 1, Order order = Order.Relevance}) async {
+    String ordString = orderToText[order];
+    final url = "$api_url_v2/articles/?query=$query&order=$ordString&fl=ru&hl=ru&page=$page";
+    final response = await safe(http.get(url));
+    return response
+      .then(checkHttpStatus)
+      .map(parseJson)
+      .map((data) => PostPreviews.fromJson(data));
+  }
 
   Future<Either<StorageError, PostPreviews>> posts({int page = 1,}) async {
-    final url = "$api_url/articles/?date=day&sort=date&fl=ru&hl=ru&page=$page";
+    final url = "$api_url_v2/articles/?date=day&sort=date&fl=ru&hl=ru&page=$page";
     logInfo("Get articles by $url");
     final response = await safe(http.get(url));
     return response
       .then(checkHttpStatus)
       .map(parseJson)
-      .map((data) {
-        return PostPreviews(
-            previews: data['articleIds'].map<PostPreview>((id) {
-              final article = data['articleRefs'][id];
-              final authorJson = article['author'];
-              return PostPreview(
-                  id: id,
-                  title: article['titleHtml'],
-                  tags: article['flows'].map<String>((
-                      flow) => flow['title'] as String).toList(),
-                  publishDate: DateTime.parse(article['timePublished']),
-                  author: Author.fromJson(authorJson),
-                  statistics: Statistics.fromJson(article['statistics'])
-              );
-            }).toList(),
-            maxCountPages: data['pagesCount']
-        );
-      }
-    );
+      .map((data) => PostPreviews.fromJson(data));
   }
 
   Future<Either<StorageError, Post>> article(String id) async {
-    final url = "$api_url/articles/$id";
+    final url = "$api_url_v2/articles/$id";
     logInfo("Get article by $url");
     final response = await safe(http.get(url));
     return response
@@ -66,7 +70,7 @@ class Habr {
   }
 
   Future<Either<StorageError, Comments>> comments(String articleId) async {
-    final url = "$api_url/articles/$articleId/comments";
+    final url = "$api_url_v2/articles/$articleId/comments";
     logInfo("Get comments by $url");
     final response = await safe(http.get(url));
     return response

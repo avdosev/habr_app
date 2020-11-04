@@ -70,6 +70,13 @@ class _ArticlesListState extends State<ArticlesList> {
       drawer: MainMenu(),
       appBar: AppBar(
         title: Text("Articles"),
+        actions: [
+          IconButton(
+            tooltip: "Search",
+            icon: const Icon(Icons.search),
+            onPressed: () => openSearch(context)
+          )
+        ],
       ),
       body: bodyWidget(),
     );

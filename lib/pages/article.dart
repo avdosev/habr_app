@@ -2,13 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:habr_app/habr_storage/habr_storage.dart';
 import 'package:either_dart/either.dart';
-import 'package:habr_app/pages/comments.dart';
 import 'package:habr_app/utils/date_to_text.dart';
 import 'package:habr_app/widgets/widgets.dart';
+import 'package:habr_app/routing/routing.dart';
 import 'package:share/share.dart';
 import '../habr/dto.dart';
 import '../habr/api.dart';
-
 import '../utils/log.dart';
 
 class ArticlePage extends StatefulWidget {
@@ -18,12 +17,6 @@ class ArticlePage extends StatefulWidget {
 
   @override
   createState() => _ArticlePageState();
-}
-
-void openCommentsPage(BuildContext context, String articleId) {
-  Navigator.of(context).push(
-      MaterialPageRoute(builder: (context) => CommentsPage(articleId: articleId,))
-  );
 }
 
 class _ArticlePageState extends State<ArticlePage> {

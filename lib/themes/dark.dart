@@ -11,5 +11,6 @@ final darkTheme = ThemeData(
   visualDensity: VisualDensity.adaptivePlatformDensity,
   snackBarTheme: SnackBarThemeData(
     backgroundColor: Colors.blueGrey[400],
-  )
+  ),
+  toggleableActiveColor: Colors.blueGrey[300],
 );
