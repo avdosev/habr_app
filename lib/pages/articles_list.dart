@@ -50,7 +50,7 @@ Widget bodyWidget(ArticlesStorage store) {
             widget = Center(child: CircularProgressIndicator());
             break;
           case LoadingState.isCorrupted:
-            widget = LossInternetConnection(onPressReload: store.reload);
+            widget = Center(child: LossInternetConnection(onPressReload: store.reload));
             break;
         }
         return widget;
