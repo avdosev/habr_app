@@ -91,7 +91,7 @@ class ArticleInfo extends StatelessWidget {
       children: [
         Row(
           children: [
-            Text(dateToStr(article.publishDate, Localizations.localeOf(context))),
+            Expanded(child: Text(dateToStr(article.publishDate, Localizations.localeOf(context)))),
             SmallAuthorPreview(article.author),
           ],
           mainAxisAlignment: MainAxisAlignment.spaceBetween,

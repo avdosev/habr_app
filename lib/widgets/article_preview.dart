@@ -23,7 +23,7 @@ class ArticlePreview extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  Text(dateToStr(postPreview.publishDate, Localizations.localeOf(context)), style: TextStyle(fontSize: 15)),
+                  Expanded(child: Text(dateToStr(postPreview.publishDate, Localizations.localeOf(context)), style: TextStyle(fontSize: 15))),
                   SmallAuthorPreview(postPreview.author),
                 ],
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
