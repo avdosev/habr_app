@@ -17,10 +17,6 @@ class CachedArticlesList extends StatefulWidget {
 class _CachedArticlesListState extends State<CachedArticlesList> {
   final store = ArticlesStorage(CachedPreviewLoader());
 
-  _CachedArticlesListState() {
-    store.loadFirstPage();
-  }
-
   Widget bodyWidget() {
     return Observer(
       builder:(context) {
