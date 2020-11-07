@@ -95,12 +95,16 @@ class PostPreviews {
 
   const PostPreviews({this.previews, this.maxCountPages});
 
+  static String _prepareTitle(String title) {
+    return title.replaceAll(RegExp(r'<[^>]*>'), '').replaceAll(RegExp(r'\s+'), ' ').trim();
+  }
+
   PostPreviews.fromJson(Map<String, dynamic> data):
     previews = data['articleIds'].map<PostPreview>((id) {
       final article = data['articleRefs'][id];
       return PostPreview(
         id: id,
-        title: article['titleHtml'],
+        title: _prepareTitle(article['titleHtml']),
         tags: article['flows'].map<String>(
                 (flow) => flow['title'] as String).toList(),
         publishDate: DateTime.parse(article['timePublished']),
