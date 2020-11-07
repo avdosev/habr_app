@@ -107,16 +107,12 @@ class RadioGroup<Enum> extends StatelessWidget {
                 trailing: Icon(Icons.sort),
               )
             ]..addAll(enumToText.keys.map<Widget>(
-                    (e) => ListTile(
+                    (e) => RadioListTile(
                       title: Text(enumToText[e]),
-                      leading: Radio(
-                        // activeColor: Colors.blueGrey,
-                        value: e,
-                        groupValue: group,
-                        onChanged: (value) => {
-                          groupValue.value = value
-                        }
-                      ),
+                      // activeColor: Colors.blueGrey,
+                      value: e,
+                      groupValue: group,
+                      onChanged: (value) { groupValue.value = value; },
                     )
             ))
           );
