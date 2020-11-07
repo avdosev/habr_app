@@ -78,13 +78,18 @@ void optimizeBlock(Map<String, dynamic> block) {
   }
 }
 
+String prepareTextNode(String text) {
+  final pattern = RegExp(r'\s+');
+  return text.replaceAll(pattern, ' ');
+}
+
 List<Map<String, dynamic>> prepareHtmlInlineElement(dom.Element element) {
   final children = <Map<String, dynamic>>[];
 
   void walk(dom.Element elem, List<TextMode> modes) {
     for (final node in elem.nodes) {
       if (node.nodeType == dom.Node.TEXT_NODE) {
-        final text = node.text.replaceAll('\n', '');
+        final text = prepareTextNode(node.text);
         if (text.isNotEmpty) {
           children.add(buildTextSpan(text, modes: List.of(modes)));
         }
@@ -136,8 +141,8 @@ List<Map<String, dynamic>> prepareChildrenHtmlBlocElement(dom.Element element) {
 
   for (var node in element.nodes) {
     if (node.nodeType == dom.Node.TEXT_NODE) {
-      final text = node.text.trim();
-      if (text.isNotEmpty) {
+      final text = prepareTextNode(node.text);
+      if (text.isNotEmpty && text.trim().isNotEmpty) {
         print('text node');
         final pch = (paragraph['children'] as List);
         // may be this branch is not popular or not active

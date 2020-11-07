@@ -115,6 +115,7 @@ class Comment {
   final int id;
   final int parentId;
   final int level;
+  final bool banned;
   final DateTime timePublished;
   final DateTime timeChanged;
   final List<int> children;
@@ -130,17 +131,27 @@ class Comment {
     this.children,
     this.author,
     this.message,
+    this.banned
   });
 
-  Comment.fromJson(Map<String, dynamic> json):
-      id = json['id'],
-      parentId = json['parentId'],
-      level = json['level'],
-      timePublished = DateTime.parse(json['timePublished']),
-      timeChanged = json['timeChanged'] == null ? null : DateTime.parse(json['timeChanged']),
-      children = (json['children'] as List).cast<int>(),
-      author = Author.fromJson(json['author']),
-      message = json['message'];
+  static bool _commentIsBanned(Map<String, dynamic> json) {
+    return json['author'] == null;
+  }
+
+  static Comment fromJson(Map<String, dynamic> json) {
+    final isBanned = _commentIsBanned(json);
+    return Comment(
+      id: json['id'],
+      parentId: json['parentId'],
+      level: json['level'],
+      banned: isBanned,
+      timePublished: isBanned ? null : DateTime.parse(json['timePublished']),
+      timeChanged: json['timeChanged'] == null ? null : DateTime.parse(json['timeChanged']),
+      children: (json['children'] as List).cast<int>(),
+      author: isBanned ? null : Author.fromJson(json['author']),
+      message: json['message']
+    );
+  }
 }
 
 class Comments {

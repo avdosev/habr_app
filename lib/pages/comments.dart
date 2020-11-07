@@ -113,6 +113,13 @@ class CommentView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (comment.banned) {
+      return Column(
+        children: [
+          Text("Нло прилетело и опубликовало эту надпись")
+        ],
+      );
+    }
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
