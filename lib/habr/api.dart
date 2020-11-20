@@ -50,7 +50,7 @@ class Habr {
   }
 
   Future<Either<StorageError, PostPreviews>> posts({int page = 1,}) async {
-    final url = "$api_url_v2/articles/?date=day&sort=date&fl=ru&hl=ru&page=$page";
+    final url = "$api_url_v2/articles/?period=daily&sort=date&fl=ru&hl=ru&page=$page";
     logInfo("Get articles by $url");
     final response = await safe(http.get(url));
     return response
