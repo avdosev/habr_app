@@ -29,6 +29,11 @@ class CachedAuthors extends Table {
   TextColumn get avatarUrl => text().nullable()();
 }
 
+class CachedImages extends Table {
+  TextColumn get url => text().customConstraint('UNIQUE')();
+  TextColumn get path => text()();
+}
+
 // Dao
 
 @UseDao(tables: [CachedAuthors])
@@ -81,9 +86,21 @@ class CachedPostDao extends DatabaseAccessor<Cache> with _$CachedPostDaoMixin {
   Future deletePost(String id) => (delete(cachedPosts)..where((posts) => posts.id.equals(id))).go();
 }
 
+@UseDao(tables: [CachedImages])
+class CachedImagesDao extends DatabaseAccessor<Cache> with _$CachedImagesDaoMixin  {
+  final Cache db;
+
+  // Called by the AppDatabase class
+  CachedImagesDao(this.db) : super(db);
+
+  Future<CachedImage> getImage(String url) => (select(cachedImages)..where((image) => image.url.equals(url))).getSingle();
+  Future insertImage(Insertable<CachedImage> image) => into(cachedImages).insert(image);
+  Future deleteImage(String url) => (delete(cachedImages)..where((image) => image.url.equals(url))).go();
+}
+
 // DB
 
-@UseMoor(tables: [CachedPosts, CachedAuthors], daos: [CachedPostDao, CachedAuthorDao])
+@UseMoor(tables: [CachedPosts, CachedAuthors, CachedImages], daos: [CachedPostDao, CachedAuthorDao, CachedImagesDao])
 class Cache extends _$Cache {
   Cache()
       : super(FlutterQueryExecutor.inDatabaseFolder(
