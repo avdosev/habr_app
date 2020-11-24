@@ -30,17 +30,26 @@ class Picture extends StatelessWidget {
     } else {
       image = LoadBuilder(
         future: HabrStorage().imgStore.getImage(url),
-        onRightBuilder: (context, file) => Image.file(File(file)),
-        onErrorBuilder: (context, err) => Image.network(url),
+        onRightBuilder: (context, filePath) {
+          Widget widget = Image.file(File(filePath));
+          if (clickable) {
+            widget = _buildClickableImage(context, widget, FileImage(File(filePath)));
+          }
+          return widget;
+        },
+        onErrorBuilder: (context, err) {
+          Widget widget = Image.network(url);
+          if (clickable) {
+            widget = _buildClickableImage(context, widget, NetworkImage(url));
+          }
+          return widget;
+        },
       );
-      if (clickable) {
-        image = _buildClickableImage(context, image);
-      }
     }
     return image;
   }
 
-  _buildClickableImage(BuildContext context, Widget child) {
+  _buildClickableImage(BuildContext context, Widget child, ImageProvider imgProvider) {
     final heroTag = url;
     return GestureDetector(
       onTap: () {
@@ -49,8 +58,7 @@ class Picture extends StatelessWidget {
           MaterialPageRoute(
             builder: (context) => HeroPhotoViewRouteWrapper(
               tag: heroTag,
-              imageProvider: NetworkImage(url),
-
+              imageProvider: imgProvider,
             ),
           ),
         );
