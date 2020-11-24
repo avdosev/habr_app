@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:typed_data';
 import 'package:crypto/crypto.dart';
 import 'package:either_dart/either.dart';
 import 'package:flutter/foundation.dart';
@@ -12,7 +11,7 @@ import 'package:http/http.dart' as http;
 
 Future<String> _generateName(String url) async {
   final prefix = md5.convert(utf8.encode(url));
-  return DateTime.now().millisecondsSinceEpoch.toRadixString(36) +
+  return prefix.toString() + '_' + DateTime.now().millisecondsSinceEpoch.toRadixString(36) +
       '.' +
       url.split('.').last;
 }
@@ -38,10 +37,6 @@ class ImageLocalStorage {
     return '$path/$filename';
   }
 
-  Future<File> _createImageFile(String url) {
-    return _getImagePath(url).then((value) => File(value));
-  }
-
   Future<String> _generateImageName(String url) {
     return compute(_generateName, url);
   }
@@ -61,8 +56,13 @@ class ImageLocalStorage {
   }
 
   Future deleteImage(String url) async {
+    // картинка не удалится из кеша тк путь будет не тот,
+    // путь нужно брать из бд
+    final optionalImage = await getImage(url);
+    if (optionalImage.isLeft) return;
+    final path = optionalImage.right;
     await _cache.cachedImagesDao.deleteImage(url);
-    final file = await _createImageFile(url);
+    final file = File(path);
     if (await file.exists()) {
       await file.delete();
     }

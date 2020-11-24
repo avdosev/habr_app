@@ -1,5 +1,7 @@
 import 'package:habr_app/habr/habr.dart';
 import 'package:habr_app/habr/image_info.dart';
+import 'package:habr_app/habr_storage/image_storage.dart';
+import 'package:habr_app/utils/html_to_json.dart';
 import 'cache_tables.dart';
 import 'package:either_dart/either.dart';
 
@@ -30,10 +32,12 @@ Author _authorFromCachedAuthor(CachedAuthor author) {
 class HabrStorage {
   final Habr api;
   final Cache cache;
+  final ImageLocalStorage imgStore;
 
   HabrStorage._privateConstructor():
       api = Habr(),
-      cache = Cache()
+      cache = globalCache,
+      imgStore = ImageLocalStorage(globalCache)
   ;
 
   static final HabrStorage _instance = HabrStorage._privateConstructor();
@@ -145,5 +149,18 @@ class HabrStorage {
       publishTime: post.publishDate,
       insertTime: DateTime.now(),
     ));
+    final jsonedPost = htmlAsParsedJson(post.body);
+    await Future.wait(_getImagesFromParsedPost(jsonedPost).map((url) => imgStore.saveImage(url)));
+  }
+}
+
+Iterable<String> _getImagesFromParsedPost(Map<String, dynamic> element) sync* {
+  if (element['type'] == 'image') {
+    yield element['src'];
+  } else if (element.containsKey('child')) {
+    yield* _getImagesFromParsedPost(element['child']);
+  } else if (element.containsKey('children')) {
+    for (final child in element['children'])
+      yield* _getImagesFromParsedPost(child);
   }
 }

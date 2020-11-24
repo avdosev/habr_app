@@ -1,5 +1,10 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:habr_app/habr_storage/habr_storage.dart';
+import 'package:habr_app/utils/log.dart';
+import 'package:habr_app/widgets/widgets.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:habr_app/pages/image_view.dart';
 
@@ -23,16 +28,19 @@ class Picture extends StatelessWidget {
     if (url.endsWith("svg")) {
       image = SvgPicture.network(url);
     } else {
+      image = LoadBuilder(
+        future: HabrStorage().imgStore.getImage(url),
+        onRightBuilder: (context, file) => Image.file(File(file)),
+        onErrorBuilder: (context, err) => Image.network(url),
+      );
       if (clickable) {
-        image = _buildClickableImage(context);
-      } else {
-        image = Image.network(url);
+        image = _buildClickableImage(context, image);
       }
     }
     return image;
   }
 
-  _buildClickableImage(BuildContext context) {
+  _buildClickableImage(BuildContext context, Widget child) {
     final heroTag = url;
     return GestureDetector(
       onTap: () {
@@ -42,6 +50,7 @@ class Picture extends StatelessWidget {
             builder: (context) => HeroPhotoViewRouteWrapper(
               tag: heroTag,
               imageProvider: NetworkImage(url),
+
             ),
           ),
         );
@@ -49,9 +58,7 @@ class Picture extends StatelessWidget {
       child: Container(
         child: Hero(
           tag: heroTag,
-          child: Image.network(
-            url,
-          ),
+          child: child,
         ),
       ),
     );

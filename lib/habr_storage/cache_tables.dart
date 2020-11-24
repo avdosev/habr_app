@@ -108,6 +108,6 @@ class Cache extends _$Cache {
 
   @override
   int get schemaVersion => 1;
-
-
 }
+
+final globalCache = Cache();
