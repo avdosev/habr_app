@@ -33,9 +33,9 @@ Widget bodyWidget(ArticlesStorage store) {
                     postPreview: preview,
                     onPressed: (articleId) => openArticle(context, articleId),
                   ),
-                  onArchive: () => HabrStorage().addArticleInCache(preview.id).then((_) {
+                  onArchive: () => HabrStorage().addArticleInCache(preview.id).then((res) {
                     Scaffold.of(context).showSnackBar(
-                        SnackBar(content: Text("${preview.title} скачено"))
+                        SnackBar(content: Text("${preview.title} ${res ? '' : 'не' } скачено"))
                     );
                   }),
                 );

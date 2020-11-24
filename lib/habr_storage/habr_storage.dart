@@ -8,24 +8,16 @@ import 'package:either_dart/either.dart';
 export 'package:habr_app/habr/dto.dart';
 export 'package:habr_app/habr/storage_interface.dart';
 
-enum PostsFlow {
-  saved,
-  dayTop,
-  weekTop,
-  yearTop,
-  time,
-  news
-}
+enum PostsFlow { saved, dayTop, weekTop, yearTop, time, news }
 
 Author _authorFromCachedAuthor(CachedAuthor author) {
   return Author(
-    id: author.id,
-    alias: author.nickname,
-    avatar: ImageInfo(
-      url: author.avatarUrl,
-      store: ImageStoreType.Default // TODO: cache avatar
-    )
-  );
+      id: author.id,
+      alias: author.nickname,
+      avatar: ImageInfo(
+          url: author.avatarUrl,
+          store: ImageStoreType.Default // TODO: cache avatar
+          ));
 }
 
 /// Singleton cache_storage for habr api
@@ -34,11 +26,10 @@ class HabrStorage {
   final Cache cache;
   final ImageLocalStorage imgStore;
 
-  HabrStorage._privateConstructor():
-      api = Habr(),
-      cache = globalCache,
-      imgStore = ImageLocalStorage(globalCache)
-  ;
+  HabrStorage._privateConstructor()
+      : api = Habr(),
+        cache = globalCache,
+        imgStore = ImageLocalStorage(globalCache);
 
   static final HabrStorage _instance = HabrStorage._privateConstructor();
 
@@ -46,7 +37,8 @@ class HabrStorage {
     return _instance;
   }
 
-  Future<Either<StorageError, PostPreviews>> posts({int page = 1, PostsFlow flow}) async {
+  Future<Either<StorageError, PostPreviews>> posts(
+      {int page = 1, PostsFlow flow}) async {
     if (flow == PostsFlow.saved) {
       return cachedPosts(page: page); // TODO
     }
@@ -57,29 +49,29 @@ class HabrStorage {
     final articleOrError = await api.article(id);
     if (articleOrError.isLeft) {
       final cachedPost = await cache.cachedPostDao.getPost(id);
-      final cachedAuthor = cachedPost != null ? await cache.cachedAuthorDao.getAuthor(cachedPost.authorId) : null;
+      final cachedAuthor = cachedPost != null
+          ? await cache.cachedAuthorDao.getAuthor(cachedPost.authorId)
+          : null;
 
       return Either.condLazy(
-          cachedPost != null && cachedAuthor != null,
-          () => StorageError(
-              errCode: ErrorType.NotFound,
-              message: "Article not found in local storage"),
-          () => Post(
-              id: cachedPost.id,
-              title: cachedPost.title,
-              body: cachedPost.body,
-              publishDate: cachedPost.publishTime,
-              author: _authorFromCachedAuthor(cachedAuthor)
-          ),
+        cachedPost != null && cachedAuthor != null,
+        () => StorageError(
+            errCode: ErrorType.NotFound,
+            message: "Article not found in local storage"),
+        () => Post(
+            id: cachedPost.id,
+            title: cachedPost.title,
+            body: cachedPost.body,
+            publishDate: cachedPost.publishTime,
+            author: _authorFromCachedAuthor(cachedAuthor)),
       );
     }
     return articleOrError;
   }
 
-  Future addArticleInCache(String id) {
-    return article(id).then((postOrError) => {
-      postOrError.map((post) => _cacheArticle(post))
-    });
+  Future<bool> addArticleInCache(String id) {
+    return article(id)
+        .then((postOrError) => postOrError.map((post) => _cacheArticle(post)).isRight);
   }
 
   Future removeArticleFromCache(String id) {
@@ -88,7 +80,8 @@ class HabrStorage {
 
   Future removeAllArticlesFromCache() async {
     final postsCount = await cache.cachedPostDao.count();
-    final cachedPosts = await cache.cachedPostDao.getAllPosts(page: 1, count: postsCount);
+    final cachedPosts =
+        await cache.cachedPostDao.getAllPosts(page: 1, count: postsCount);
     for (var post in cachedPosts) {
       await removeArticleFromCache(post.post.id);
     }
@@ -103,39 +96,40 @@ class HabrStorage {
     final postsCount = await cache.cachedPostDao.count();
     final maxPages = (postsCount / pageSize).ceil();
 
-    final cachedPosts = await cache.cachedPostDao.getAllPosts(page: page, count: pageSize);
-    if (cachedPosts == null) return Left(StorageError(errCode: ErrorType.NotFound));
-    return Right(
-      PostPreviews(
-        previews: cachedPosts.map<PostPreview>((cachedPost) {
-          final author = cachedPost.author;
-          final post = cachedPost.post;
-          return PostPreview(
-            id: post.id,
-            tags: [],
-            title: post.title,
-            publishDate: post.publishTime,
-            statistics: Statistics.zero(),
-            author: _authorFromCachedAuthor(author),
-          );
-        }).toList(),
-        maxCountPages: maxPages,
-      )
-    );
+    final cachedPosts =
+        await cache.cachedPostDao.getAllPosts(page: page, count: pageSize);
+    if (cachedPosts == null)
+      return Left(StorageError(errCode: ErrorType.NotFound));
+    return Right(PostPreviews(
+      previews: cachedPosts.map<PostPreview>((cachedPost) {
+        final author = cachedPost.author;
+        final post = cachedPost.post;
+        return PostPreview(
+          id: post.id,
+          tags: [],
+          title: post.title,
+          publishDate: post.publishTime,
+          statistics: Statistics.zero(),
+          author: _authorFromCachedAuthor(author),
+        );
+      }).toList(),
+      maxCountPages: maxPages,
+    ));
   }
 
   Future _cacheAuthor(Author author) async {
-    return await cache.cachedAuthorDao.insertAuthor(
-        CachedAuthor(
-            id: author.id,
-            nickname: author.alias,
-            avatarUrl: author.avatar.url
-        )
-    );
+    return await cache.cachedAuthorDao.insertAuthor(CachedAuthor(
+        id: author.id, nickname: author.alias, avatarUrl: author.avatar.url));
   }
 
   Future _uncacheArticle(String articleId) async {
+    final eitherPost = await article(articleId);
+    if (eitherPost.isLeft) return;
+    final post = eitherPost.right;
     await cache.cachedPostDao.deletePost(articleId);
+    final jsonedPost = htmlAsParsedJson(post.body);
+    await Future.wait(_getImagesFromParsedPost(jsonedPost)
+        .map((url) => imgStore.deleteImage(url)));
   }
 
   Future _cacheArticle(Post post) async {
@@ -150,7 +144,8 @@ class HabrStorage {
       insertTime: DateTime.now(),
     ));
     final jsonedPost = htmlAsParsedJson(post.body);
-    await Future.wait(_getImagesFromParsedPost(jsonedPost).map((url) => imgStore.saveImage(url)));
+    await Future.wait(_getImagesFromParsedPost(jsonedPost)
+        .map((url) => imgStore.saveImage(url)));
   }
 }
 
