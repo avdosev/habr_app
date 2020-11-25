@@ -1,20 +1,22 @@
 import 'package:either_dart/either.dart';
+import 'package:mobx/mobx.dart';
+
 import 'package:habr_app/article_preview_loader/page_loader.dart';
 import 'package:habr_app/habr_storage/habr_storage.dart';
 import 'package:habr_app/filter/article_preview_filters.dart';
-import 'package:mobx/mobx.dart';
+import 'package:habr_app/app_error.dart';
 
 part 'article_store.g.dart';
 
 class ArticlesStorage extends ArticlesStorageBase with _$ArticlesStorage {
-  final PageLoader<Either<StorageError, PostPreviews>> loader;
+  final PageLoader<Either<AppError, PostPreviews>> loader;
   final Filter<PostPreview> filter;
 
   ArticlesStorage(this.loader, {this.filter}) {
     loadFirstPage();
   }
 
-  Future<Either<StorageError, PostPreviews>> loadPage(int page) {
+  Future<Either<AppError, PostPreviews>> loadPage(int page) {
     return loader.load(page);
   }
 
@@ -44,7 +46,7 @@ abstract class ArticlesStorageBase with Store {
     loadFirstPage();
   }
 
-  Future<Either<StorageError, PostPreviews>> loadPage(int page);
+  Future<Either<AppError, PostPreviews>> loadPage(int page);
   bool filterPreview(PostPreview preview);
 
   @action

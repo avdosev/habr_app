@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:crypto/crypto.dart';
 import 'package:either_dart/either.dart';
 import 'package:flutter/foundation.dart';
-import 'package:habr_app/habr/storage_interface.dart';
+import 'package:habr_app/app_error.dart';
 import 'package:habr_app/utils/http_request_helper.dart';
 import 'cache_tables.dart';
 import 'dart:io';
@@ -41,10 +41,10 @@ class ImageLocalStorage {
     return compute(_generateName, url);
   }
 
-  /// Return StorageError or path to saved file
-  Future<Either<StorageError, String>> saveImage(String url) async {
+  /// Return AppError or path to saved file
+  Future<Either<AppError, String>> saveImage(String url) async {
     final response = (await safe(http.get(url))).then(checkHttpStatus);
-    return response.map<Future<Either<StorageError, String>>>((right) async {
+    return response.asyncThen<String>((right) async {
       final filename = await _getImagePath(url);
       try {
         await _cache.cachedImagesDao.insertImage(CachedImage(url: url, path: filename));
@@ -52,11 +52,9 @@ class ImageLocalStorage {
         await file.writeAsBytes(right.bodyBytes);
         return Right(filename);
       } catch (err) {
-        return Left(StorageError(errCode: ErrorType.NotCached, message: "img url exist in cache"));
+        return Left(AppError(errCode: ErrorType.NotCached, message: "img url exist in cache"));
       }
-    }).unite<Future<Either<StorageError, String>>>(
-        (left) => Future.value(Left(left)),
-        (right) => right);
+    });
   }
 
   Future deleteImage(String url) async {
@@ -72,11 +70,11 @@ class ImageLocalStorage {
     }
   }
 
-  Future<Either<StorageError, String>> getImage(String url) async {
+  Future<Either<AppError, String>> getImage(String url) async {
     final res = await _cache.cachedImagesDao.getImage(url);
     return Either.condLazy(
         res != null,
-        () => const StorageError(
+        () => const AppError(
             errCode: ErrorType.NotFound, message: "Image in cache not found"),
         () => res.path);
   }

@@ -33,7 +33,7 @@ dependencies:
   html: "0.14.0+3"
   share: "0.6.5"
   flutter_highlight: "0.6.0"
-  either_dart: ">=0.0.4"
+  either_dart: ">=0.0.5"
   flutter_svg: "^0.19.0"
   url_launcher: "^5.6.0"
   moor_flutter: ^3.1.0

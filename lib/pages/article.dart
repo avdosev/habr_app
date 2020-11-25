@@ -7,8 +7,7 @@ import 'package:habr_app/widgets/widgets.dart';
 import 'package:habr_app/routing/routing.dart';
 import 'package:share/share.dart';
 import '../habr/dto.dart';
-import '../habr/api.dart';
-import '../utils/log.dart';
+import 'package:habr_app/app_error.dart';
 
 class ArticlePage extends StatefulWidget {
   final String articleId;
@@ -114,7 +113,7 @@ class LoadableArticleView extends StatefulWidget {
 }
 
 class _LoadableArticleViewState extends State<LoadableArticleView> {
-  Future<Either<StorageError, Post>> _initialLoad;
+  Future<Either<AppError, Post>> _initialLoad;
   String get articleId => widget.articleId;
 
   _LoadableArticleViewState();
@@ -131,7 +130,7 @@ class _LoadableArticleViewState extends State<LoadableArticleView> {
     });
   }
 
-  Future<Either<StorageError, Post>> loadArticle() async {
+  Future<Either<AppError, Post>> loadArticle() async {
     return HabrStorage().article(articleId);
   }
 

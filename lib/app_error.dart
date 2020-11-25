@@ -1,4 +1,4 @@
-import 'dto.dart';
+import 'habr/dto.dart';
 import 'package:either_dart/either.dart';
 
 enum ErrorType {
@@ -9,12 +9,20 @@ enum ErrorType {
   NotCached
 }
 
-class StorageError {
+class AppError {
   final ErrorType errCode;
   final String message;
 
-  const StorageError({
+  const AppError({
     this.errCode,
     this.message,
   });
+
+  @override
+  String toString() {
+    if (message == null || message.isEmpty) {
+      return errCode.toString();
+    }
+    return "$errCode: $message";
+  }
 }

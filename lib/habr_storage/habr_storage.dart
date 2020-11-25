@@ -2,11 +2,13 @@ import 'package:habr_app/habr/habr.dart';
 import 'package:habr_app/habr/image_info.dart';
 import 'package:habr_app/habr_storage/image_storage.dart';
 import 'package:habr_app/utils/html_to_json.dart';
-import 'cache_tables.dart';
+import 'package:habr_app/utils/log.dart';
 import 'package:either_dart/either.dart';
+import 'package:habr_app/app_error.dart';
+
+import 'cache_tables.dart';
 
 export 'package:habr_app/habr/dto.dart';
-export 'package:habr_app/habr/storage_interface.dart';
 
 enum PostsFlow { saved, dayTop, weekTop, yearTop, time, news }
 
@@ -37,15 +39,15 @@ class HabrStorage {
     return _instance;
   }
 
-  Future<Either<StorageError, PostPreviews>> posts(
+  Future<Either<AppError, PostPreviews>> posts(
       {int page = 1, PostsFlow flow}) async {
     if (flow == PostsFlow.saved) {
-      return cachedPosts(page: page); // TODO
+      return cachedPosts(page: page); // TODO: make flows
     }
     return api.posts(page: page);
   }
 
-  Future<Either<StorageError, Post>> article(String id) async {
+  Future<Either<AppError, Post>> article(String id) async {
     final articleOrError = await api.article(id);
     if (articleOrError.isLeft) {
       final cachedPost = await cache.cachedPostDao.getPost(id);
@@ -55,7 +57,7 @@ class HabrStorage {
 
       return Either.condLazy(
         cachedPost != null && cachedAuthor != null,
-        () => StorageError(
+        () => AppError(
             errCode: ErrorType.NotFound,
             message: "Article not found in local storage"),
         () => Post(
@@ -70,8 +72,8 @@ class HabrStorage {
   }
 
   Future<bool> addArticleInCache(String id) {
-    return article(id)
-        .then((postOrError) => postOrError.map((post) => _cacheArticle(post)).isRight);
+    return article(id).then((postOrError) =>
+        postOrError.map((post) => _cacheArticle(post)).isRight);
   }
 
   Future removeArticleFromCache(String id) {
@@ -87,11 +89,11 @@ class HabrStorage {
     }
   }
 
-  Future<Either<StorageError, Comments>> comments(String articleId) async {
+  Future<Either<AppError, Comments>> comments(String articleId) async {
     return api.comments(articleId);
   }
 
-  Future<Either<StorageError, PostPreviews>> cachedPosts({int page = 1}) async {
+  Future<Either<AppError, PostPreviews>> cachedPosts({int page = 1}) async {
     final pageSize = 10;
     final postsCount = await cache.cachedPostDao.count();
     final maxPages = (postsCount / pageSize).ceil();
@@ -99,7 +101,7 @@ class HabrStorage {
     final cachedPosts =
         await cache.cachedPostDao.getAllPosts(page: page, count: pageSize);
     if (cachedPosts == null)
-      return Left(StorageError(errCode: ErrorType.NotFound));
+      return Left(AppError(errCode: ErrorType.NotFound));
     return Right(PostPreviews(
       previews: cachedPosts.map<PostPreview>((cachedPost) {
         final author = cachedPost.author;
@@ -144,8 +146,12 @@ class HabrStorage {
       insertTime: DateTime.now(),
     ));
     final jsonedPost = htmlAsParsedJson(post.body);
-    await Future.wait(_getImagesFromParsedPost(jsonedPost)
+    final cachedPaths = await Future.wait(_getImagesFromParsedPost(jsonedPost)
         .map((url) => imgStore.saveImage(url)));
+    final imageCacheRes = cachedPaths.every((element) => element.isRight)
+        ? "all images cached"
+        : "not all images cached";
+    logInfo(imageCacheRes);
   }
 }
 

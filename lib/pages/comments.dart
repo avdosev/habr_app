@@ -4,6 +4,7 @@ import 'package:either_dart/either.dart';
 import 'package:habr_app/habr_storage/habr_storage.dart';
 import 'package:habr_app/utils/date_to_text.dart';
 import 'package:habr_app/widgets/widgets.dart';
+import 'package:habr_app/app_error.dart';
 import '../utils/log.dart';
 
 class CommentsPage extends StatefulWidget {
@@ -17,7 +18,7 @@ class CommentsPage extends StatefulWidget {
 
 class _CommentsPageState extends State<CommentsPage> {
   String get articleId => widget.articleId;
-  Future<Either<StorageError, List<Comment>>> _initialLoad;
+  Future<Either<AppError, List<Comment>>> _initialLoad;
 
   _CommentsPageState();
 
@@ -33,7 +34,7 @@ class _CommentsPageState extends State<CommentsPage> {
     });
   }
 
-  Future<Either<StorageError, List<Comment>>> loadComments() async {
+  Future<Either<AppError, List<Comment>>> loadComments() async {
     return HabrStorage()
         .comments(articleId)
         .then((value) => value
