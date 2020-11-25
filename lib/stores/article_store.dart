@@ -12,7 +12,7 @@ class ArticlesStorage extends ArticlesStorageBase with _$ArticlesStorage {
   final PageLoader<Either<AppError, PostPreviews>> loader;
   final Filter<PostPreview> filter;
 
-  ArticlesStorage(this.loader, {this.filter}) {
+  ArticlesStorage(this.loader, {this.filter = const NoneFilter<PostPreview>()}) {
     loadFirstPage();
   }
 
@@ -20,8 +20,9 @@ class ArticlesStorage extends ArticlesStorageBase with _$ArticlesStorage {
     return loader.load(page);
   }
 
+  @override
   bool filterPreview(PostPreview preview) {
-    return filter?.filter(preview) ?? false;
+    return filter.filter(preview);
   }
 }
 
