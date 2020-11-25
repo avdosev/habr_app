@@ -1,4 +1,6 @@
 abstract class Filter<T> {
+  const Filter();
+
   /// Check need to filter the object
   bool filter(T obj);
 }
@@ -19,4 +21,12 @@ class AllFilterCombine<T> extends Filter<T> {
   bool filter(T obj) {
     return filters.every((filter) => filter.filter(obj));
   }
+}
+
+/// Default Filter all return false
+class NoneFilter<T> extends Filter<T> {
+  const NoneFilter();
+
+  @override
+  bool filter(T obj) => false;
 }
