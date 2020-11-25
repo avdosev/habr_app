@@ -1,10 +1,9 @@
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:either_dart/either.dart';
 import 'package:habr_app/habr_storage/habr_storage.dart';
 import 'package:habr_app/utils/date_to_text.dart';
-import 'package:habr_app/widgets/dividing_block.dart';
 import 'package:habr_app/widgets/widgets.dart';
-
 import '../utils/log.dart';
 
 class CommentsPage extends StatefulWidget {
@@ -18,7 +17,7 @@ class CommentsPage extends StatefulWidget {
 
 class _CommentsPageState extends State<CommentsPage> {
   String get articleId => widget.articleId;
-  Future<Either<StorageError, Comments>> _initialLoad;
+  Future<Either<StorageError, List<Comment>>> _initialLoad;
 
   _CommentsPageState();
 
@@ -34,103 +33,114 @@ class _CommentsPageState extends State<CommentsPage> {
     });
   }
 
-  Future<Either<StorageError, Comments>> loadComments() async {
-    return HabrStorage().comments(articleId).catchError(logError);
+  Future<Either<StorageError, List<Comment>>> loadComments() async {
+    return HabrStorage()
+        .comments(articleId)
+        .then((value) => value
+            .map<List<Comment>>((right) => flatCommentsTree(right).toList()))
+        .catchError(logError);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text("Comments"),
-          actions: [
-
-          ],
-        ),
-        body: LoadBuilder(
-          future: _initialLoad,
-          onRightBuilder: (context, data) {
-            if (data.threads.length == 0)
-              return Center(
-                child: EmptyContent(),
-              );
-
-            return ListView.builder(
-              itemBuilder: (BuildContext context, int index) =>
-                  Container(
-                    padding: const EdgeInsets.only(
-                        top: 5, bottom: 5, left: 7, right: 7),
-                    child: CommentsTree(data, data.threads[index]),
-                  ),
-              itemCount: data.threads.length,
+      appBar: AppBar(
+        title: Text("Comments"),
+        actions: [],
+      ),
+      body: LoadBuilder(
+        future: _initialLoad,
+        onRightBuilder: (context, comments) {
+          if (comments.length == 0)
+            return Center(
+              child: EmptyContent(),
             );
-          },
-          onErrorBuilder: (context, err) => Center(
-             child: LossInternetConnection(onPressReload: reload)),
-        ),
-    );
-  }
-}
-
-class CommentsTree extends StatelessWidget {
-  final Comments comments;
-  final int currentId;
-  CommentsTree(this.comments, this.currentId);
-
-  @override
-  Widget build(BuildContext context) {
-    ThemeData themeData = Theme.of(context);
-    return Container(
-      padding: const EdgeInsets.only(top: 5),
-      child: Column(
-        children: [
-          CommentView(comments.comments[currentId]),
-          const SizedBox(height: 10,), // distance between all comments
-          if (comments.comments[currentId].children.length != 0)
-            Container(
-              decoration: BoxDecoration(
-                border: Border(left: BorderSide(
-                  color: themeData.primaryColor,
-                  width: 1.1,
-                ))
-              ),
-              padding: const EdgeInsets.only(left: 6),
-              child: WrappedContainer(
-                distance: 5,
-                children: comments.comments[currentId].children.map<Widget>(
-                        (childId) => CommentsTree(comments, childId)).toList(),
-              ),
+          return ListView.builder(
+            itemBuilder: (BuildContext context, int index) => Container(
+              padding: const EdgeInsets.only(left: 7, right: 7),
+              child: LeveledCommentsView(comments[index]),
             ),
-        ],
+            itemCount: comments.length,
+          );
+        },
+        onErrorBuilder: (context, err) =>
+            Center(child: LossInternetConnection(onPressReload: reload)),
       ),
     );
   }
 }
 
+class LeveledCommentsView extends StatelessWidget {
+  final Comment comment;
+
+  LeveledCommentsView(this.comment);
+
+  @override
+  Widget build(BuildContext context) {
+    ThemeData themeData = Theme.of(context);
+    Widget widget = CommentView(comment);
+    for (int i = 0; i < min(comment.level, 10); i++) {
+      widget = Container(
+        decoration: BoxDecoration(
+            border: Border(
+                left: BorderSide(
+          color: themeData.primaryColor,
+          width: 1.1,
+        ))),
+        padding: const EdgeInsets.only(left: 6),
+        child: widget,
+      );
+    }
+    return widget;
+  }
+}
+
+Iterable<Comment> flatCommentsTree(Comments comments) sync* {
+  final stack = <int>[]; // так будет меньше аллокаций
+  for (final thread in comments.threads) {
+    final threadStart = comments.comments[thread];
+    yield threadStart;
+    stack.addAll(threadStart.children.reversed);
+    while (stack.isNotEmpty) {
+      final currentId = stack.removeLast();
+      final comment = comments.comments[currentId];
+      stack.addAll(comment.children.reversed);
+      yield comment;
+    }
+  }
+}
+
 class CommentView extends StatelessWidget {
   final Comment comment;
+
   CommentView(this.comment);
 
   @override
   Widget build(BuildContext context) {
     if (comment.banned) {
       return Column(
-        children: [
-          Text("Нло прилетело и опубликовало эту надпись")
-        ],
+        children: [Text("Нло прилетело и опубликовало эту надпись")],
       );
     }
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(children: [
-          SmallAuthorPreview(comment.author),
-          Text(dateToStr((comment.timePublished), Localizations.localeOf(context))),
-        ], mainAxisAlignment: MainAxisAlignment.spaceBetween,),
-        const SizedBox(height: 10,),
-        HtmlView(comment.message),
-        // TODO: buttons
-      ],
-    );
+    return Padding(
+        padding: EdgeInsets.only(top: 5, bottom: 5),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                SmallAuthorPreview(comment.author),
+                Text(dateToStr(
+                    (comment.timePublished), Localizations.localeOf(context))),
+              ],
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            HtmlView(comment.message),
+            // TODO: buttons
+          ],
+        ));
   }
 }
