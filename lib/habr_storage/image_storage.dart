@@ -44,15 +44,19 @@ class ImageLocalStorage {
   /// Return StorageError or path to saved file
   Future<Either<StorageError, String>> saveImage(String url) async {
     final response = (await safe(http.get(url))).then(checkHttpStatus);
-    return response.map((right) async {
+    return response.map<Future<Either<StorageError, String>>>((right) async {
       final filename = await _getImagePath(url);
-      final file = File(filename);
-      await file.writeAsBytes(right.bodyBytes);
-      _cache.cachedImagesDao.insertImage(CachedImage(url: url, path: filename));
-      return filename;
+      try {
+        await _cache.cachedImagesDao.insertImage(CachedImage(url: url, path: filename));
+        final file = File(filename);
+        await file.writeAsBytes(right.bodyBytes);
+        return Right(filename);
+      } catch (err) {
+        return Left(StorageError(errCode: ErrorType.NotCached, message: "img url exist in cache"));
+      }
     }).unite<Future<Either<StorageError, String>>>(
         (left) => Future.value(Left(left)),
-        (right) => right.then((val) => Right(val)));
+        (right) => right);
   }
 
   Future deleteImage(String url) async {
