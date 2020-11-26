@@ -71,5 +71,8 @@ flutter:
     - assets/images/default_avatar.svg
     - assets/images/empty_comments.svg
     - assets/images/background.png
+    - assets/images/lot_of_entropy.webp
+    - assets/images/resolved.webp
+    - assets/images/fatal_error.webp
 
 
