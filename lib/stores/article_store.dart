@@ -38,6 +38,7 @@ abstract class ArticlesStorageBase with Store {
 
   int maxPages = -1;
   int pages = 0;
+  AppError lastError;
 
   @action
   Future reload() async {
@@ -55,6 +56,7 @@ abstract class ArticlesStorageBase with Store {
     firstLoading = LoadingState.inProgress;
     final firstPage = await loadPage(1);
     firstLoading = firstPage.unite<LoadingState>((left) {
+      lastError = left;
       return LoadingState.isCorrupted;
     }, (right) {
       previews

@@ -1,6 +1,7 @@
 import 'package:either_dart/either.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:habr_app/app_error.dart';
 import 'package:habr_app/article_preview_loader/preview_loader.dart';
 import 'package:habr_app/routing/routing.dart';
 import 'package:habr_app/stores/article_store.dart';
@@ -50,7 +51,13 @@ Widget bodyWidget(ArticlesStorage store) {
             widget = Center(child: CircularProgressIndicator());
             break;
           case LoadingState.isCorrupted:
-            widget = Center(child: LossInternetConnection(onPressReload: store.reload));
+            switch (store.lastError.errCode) {
+              case ErrorType.ServerError:
+                widget = const Center(child: const LotOfEntropy());
+                break;
+              default:
+                widget = Center(child: LossInternetConnection(onPressReload: store.reload));
+            }
             break;
         }
         return widget;

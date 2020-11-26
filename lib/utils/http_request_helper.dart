@@ -20,13 +20,19 @@ Future<Either<AppError, http.Response>> safe(Future<http.Response> request) asyn
 Either<AppError, http.Response> checkHttpStatus(http.Response response) {
   if (response.statusCode == 200)
     return Right(response);
-  else
+  if (response.statusCode >= 500)
     return Left(
-        AppError(
-          errCode: ErrorType.BadResponse,
-          message: "Bad http status ${response.statusCode}"
-        )
+      AppError(
+        errCode: ErrorType.ServerError,
+        message: "Server error with http status ${response.statusCode}"
+      )
     );
+  return Left(
+      AppError(
+        errCode: ErrorType.BadResponse,
+        message: "Bad http status ${response.statusCode}"
+      )
+  );
 }
 
 dynamic parseJson(http.Response response) {
