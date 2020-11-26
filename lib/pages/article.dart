@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:habr_app/habr_storage/habr_storage.dart';
 import 'package:either_dart/either.dart';
+import 'package:habr_app/stores/loading_state.dart';
 import 'package:habr_app/utils/date_to_text.dart';
 import 'package:habr_app/widgets/widgets.dart';
 import 'package:habr_app/routing/routing.dart';
 import 'package:share/share.dart';
 import '../habr/dto.dart';
 import 'package:habr_app/app_error.dart';
+import 'package:habr_app/stores/post_store.dart';
 
 class ArticlePage extends StatefulWidget {
   final String articleId;
@@ -20,14 +23,16 @@ class ArticlePage extends StatefulWidget {
 
 class _ArticlePageState extends State<ArticlePage> {
   String get articleId => widget.articleId;
-  ValueNotifier<bool> showFloatingActionButton = ValueNotifier(true);
+  ValueNotifier<bool> showFloatingActionButton = ValueNotifier(false);
   ScrollController _controller = ScrollController();
+  final PostStorage postStorage = PostStorage();
 
   _ArticlePageState();
 
   @override
   void initState() {
     super.initState();
+    postStorage.articleId = articleId;
     _controller.addListener(floatingButtonShowListener);
   }
 
@@ -37,11 +42,52 @@ class _ArticlePageState extends State<ArticlePage> {
         sharePositionOrigin: box.localToGlobal(Offset.zero) & box.size);
   }
 
+  Widget buildAppBarTitle(context) {
+    String title = "";
+    switch (postStorage.loadingState) {
+      case LoadingState.inProgress:
+        title = "Loading";
+        break;
+      case LoadingState.isFinally:
+        title = postStorage.post.title;
+        break;
+      case LoadingState.isCorrupted:
+        title = "Not loaded";
+        break;
+    }
+    return Text(title, overflow: TextOverflow.fade,);
+  }
+
+  void reload() {
+    postStorage.reload();
+  }
+
+  Widget buildBody(BuildContext context) {
+    switch (postStorage.loadingState) {
+      case LoadingState.inProgress:
+        return const Center(child: const CircularProgressIndicator());
+      case LoadingState.isFinally:
+        return ArticleView(article: postStorage.post, controller: _controller);
+      case LoadingState.isCorrupted:
+        switch (postStorage.lastError.errCode) {
+          case ErrorType.ServerError:
+            return const Center(child: const LotOfEntropy());
+          default:
+            return Center(child: LossInternetConnection(onPressReload: reload));
+        }
+        break;
+      default:
+        throw UnsupportedError("Loading state ${postStorage.loadingState} not supported");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Publish"),
+        title: Observer(
+          builder: buildAppBarTitle,
+        ),
         actions: [
           IconButton(
             icon: const Icon(Icons.share),
@@ -49,21 +95,27 @@ class _ArticlePageState extends State<ArticlePage> {
           )
         ],
       ),
-      body: LoadableArticleView(articleId: articleId, controller: _controller,),
-      floatingActionButton: ValueListenableBuilder(
-        valueListenable: showFloatingActionButton,
-        builder: (BuildContext context, bool value, Widget child) =>
-          HideFloatingActionButton(
-            tooltip: 'Comments',
-            visible: value,
-            child: const Icon(Icons.chat_bubble_outline),
-            onPressed: () => openCommentsPage(context, articleId),
-            duration: const Duration(milliseconds: 300),
-          )
+      body: Observer(
+        builder: buildBody,
+      ),
+      floatingActionButton: Observer(
+        builder: (context) {
+          showFloatingActionButton.value = postStorage.loadingState == LoadingState.isFinally;
+          return ValueListenableBuilder(
+              valueListenable: showFloatingActionButton,
+              builder: (BuildContext context, bool value, Widget child) =>
+                  HideFloatingActionButton(
+                    tooltip: 'Comments',
+                    visible: value,
+                    child: const Icon(Icons.chat_bubble_outline),
+                    onPressed: () => openCommentsPage(context, articleId),
+                    duration: const Duration(milliseconds: 300),
+                  )
+          );
+        }
       )
     );
   }
-
 
   void floatingButtonShowListener() {
     final needShow = _controller.position.userScrollDirection == ScrollDirection.forward;
@@ -74,6 +126,7 @@ class _ArticlePageState extends State<ArticlePage> {
   @override
   void dispose() {
     _controller.removeListener(floatingButtonShowListener);
+    showFloatingActionButton.dispose();
     super.dispose();
   }
 }
@@ -102,50 +155,6 @@ class ArticleInfo extends StatelessWidget {
   }
 }
 
-class LoadableArticleView extends StatefulWidget {
-  final String articleId;
-  final ScrollController controller;
-
-  LoadableArticleView({this.articleId, this.controller});
-
-  @override
-  State<StatefulWidget> createState() => _LoadableArticleViewState();
-}
-
-class _LoadableArticleViewState extends State<LoadableArticleView> {
-  Future<Either<AppError, Post>> _initialLoad;
-  String get articleId => widget.articleId;
-
-  _LoadableArticleViewState();
-
-  @override
-  initState() {
-    super.initState();
-    _initialLoad = loadArticle();
-  }
-
-  reload() async {
-    setState(() {
-      _initialLoad = loadArticle();
-    });
-  }
-
-  Future<Either<AppError, Post>> loadArticle() async {
-    return HabrStorage().article(articleId);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return LoadBuilder(
-      future: _initialLoad,
-      onRightBuilder: (context, data) =>
-          ArticleView(article: data, controller: widget.controller,),
-      onErrorBuilder: (context, err) =>
-          Center(child: LossInternetConnection(onPressReload: reload)),
-    );
-  }
-}
-
 class ArticleView extends StatelessWidget {
   final Post article;
   final ScrollController controller;
@@ -155,7 +164,7 @@ class ArticleView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListView(
-      padding: EdgeInsets.all(10).copyWith(bottom: 20),
+      padding: const EdgeInsets.all(10).copyWith(bottom: 20),
       controller: controller,
       children: [
         ArticleInfo(article: article,),

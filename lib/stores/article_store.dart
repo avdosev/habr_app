@@ -6,6 +6,8 @@ import 'package:habr_app/habr_storage/habr_storage.dart';
 import 'package:habr_app/filter/article_preview_filters.dart';
 import 'package:habr_app/app_error.dart';
 
+import 'loading_state.dart';
+
 part 'article_store.g.dart';
 
 class ArticlesStorage extends ArticlesStorageBase with _$ArticlesStorage {
@@ -25,8 +27,6 @@ class ArticlesStorage extends ArticlesStorageBase with _$ArticlesStorage {
     return filter.filter(preview);
   }
 }
-
-enum LoadingState { inProgress, isFinally, isCorrupted }
 
 abstract class ArticlesStorageBase with Store {
   @observable
