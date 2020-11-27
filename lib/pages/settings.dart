@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:habr_app/widgets/dropdown_list_tile.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
@@ -22,7 +23,9 @@ class Settings extends StatelessWidget {
         builder: (context, Box<dynamic> box, widget) {
           final themeMode =
               box.get("ThemeMode", defaultValue: ThemeMode.system);
-          int fontSize = box.get("FontSize", defaultValue: 16);
+          final int fontSize = box.get("FontSize", defaultValue: 16);
+          final TextAlign textAlign = box.get('TextAlign', defaultValue: TextAlign.left);
+          final double lineSpacing = box.get('LineSpacing', defaultValue: 1.35);
 
           return ListView(
             children: [
@@ -89,11 +92,48 @@ class Settings extends StatelessWidget {
                         ],
                       ),
                     ),
+                    DropDownListTile(
+                      values: {
+                        TextAlign.left: "Слева",
+                        TextAlign.right: "Справа",
+                        TextAlign.center: "По центру",
+                        TextAlign.justify: "По ширине",
+                      },
+                      leading: const Icon(Icons.format_align_left),
+                      title: Text("Выравнивание текста"),
+                      defaultKey: textAlign,
+                      onChanged: (val) {
+                        box.put('TextAlign', val);
+                      },
+                    ),
                     /* TODO:
                     Icons:
                     format_line_spacing
                     format_indent_increase
                      */
+                    ListTile(
+                      title: Text("Межстрочный интервал"),
+                      subtitle: Row(
+                        children: [
+                          const Icon(Icons.format_line_spacing, size: 15),
+                          Expanded(
+                            child: Slider(
+                              min: 1,
+                              max: 2,
+                              divisions: 20,
+                              value: lineSpacing,
+                              onChanged: (value) {
+                                box.put('LineSpacing', value);
+                              },
+                              label: lineSpacing.toString(),
+                              semanticFormatterCallback: (value) =>
+                                  lineSpacing.toString(),
+                            ),
+                          ),
+                          const Icon(Icons.format_line_spacing),
+                        ],
+                      ),
+                    ),
                   ],
                 ),
               ),

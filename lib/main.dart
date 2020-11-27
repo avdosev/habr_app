@@ -9,6 +9,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 main() async {
   await Hive.initFlutter();
   Hive.registerAdapter(ThemeAdapter());
+  Hive.registerAdapter(TextAlignAdapter());
   await Hive.openBox('settings');
   runApp(MyApp());
 }
@@ -20,10 +21,12 @@ class MyApp extends StatelessWidget {
     return ValueListenableBuilder(
       valueListenable: Hive.box('settings').listenable(),
       builder: (context, settings, widget) {
+        final fontSize = settings.get("FontSize", defaultValue: 16).toDouble();
+        final lineSpacing = settings.get("LineSpacing", defaultValue: 1.35);
         return MaterialApp(
           title: 'Habr',
-          theme: buildLightTheme(mainFontSize: settings.get("FontSize", defaultValue: 16).toDouble()),
-          darkTheme: buildDarkTheme(mainFontSize: settings.get("FontSize", defaultValue: 16).toDouble()),
+          theme: buildLightTheme(mainFontSize: fontSize, lineSpacing: lineSpacing),
+          darkTheme: buildDarkTheme(mainFontSize: fontSize, lineSpacing: lineSpacing),
           themeMode: settings.get("ThemeMode", defaultValue: ThemeMode.system),
           supportedLocales: [
             const Locale('ru'),

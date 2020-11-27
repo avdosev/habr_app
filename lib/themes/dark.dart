@@ -3,9 +3,10 @@ import 'text_theme.dart';
 
 ThemeData buildDarkTheme({
   double mainFontSize = 16,
+  double lineSpacing = 1.35,
 }) {
   return ThemeData(
-    textTheme: buildTextTheme(Colors.white70, mainFontSize),
+    textTheme: buildTextTheme(Colors.white70, mainFontSize, lineSpacing),
     accentColor: Colors.grey,
     primarySwatch: Colors.blueGrey,
     primaryColor: Colors.blueGrey[600],
