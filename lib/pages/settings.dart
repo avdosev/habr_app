@@ -19,9 +19,10 @@ class Settings extends StatelessWidget {
     final settings = Hive.box('settings');
     return ValueListenableBuilder(
         valueListenable: settings.listenable(),
-        builder: (context, box, widget) {
+        builder: (context, Box<dynamic> box, widget) {
           final themeMode =
               box.get("ThemeMode", defaultValue: ThemeMode.system);
+          int fontSize = box.get("FontSize", defaultValue: 16);
 
           return ListView(
             children: [
@@ -30,7 +31,7 @@ class Settings extends StatelessWidget {
                   children: [
                     SwitchListTile(
                       title: const Text("System Theme"),
-                      secondary: const Icon(Icons.brightness_6),
+                      secondary: const Icon(Icons.brightness_auto),
                       value: themeMode == ThemeMode.system,
                       onChanged: (val) {
                         if (val) {
@@ -55,6 +56,54 @@ class Settings extends StatelessWidget {
                           : null, // Switch будет неактивен при Null
                     ),
                   ],
+                ),
+              ),
+              Card(
+                child: Column(
+                  children: [
+                    ListTile(
+                      leading: const Icon(Icons.palette),
+                      title: const Text("Кастомизация"),
+                    ),
+                    ListTile(
+                      // leading: const Icon(Icons.font_download_outlined),
+                      title: Text("Размер текста"),
+                      subtitle: Row(
+                        children: [
+                          const Icon(Icons.format_size, size: 15),
+                          Expanded(
+                            child: Slider(
+                              min: 12,
+                              max: 23,
+                              divisions: 23 - 12,
+                              value: fontSize.toDouble(),
+                              onChanged: (value) {
+                                box.put('FontSize', value.round());
+                              },
+                              label: fontSize.toString(),
+                              semanticFormatterCallback: (value) =>
+                                  value.round().toString(),
+                            ),
+                          ),
+                          const Icon(Icons.format_size),
+                        ],
+                      ),
+                    ),
+                    /* TODO:
+                    Icons:
+                    format_line_spacing
+                    format_indent_increase
+                     */
+                  ],
+                ),
+              ),
+              Card(
+                child: ListTile(
+                  leading: const Icon(Icons.filter_alt),
+                  title: const Text("Фильтры"),
+                  onTap: () {
+                    // TODO: changing filters
+                  },
                 ),
               )
             ],

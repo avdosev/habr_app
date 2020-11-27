@@ -22,8 +22,8 @@ class MyApp extends StatelessWidget {
       builder: (context, settings, widget) {
         return MaterialApp(
           title: 'Habr',
-          theme: lightTheme,
-          darkTheme: darkTheme,
+          theme: buildLightTheme(mainFontSize: settings.get("FontSize", defaultValue: 16).toDouble()),
+          darkTheme: buildDarkTheme(mainFontSize: settings.get("FontSize", defaultValue: 16).toDouble()),
           themeMode: settings.get("ThemeMode", defaultValue: ThemeMode.system),
           supportedLocales: [
             const Locale('ru'),
