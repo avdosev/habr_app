@@ -247,6 +247,7 @@ Map<String, dynamic> prepareHtmlBlocElement(dom.Element element) {
       }
       return imgBloc;
     case 'pre':
+      if (element.children.isEmpty) return buildPre(buildCode(element.text, []));
       return buildPre(prepareHtmlBlocElement(element.children.first));
     default:
       print('Not found case for ${element.localName}');
