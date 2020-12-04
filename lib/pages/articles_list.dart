@@ -31,6 +31,7 @@ Widget bodyWidget(ArticlesStorage store) {
                 final preview = store.previews[index];
                 return SlidableArchive(
                   child: ArticlePreview(
+                    key: ValueKey("preview_"+preview.id),
                     postPreview: preview,
                     onPressed: (articleId) => openArticle(context, articleId),
                   ),

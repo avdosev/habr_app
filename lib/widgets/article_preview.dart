@@ -10,9 +10,10 @@ class ArticlePreview extends StatelessWidget {
   final Function(String articleId) onPressed;
 
   ArticlePreview({
+    Key key,
     @required this.postPreview,
     this.onPressed
-  });
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

@@ -30,8 +30,9 @@ class _CachedArticlesListState extends State<CachedArticlesList> {
                   return Center(child: const CircularItem());
                 final preview = store.previews[index];
                 return SlidableDelete(
-                  key: Key(preview.id),
+                  key: Key("preview_delete_"+preview.id),
                   child: ArticlePreview(
+                    key: Key("preview_"+preview.id),
                     postPreview: preview,
                     onPressed: (articleId) => openArticle(context, articleId),
                   ),
