@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:habr_app/article_preview_loader/preview_loader.dart';
+import 'package:habr_app/utils/page_loaders/preview_loader.dart';
 import 'package:habr_app/habr_storage/habr_storage.dart';
 import 'package:habr_app/widgets/incrementally_loading_listview.dart';
 import 'package:habr_app/widgets/widgets.dart';

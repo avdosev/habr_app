@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:habr_app/article_preview_loader/preview_loader.dart';
+import 'package:habr_app/utils/page_loaders/preview_loader.dart';
 import 'package:habr_app/pages/pages.dart';
 
 

@@ -1,9 +1,9 @@
 import 'package:either_dart/either.dart';
 import 'package:mobx/mobx.dart';
 
-import 'package:habr_app/article_preview_loader/page_loader.dart';
+import 'package:habr_app/utils/page_loaders/page_loader.dart';
 import 'package:habr_app/habr_storage/habr_storage.dart';
-import 'package:habr_app/filter/article_preview_filters.dart';
+import 'package:habr_app/utils/filters/article_preview_filters.dart';
 import 'package:habr_app/app_error.dart';
 
 import 'loading_state.dart';
