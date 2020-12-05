@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../habr/image_info.dart' as image;
 import '../habr/image_store.dart';
-import 'package:habr_app/colors/colors.dart';
+import 'package:habr_app/styles/colors/colors.dart';
 
 class AuthorAvatarIcon extends StatelessWidget {
   final double height;

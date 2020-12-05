@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:habr_app/themes/text_theme.dart';
+import 'text_theme.dart';
 
 ThemeData buildLightTheme({
   double mainFontSize = 16,
