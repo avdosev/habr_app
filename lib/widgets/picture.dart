@@ -11,8 +11,10 @@ import 'package:habr_app/pages/image_view.dart';
 class Picture extends StatelessWidget {
   final String url;
   final bool clickable;
+  final double height;
+  final double width;
 
-  Picture.network(this.url, {this.clickable = false});
+  Picture.network(this.url, {this.clickable = false, this.height, this.width});
 
   // TODO: make asset constructor
   // Picture.asset(
@@ -31,14 +33,23 @@ class Picture extends StatelessWidget {
       image = LoadBuilder(
         future: HabrStorage().imgStore.getImage(url),
         onRightBuilder: (context, filePath) {
-          Widget widget = Image.file(File(filePath));
+          Widget widget = Image.file(
+            File(filePath),
+            height: height,
+            width: width,
+          );
           if (clickable) {
-            widget = _buildClickableImage(context, widget, FileImage(File(filePath)));
+            widget = _buildClickableImage(
+                context, widget, FileImage(File(filePath)));
           }
           return widget;
         },
         onErrorBuilder: (context, err) {
-          Widget widget = Image.network(url);
+          Widget widget = Image.network(
+            url,
+            height: height,
+            width: width,
+          );
           if (clickable) {
             widget = _buildClickableImage(context, widget, NetworkImage(url));
           }
@@ -49,7 +60,8 @@ class Picture extends StatelessWidget {
     return image;
   }
 
-  _buildClickableImage(BuildContext context, Widget child, ImageProvider imgProvider) {
+  _buildClickableImage(
+      BuildContext context, Widget child, ImageProvider imgProvider) {
     final heroTag = url;
     return GestureDetector(
       onTap: () {

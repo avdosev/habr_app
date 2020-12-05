@@ -1,5 +1,5 @@
 import 'package:habr_app/habr/habr.dart';
-import 'package:habr_app/habr/image_info.dart';
+import 'package:habr_app/habr/author_avatar_info.dart';
 import 'package:habr_app/habr_storage/image_storage.dart';
 import 'package:habr_app/utils/workers/hasher.dart';
 import 'package:habr_app/utils/html_to_json.dart';
@@ -17,10 +17,7 @@ Author _authorFromCachedAuthor(CachedAuthor author) {
   return Author(
       id: author.id,
       alias: author.nickname,
-      avatar: ImageInfo(
-          url: author.avatarUrl,
-          store: ImageStoreType.Default // TODO: cache avatar
-          ));
+      avatar: AuthorAvatarInfo(url: author.avatarUrl));
 }
 
 /// Singleton cache_storage for habr api
@@ -122,8 +119,11 @@ class HabrStorage {
   }
 
   Future _cacheAuthor(Author author) async {
-    return await cache.cachedAuthorDao.insertAuthor(CachedAuthor(
+    await cache.cachedAuthorDao.insertAuthor(CachedAuthor(
         id: author.id, nickname: author.alias, avatarUrl: author.avatar.url));
+    if (author.avatar.isNotDefault) {
+      await imgStore.saveImage(author.avatar.url);
+    }
   }
 
   Future _uncacheArticle(String articleId) async {

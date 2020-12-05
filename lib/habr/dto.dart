@@ -1,17 +1,17 @@
 import 'package:either_dart/either.dart';
 import 'package:equatable/equatable.dart';
-import 'image_info.dart';
+import 'author_avatar_info.dart';
 
-ImageInfo prepareAvatarUrl(String url) {
-  if (url == null) return ImageInfo(url: null, store: ImageStoreType.Default);
+AuthorAvatarInfo prepareAvatarUrl(String url) {
+  if (url == null) return AuthorAvatarInfo(url: null);
   if (url.startsWith("//")) url = url.replaceFirst("//", "https://");
-  return ImageInfo(url: url, store: ImageStoreType.Network);
+  return AuthorAvatarInfo(url: url);
 }
 
 class Author extends Equatable {
   final String id;
   final String alias;
-  final ImageInfo avatar;
+  final AuthorAvatarInfo avatar;
 
   const Author({this.id, this.alias, this.avatar});
 
