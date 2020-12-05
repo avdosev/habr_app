@@ -1,7 +1,7 @@
 import 'package:habr_app/habr/habr.dart';
 import 'package:habr_app/habr/image_info.dart';
 import 'package:habr_app/habr_storage/image_storage.dart';
-import 'package:habr_app/utils/hasher.dart';
+import 'package:habr_app/utils/workers/hasher.dart';
 import 'package:habr_app/utils/html_to_json.dart';
 import 'package:habr_app/utils/log.dart';
 import 'package:either_dart/either.dart';

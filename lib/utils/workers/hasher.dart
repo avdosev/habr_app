@@ -5,6 +5,8 @@ import 'dart:async';
 import 'dart:isolate';
 import 'dart:convert';
 
+import '../log.dart';
+
 String _computeMD5Hash(String str) {
   return md5.convert(utf8.encode(str)).toString();
 }
@@ -40,11 +42,13 @@ class MD5Hash extends HashComputer {
 
       assert(_sendPort != null, "Send port must be not null");
     }
+
     tasks.addLast(completer);
     _sendPort.send(data);
   }
 
   void _createIsolate(Completer completer) async {
+    logInfo("Create isolate: md5_hasher");
     _receivePort = ReceivePort();
 
     // Экземпляр нового Изолята

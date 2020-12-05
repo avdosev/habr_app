@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:either_dart/either.dart';
 
 import 'package:habr_app/app_error.dart';
-import 'package:habr_app/utils/hasher.dart';
+import 'package:habr_app/utils/workers/hasher.dart';
 import 'package:habr_app/utils/http_request_helper.dart';
 import 'package:habr_app/utils/log.dart';
 import 'cache_tables.dart';
