@@ -1,6 +1,7 @@
 import 'package:habr_app/habr/habr.dart';
 import 'package:habr_app/habr/image_info.dart';
 import 'package:habr_app/habr_storage/image_storage.dart';
+import 'package:habr_app/utils/hasher.dart';
 import 'package:habr_app/utils/html_to_json.dart';
 import 'package:habr_app/utils/log.dart';
 import 'package:either_dart/either.dart';
@@ -31,7 +32,7 @@ class HabrStorage {
   HabrStorage._privateConstructor()
       : api = Habr(),
         cache = globalCache,
-        imgStore = ImageLocalStorage(globalCache);
+        imgStore = ImageLocalStorage(globalCache, MD5Hash());
 
   static final HabrStorage _instance = HabrStorage._privateConstructor();
 
@@ -72,8 +73,10 @@ class HabrStorage {
   }
 
   Future<bool> addArticleInCache(String id) {
-    return article(id).then((postOrError) =>
-        postOrError.map((post) => _cacheArticle(post)).isRight);
+    return article(id)
+        .then((postOrError) =>
+            postOrError.asyncMap((post) => _cacheArticle(post)))
+        .then((cachedPost) => cachedPost.isRight);
   }
 
   Future removeArticleFromCache(String id) {
@@ -100,8 +103,7 @@ class HabrStorage {
 
     final cachedPosts =
         await cache.cachedPostDao.getAllPosts(page: page, count: pageSize);
-    if (cachedPosts == null)
-      return Left(AppError(errCode: ErrorType.NotFound));
+    if (cachedPosts == null) return Left(AppError(errCode: ErrorType.NotFound));
     return Right(PostPreviews(
       previews: cachedPosts.map<PostPreview>((cachedPost) {
         final author = cachedPost.author;
