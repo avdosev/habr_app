@@ -92,6 +92,20 @@ class _ArticlePageState extends State<ArticlePage> {
           IconButton(
             icon: const Icon(Icons.share),
             onPressed: () => shareArticle(context),
+          ),
+          PopupMenuButton<String>(
+            icon: const Icon(Icons.more_vert),
+            onSelected: (val) {
+              if (val == MoreButtons.Cache) {
+                HabrStorage().addArticleInCache(widget.articleId);
+              }
+            },
+            itemBuilder: (context) => [
+              const PopupMenuItem(
+                value: MoreButtons.Cache,
+                child: Text(MoreButtons.Cache),
+              ),
+            ],
           )
         ],
       ),
@@ -129,6 +143,14 @@ class _ArticlePageState extends State<ArticlePage> {
     showFloatingActionButton.dispose();
     super.dispose();
   }
+}
+
+class MoreButtons {
+  static const String Cache = "Сохранить";
+
+  static const List<String> values = [
+    Cache
+  ];
 }
 
 class ArticleInfo extends StatelessWidget {
