@@ -75,6 +75,12 @@ void optimizeBlock(Map<String, dynamic> block) {
     } else {
       optimizeBlock(child);
     }
+  } else if (blockType == 'tp') {
+    block['text'] = (block['text'] as String).trim();
+  } else if (blockType == 'paragraph' && block['children'].isNotEmpty) {
+    if ((block['children'][0] as Map).containsKey('text')) {
+      block['children'][0]['text'] = block['children'][0]['text'].trimLeft();
+    }
   }
 }
 
