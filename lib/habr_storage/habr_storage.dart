@@ -13,13 +13,6 @@ export 'package:habr_app/habr/dto.dart';
 
 enum PostsFlow { saved, dayTop, weekTop, yearTop, time, news }
 
-Author _authorFromCachedAuthor(CachedAuthor author) {
-  return Author(
-      id: author.id,
-      alias: author.nickname,
-      avatar: AuthorAvatarInfo(url: author.avatarUrl));
-}
-
 /// Singleton cache_storage for habr api
 class HabrStorage {
   final Habr api;
@@ -58,15 +51,24 @@ class HabrStorage {
         () => AppError(
             errCode: ErrorType.NotFound,
             message: "Article not found in local storage"),
-        () => Post(
+        () async => Post(
             id: cachedPost.id,
             title: cachedPost.title,
             body: cachedPost.body,
             publishDate: cachedPost.publishTime,
-            author: _authorFromCachedAuthor(cachedAuthor)),
-      );
+            author: await _authorFromCachedAuthor(cachedAuthor)),
+      ).asyncMap((right) => right);
     }
     return articleOrError;
+  }
+
+  Future<Author> _authorFromCachedAuthor(CachedAuthor author) async {
+    return Author(
+        id: author.id,
+        alias: author.nickname,
+        avatar: (await imgStore.getImage(author.avatarUrl)).unite(
+            (_) => AuthorAvatarInfo(url: author.avatarUrl, cached: false),
+            (path) => AuthorAvatarInfo(url: path, cached: true)));
   }
 
   Future<bool> addArticleInCache(String id) {
@@ -102,7 +104,7 @@ class HabrStorage {
         await cache.cachedPostDao.getAllPosts(page: page, count: pageSize);
     if (cachedPosts == null) return Left(AppError(errCode: ErrorType.NotFound));
     return Right(PostPreviews(
-      previews: cachedPosts.map<PostPreview>((cachedPost) {
+      previews: await Future.wait(cachedPosts.map<Future<PostPreview>>((cachedPost) async {
         final author = cachedPost.author;
         final post = cachedPost.post;
         return PostPreview(
@@ -111,9 +113,9 @@ class HabrStorage {
           title: post.title,
           publishDate: post.publishTime,
           statistics: Statistics.zero(),
-          author: _authorFromCachedAuthor(author),
+          author: await _authorFromCachedAuthor(author),
         );
-      }).toList(),
+      })),
       maxCountPages: maxPages,
     ));
   }

@@ -9,7 +9,8 @@ class AuthorAvatarIcon extends StatelessWidget {
   final double width;
   final AuthorAvatarInfo avatar;
 
-  AuthorAvatarIcon({this.avatar, this.height = 20, this.width = 20});
+  AuthorAvatarIcon({this.avatar, this.height = 20, this.width = 20, Key key})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -30,12 +31,21 @@ class AuthorAvatarIcon extends StatelessWidget {
           width: width,
         ),
       );
+      // } else if (avatar.cached ?? false) {
     } else {
-      image = Picture.network(
-        avatar.url,
-        height: height,
-        width: width,
-      );
+      if (avatar.cached) {
+        image = Image.asset(
+          avatar.url,
+          height: height,
+          width: width
+        );
+      } else {
+        image = Image.network(
+          avatar.url,
+          height: height,
+          width: width,
+        );
+      }
     }
 
     return ClipRRect(

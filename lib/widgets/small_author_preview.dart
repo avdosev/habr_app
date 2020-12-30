@@ -13,7 +13,7 @@ class SmallAuthorPreview extends StatelessWidget {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        AuthorAvatarIcon(avatar: author.avatar,),
+        AuthorAvatarIcon(avatar: author.avatar, key: ValueKey('avatar_${author.avatar.hashCode}'),),
         SizedBox(width: 5,),
         Text(author.alias, style: TextStyle(fontSize: 15)),
       ]
