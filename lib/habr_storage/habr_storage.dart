@@ -56,19 +56,18 @@ class HabrStorage {
             title: cachedPost.title,
             body: cachedPost.body,
             publishDate: cachedPost.publishTime,
-            author: await _authorFromCachedAuthor(cachedAuthor)),
+            author: _authorFromCachedAuthor(cachedAuthor)),
       ).asyncMap((right) => right);
     }
     return articleOrError;
   }
 
-  Future<Author> _authorFromCachedAuthor(CachedAuthor author) async {
+  Author _authorFromCachedAuthor(CachedAuthor author) {
     return Author(
-        id: author.id,
-        alias: author.nickname,
-        avatar: (await imgStore.getImage(author.avatarUrl)).unite(
-            (_) => AuthorAvatarInfo(url: author.avatarUrl, cached: false),
-            (path) => AuthorAvatarInfo(url: path, cached: true)));
+      id: author.id,
+      alias: author.nickname,
+      avatar: AuthorAvatarInfo(url: author.avatarUrl, cached: true),
+    );
   }
 
   Future<bool> addArticleInCache(String id) {
@@ -104,7 +103,8 @@ class HabrStorage {
         await cache.cachedPostDao.getAllPosts(page: page, count: pageSize);
     if (cachedPosts == null) return Left(AppError(errCode: ErrorType.NotFound));
     return Right(PostPreviews(
-      previews: await Future.wait(cachedPosts.map<Future<PostPreview>>((cachedPost) async {
+      previews: await Future.wait(
+          cachedPosts.map<Future<PostPreview>>((cachedPost) async {
         final author = cachedPost.author;
         final post = cachedPost.post;
         return PostPreview(
@@ -113,7 +113,7 @@ class HabrStorage {
           title: post.title,
           publishDate: post.publishTime,
           statistics: Statistics.zero(),
-          author: await _authorFromCachedAuthor(author),
+          author: _authorFromCachedAuthor(author),
         );
       })),
       maxCountPages: maxPages,
@@ -121,11 +121,15 @@ class HabrStorage {
   }
 
   Future _cacheAuthor(Author author) async {
-    await cache.cachedAuthorDao.insertAuthor(CachedAuthor(
-        id: author.id, nickname: author.alias, avatarUrl: author.avatar.url));
+    String avatarUrl;
+
     if (author.avatar.isNotDefault) {
-      await imgStore.saveImage(author.avatar.url);
+      final maybeSavedImage = await imgStore.saveImage(author.avatar.url);
+      avatarUrl = maybeSavedImage.unite((left) => null, (right) => right);
     }
+
+    await cache.cachedAuthorDao.insertAuthor(CachedAuthor(
+        id: author.id, nickname: author.alias, avatarUrl: avatarUrl));
   }
 
   Future _uncacheArticle(String articleId) async {

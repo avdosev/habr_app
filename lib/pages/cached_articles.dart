@@ -25,7 +25,7 @@ class _CachedArticlesListState extends State<CachedArticlesList> {
         switch (store.firstLoading) {
           case LoadingState.isFinally:
             widget = store.previews.length > 0 ? SeparatedIncrementallyLoadingListView(
-              itemBuilder: (context, index) {
+              itemBuilder: (itemContext, index) {
                 if (index >= store.previews.length && store.loadItems)
                   return Center(child: const CircularItem());
                 final preview = store.previews[index];
