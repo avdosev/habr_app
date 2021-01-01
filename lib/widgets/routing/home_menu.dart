@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:habr_app/routing/routing.dart';
 
 class MainMenu extends StatelessWidget {
   @override
@@ -36,7 +37,12 @@ class MainMenu extends StatelessWidget {
               Navigator.pop(context);
               Navigator.pushNamed(context, 'articles/cached');
             },
-          )
+          ),
+          ListTile(
+            trailing: const Icon(Icons.filter_alt),
+            title: const Text("Фильтры"),
+            onTap: () => Navigator.popAndPushNamed(context, 'filters'),
+          ),
         ],
       ),
     );

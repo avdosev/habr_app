@@ -1,17 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:habr_app/hive/adaptors.dart';
+import 'package:habr_app/routing/routing.dart';
 import 'package:habr_app/styles/themes/themes.dart';
 import 'pages/pages.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:habr_app/habr/habr.dart';
+import 'package:habr_app/utils/filters/filter.dart';
+
 
 main() async {
+  await initializeHive();
+  runApp(MyApp());
+}
+
+Future<void> initializeHive() async {
   await Hive.initFlutter();
   Hive.registerAdapter(ThemeAdapter());
   Hive.registerAdapter(TextAlignAdapter());
-  await Hive.openBox('settings');
-  runApp(MyApp());
+  Hive.registerAdapter(PostPreviewFilterAdapter());
+  await Future.wait([
+    Hive.openBox('settings'),
+    Hive.openBox<Filter<PostPreview>>('filters'),
+  ]);
 }
 
 class MyApp extends StatelessWidget {
@@ -37,11 +49,7 @@ class MyApp extends StatelessWidget {
             GlobalMaterialLocalizations.delegate,
             GlobalWidgetsLocalizations.delegate,
           ],
-          routes: {
-            "settings": (BuildContext context) => SettingsPage(),
-            "articles": (BuildContext context) => ArticlesList(),
-            "articles/cached": (BuildContext context) => CachedArticlesList(),
-          },
+          routes: routes,
           initialRoute: "articles",
         );
       }

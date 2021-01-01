@@ -1,6 +1,8 @@
 import 'package:hive/hive.dart';
 import 'package:flutter/material.dart';
 
+//id=2
+export 'postpreview_filter_adapter.dart';
 
 class ThemeAdapter extends TypeAdapter<ThemeMode> {
   @override
@@ -31,3 +33,5 @@ class TextAlignAdapter extends TypeAdapter<TextAlign> {
     writer.write(obj.index.toString());
   }
 }
+
+// id=2 Занят

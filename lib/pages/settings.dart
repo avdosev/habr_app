@@ -137,15 +137,6 @@ class Settings extends StatelessWidget {
                   ],
                 ),
               ),
-              Card(
-                child: ListTile(
-                  leading: const Icon(Icons.filter_alt),
-                  title: const Text("Фильтры"),
-                  onTap: () {
-                    // TODO: changing filters
-                  },
-                ),
-              )
             ],
           );
         });

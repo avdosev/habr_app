@@ -26,3 +26,14 @@ void openSearchResult(BuildContext context, SearchData info) {
       MaterialPageRoute(builder: (context) => SearchResultListPage(loader: loader))
   );
 }
+
+void openFilters(BuildContext context) {
+  Navigator.pushNamed(context, "filters");
+}
+
+Map<String, WidgetBuilder> routes = {
+  "settings": (BuildContext context) => SettingsPage(),
+  "articles": (BuildContext context) => ArticlesList(),
+  "articles/cached": (BuildContext context) => CachedArticlesList(),
+  "filters": (BuildContext context) => FiltersPage(),
+};
