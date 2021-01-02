@@ -1,6 +1,3 @@
-import 'habr/dto.dart';
-import 'package:either_dart/either.dart';
-
 enum ErrorType {
   BadRequest,
   BadResponse,
