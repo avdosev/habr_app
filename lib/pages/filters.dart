@@ -68,7 +68,7 @@ class _FiltersPageState extends State<FiltersPage> {
                 onPressed: () {
                   Navigator.pop(context, _DialogType.CompanyName);
                 },
-                child: const Text('Имени компании'),
+                child: Text(AppLocalizations.of(context).companyNameFilter),
               ),
             ],
           );
@@ -130,19 +130,19 @@ class _AuthorNicknameFilterDialogState
               controller: nickanameControll,
               autofocus: true,
               decoration: InputDecoration(
-                  labelText: 'Author nickname', hintText: 'например, vds'),
+                  labelText: AppLocalizations.of(context).authorNickname, hintText: AppLocalizations.of(context).authorNicknameHint),
             ),
           )
         ],
       ),
       actions: <Widget>[
         FlatButton(
-            child: const Text('Cancel'),
+            child: Text(AppLocalizations.of(context).cancel),
             onPressed: () {
               Navigator.pop(context);
             }),
         FlatButton(
-            child: const Text('Create'),
+            child: Text(AppLocalizations.of(context).create),
             onPressed: () {
               if (nicknameValid())
                 FiltersStorage().addFilter(
