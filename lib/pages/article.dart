@@ -121,7 +121,7 @@ class _ArticlePageState extends State<ArticlePage> {
               valueListenable: showFloatingActionButton,
               builder: (BuildContext context, bool value, Widget child) =>
                   HideFloatingActionButton(
-                    tooltip: 'Comments',
+                    tooltip: AppLocalizations.of(context).comments,
                     visible: value,
                     child: const Icon(Icons.chat_bubble_outline),
                     onPressed: () => openCommentsPage(context, articleId),

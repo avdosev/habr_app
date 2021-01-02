@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:habr_app/routing/routing.dart';
 import 'package:habr_app/widgets/widgets.dart';
 import '../habr/api.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class SearchPage extends StatefulWidget {
   SearchPage({Key key}) : super(key: key);
@@ -42,7 +43,7 @@ class _SearchPageState extends State<SearchPage> {
     return Scaffold(
       resizeToAvoidBottomPadding: false,
       appBar: AppBar(
-        title: Text("Search"),
+        title: Text(AppLocalizations.of(context).search),
         actions: [],
       ),
       body: Column(
@@ -58,17 +59,17 @@ class _SearchPageState extends State<SearchPage> {
                       onFieldSubmitted: (_) => _onSearch(),
                       autofocus: true,
                       controller: queryController,
-                      decoration: InputDecoration(labelText: 'Ключевые слова'),
+                      decoration: InputDecoration(labelText: AppLocalizations.of(context).keywords),
                     ),
                   )
                 ),
                 RadioGroup<Order>(
                   groupValue: orderBy,
-                  title: "Сортировка",
+                  title: AppLocalizations.of(context).sort,
                   enumToText: {
-                    Order.Relevance: 'Релевантность',
-                    Order.Date: 'Дата',
-                    Order.Rating: 'Рейтинг',
+                    Order.Relevance: AppLocalizations.of(context).relevance,
+                    Order.Date: AppLocalizations.of(context).date,
+                    Order.Rating: AppLocalizations.of(context).rating,
                   },
                 ),
               ],

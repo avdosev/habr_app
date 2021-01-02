@@ -10,6 +10,7 @@ import 'package:habr_app/widgets/incrementally_loading_listview.dart';
 import 'package:habr_app/widgets/widgets.dart';
 import '../stores/loading_state.dart';
 import 'package:habr_app/habr_storage/habr_storage.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ArticlesList extends StatefulWidget {
   ArticlesList({Key key}) : super(key: key);
@@ -75,10 +76,10 @@ class _ArticlesListState extends State<ArticlesList> {
     return Scaffold(
       drawer: MainMenu(),
       appBar: AppBar(
-        title: Text("Articles"),
+        title: Text(AppLocalizations.of(context).articles),
         actions: [
           IconButton(
-              tooltip: "Search",
+              tooltip: AppLocalizations.of(context).search,
               icon: const Icon(Icons.search),
               onPressed: () => openSearch(context))
         ],
