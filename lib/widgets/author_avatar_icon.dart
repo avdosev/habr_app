@@ -1,7 +1,9 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:habr_app/widgets/picture.dart';
-import '../habr/author_avatar_info.dart';
+
+import 'package:habr_app/models/author_avatar_info.dart';
 import 'package:habr_app/styles/colors/colors.dart';
 
 class AuthorAvatarIcon extends StatelessWidget {
@@ -34,8 +36,8 @@ class AuthorAvatarIcon extends StatelessWidget {
       // } else if (avatar.cached ?? false) {
     } else {
       if (avatar.cached) {
-        image = Image.asset(
-          avatar.url,
+        image = Image.file(
+          File(avatar.url),
           height: height,
           width: width
         );

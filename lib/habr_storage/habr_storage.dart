@@ -1,5 +1,5 @@
 import 'package:habr_app/habr/habr.dart';
-import 'package:habr_app/habr/author_avatar_info.dart';
+import 'package:habr_app/models/models.dart';
 import 'package:habr_app/habr_storage/image_storage.dart';
 import 'package:habr_app/utils/workers/hasher.dart';
 import 'package:habr_app/utils/html_to_json.dart';
@@ -8,8 +8,6 @@ import 'package:either_dart/either.dart';
 import 'package:habr_app/app_error.dart';
 
 import 'cache_tables.dart';
-
-export 'package:habr_app/habr/dto.dart';
 
 enum PostsFlow { saved, dayTop, weekTop, yearTop, time, news }
 

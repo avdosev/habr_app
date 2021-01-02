@@ -3,10 +3,9 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:habr_app/hive/adaptors.dart';
 import 'package:habr_app/routing/routing.dart';
 import 'package:habr_app/styles/themes/themes.dart';
-import 'pages/pages.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:habr_app/habr/habr.dart';
+import 'package:habr_app/models/post_preview.dart';
 import 'package:habr_app/utils/filters/filter.dart';
 
 

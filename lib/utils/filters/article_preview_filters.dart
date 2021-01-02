@@ -1,5 +1,5 @@
 import 'filter.dart';
-import 'package:habr_app/habr/dto.dart';
+import 'package:habr_app/models/post_preview.dart';
 
 export 'filter.dart';
 

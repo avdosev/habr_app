@@ -8,7 +8,7 @@ import 'package:habr_app/utils/date_to_text.dart';
 import 'package:habr_app/widgets/widgets.dart';
 import 'package:habr_app/routing/routing.dart';
 import 'package:share/share.dart';
-import '../habr/dto.dart';
+import 'package:habr_app/models/post.dart';
 import 'package:habr_app/app_error.dart';
 import 'package:habr_app/stores/post_store.dart';
 

@@ -1,9 +1,10 @@
-import 'package:habr_app/app_error.dart';
 import 'package:either_dart/either.dart';
+import 'package:habr_app/app_error.dart';
+import 'package:habr_app/models/models.dart';
 import 'package:habr_app/utils/log.dart';
 import 'package:habr_app/utils/http_request_helper.dart';
 import 'package:http/http.dart' as http;
-import 'dto.dart';
+import 'json_parsing.dart';
 
 enum ArticleFeeds {
   dayTop,
@@ -46,7 +47,7 @@ class Habr {
     return response
       .then(checkHttpStatus)
       .map(parseJson)
-      .map((data) => PostPreviews.fromJson(data));
+      .map((data) => parsePostPreviewsFromJson(data));
   }
 
   Future<Either<AppError, PostPreviews>> posts({int page = 1,}) async {
@@ -56,7 +57,7 @@ class Habr {
     return response
       .then(checkHttpStatus)
       .map(parseJson)
-      .map((data) => PostPreviews.fromJson(data));
+      .map((data) => parsePostPreviewsFromJson(data));
   }
 
   Future<Either<AppError, Post>> article(String id) async {
@@ -66,7 +67,7 @@ class Habr {
     return response
       .then(checkHttpStatus)
       .map(parseJson)
-      .map((data) => Post.fromJson(data));
+      .map((data) => parsePostFromJson(data));
   }
 
   Future<Either<AppError, Comments>> comments(String articleId) async {
@@ -76,14 +77,6 @@ class Habr {
     return response
       .then(checkHttpStatus)
       .map(parseJson)
-      .map((data) {
-        return Comments(
-          threads: (data['threads'] as List).cast<int>(),
-          comments: (data['comments'] as Map<String, dynamic>).map<int,
-              Comment>((key, value) {
-            return MapEntry(int.parse(key), Comment.fromJson(value));
-          }),
-        );
-    });
+      .map((data) => parseCommentsFromJson(data));
   }
 }

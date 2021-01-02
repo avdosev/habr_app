@@ -5,6 +5,7 @@ import 'package:habr_app/habr_storage/habr_storage.dart';
 import 'package:habr_app/utils/date_to_text.dart';
 import 'package:habr_app/widgets/widgets.dart';
 import 'package:habr_app/app_error.dart';
+import 'package:habr_app/models/comment.dart';
 import '../utils/log.dart';
 
 class CommentsPage extends StatefulWidget {

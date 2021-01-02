@@ -1,7 +1,9 @@
+import 'package:mobx/mobx.dart';
+
 import 'package:habr_app/app_error.dart';
+import 'package:habr_app/models/post.dart';
 import 'package:habr_app/habr_storage/habr_storage.dart';
 import 'package:habr_app/stores/loading_state.dart';
-import 'package:mobx/mobx.dart';
 
 part 'post_store.g.dart';
 

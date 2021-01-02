@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:habr_app/utils/date_to_text.dart';
-import 'package:habr_app/habr_storage/habr_storage.dart';
+import 'package:habr_app/models/post_preview.dart';
 
 import 'small_author_preview.dart';
 import 'statistics_icons.dart';

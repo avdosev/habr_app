@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:habr_app/habr/habr.dart';
-import '../habr/author_avatar_info.dart';
+
+import 'package:habr_app/models/author.dart';
 
 import 'author_avatar_icon.dart';
 

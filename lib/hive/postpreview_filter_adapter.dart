@@ -1,4 +1,4 @@
-import 'package:habr_app/habr/dto.dart';
+import 'package:habr_app/models/post_preview.dart';
 import 'package:habr_app/utils/filters/article_preview_filters.dart';
 import 'package:habr_app/utils/filters/filter.dart';
 import 'package:hive/hive.dart';
