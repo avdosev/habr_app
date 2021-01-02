@@ -3,6 +3,22 @@
   "@loading": {
     "description": "Showed when resource loading"
   },
+  "removed": "Removed",
+  "@removed": {
+    "description": "Cached article was removed"
+  },
+  "unarchive": "Unarchive",
+  "@unarchive": {
+    "description": "Unarchive article"
+  },
+"createFilterBy": "Create filter by",
+"@createFilterBy": {
+  "description": "Create filter by"
+},
+"authorNicknameFilter": "Author nickname filter",
+"@authorNicknameFilter": {
+  "description": "Filter by author nickname"
+},
   "notLoaded": "Not loaded",
   "@notLoaded": {
     "description": "Showed when resource not loaded"

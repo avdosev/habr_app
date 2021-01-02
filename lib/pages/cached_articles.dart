@@ -44,7 +44,7 @@ class _CachedArticlesListState extends State<CachedArticlesList> {
                     HabrStorage().removeArticleFromCache(articleId)
                       .then((value) {
                         Scaffold.of(context).showSnackBar(
-                          SnackBar(content: Text("${preview.title} удалено"))
+                          SnackBar(content: Text("${preview.title} ${AppLocalizations.of(context).removed}"))
                         );
                       });
                   },
@@ -74,7 +74,7 @@ class _CachedArticlesListState extends State<CachedArticlesList> {
           title: Text(AppLocalizations.of(context).cachedArticles),
           actions: [
             IconButton(
-              tooltip: "Unarchive",
+              tooltip: AppLocalizations.of(context).unarchive,
               icon: const Icon(Icons.unarchive),
               onPressed: () {
                 store.removeAllPreviews();

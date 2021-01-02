@@ -56,13 +56,13 @@ class _FiltersPageState extends State<FiltersPage> {
         context: context,
         builder: (BuildContext context) {
           return SimpleDialog(
-            title: const Text('Создать фильтр по'),
+            title: Text(AppLocalizations.of(context).createFilterBy),
             children: <Widget>[
               SimpleDialogOption(
                 onPressed: () {
                   Navigator.pop(context, _DialogType.AuthorNickname);
                 },
-                child: const Text('Никнейму автора'),
+                child: Text(AppLocalizations.of(context).authorNicknameFilter),
               ),
               SimpleDialogOption(
                 onPressed: () {
