@@ -79,7 +79,7 @@ class _ArticlesListState extends State<ArticlesList> {
         title: Text(AppLocalizations.of(context).articles),
         actions: [
           IconButton(
-              tooltip: "Search",
+              tooltip: AppLocalizations.of(context).search,
               icon: const Icon(Icons.search),
               onPressed: () => openSearch(context))
         ],

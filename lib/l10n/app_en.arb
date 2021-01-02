@@ -59,6 +59,30 @@
 "@rating": {
   "description": "Rating"
 },
+"left": "Left",
+"@left": {
+  "description": "Left"
+},
+"right": "right",
+"@right": {
+  "description": "right"
+},
+"fullWidth": "fullWidth",
+"@fullWidth": {
+  "description": "fullWidth"
+},
+"center": "center",
+"@center": {
+  "description": "center"
+},
+"customization": "customization",
+"@customization": {
+  "description": "customization"
+},
+"lineSpacing": "lineSpacing",
+"@lineSpacing": {
+  "description": "lineSpacing"
+},
 "authorNicknameHint": "vds, for example",
 "@authorNicknameHint": {
   "description": "Author nickname hint"
@@ -67,7 +91,10 @@
 "@authorNickname": {
   "description": "Author nickname"
 },
-"cancel": "Cancel",
+"textAlign": "Text align",
+"@textAlign": {
+  "description": "Text align"
+},
   "notLoaded": "Not loaded",
   "@notLoaded": {
     "description": "Showed when resource not loaded"

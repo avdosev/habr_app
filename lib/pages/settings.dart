@@ -68,7 +68,7 @@ class Settings extends StatelessWidget {
                   children: [
                     ListTile(
                       leading: const Icon(Icons.palette),
-                      title: const Text("Кастомизация"),
+                      title: Text(AppLocalizations.of(context).customization),
                     ),
                     ListTile(
                       // leading: const Icon(Icons.font_download_outlined),
@@ -96,16 +96,16 @@ class Settings extends StatelessWidget {
                     ),
                     DropDownListTile(
                       values: {
-                        TextAlign.left: "Слева",
-                        TextAlign.right: "Справа",
-                        TextAlign.center: "По центру",
-                        TextAlign.justify: "По ширине",
+                        TextAlign.left: AppLocalizations.of(context).left,
+                        TextAlign.right: AppLocalizations.of(context).right,
+                        TextAlign.center: AppLocalizations.of(context).center,
+                        TextAlign.justify: AppLocalizations.of(context).fullWidth,
                       },
                       leading: const Icon(Icons.format_align_left),
                       title: Text("Выравнивание текста"),
                       defaultKey: textAlign,
                       onChanged: (val) {
-                        box.put('TextAlign', val);
+                        box.put(AppLocalizations.of(context).textAlign, val);
                       },
                     ),
                     /* TODO:
@@ -114,7 +114,7 @@ class Settings extends StatelessWidget {
                     format_indent_increase
                      */
                     ListTile(
-                      title: Text("Межстрочный интервал"),
+                      title: Text(AppLocalizations.of(context).lineSpacing),
                       subtitle: Row(
                         children: [
                           const Icon(Icons.format_line_spacing, size: 15),

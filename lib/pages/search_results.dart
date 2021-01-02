@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:habr_app/utils/page_loaders/preview_loader.dart';
 import 'package:habr_app/stores/article_store.dart';
 import 'package:habr_app/widgets/widgets.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'articles_list.dart' as ArticleList;
 
@@ -23,7 +24,7 @@ class _SearchResultListPageState extends State<SearchResultListPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Search ${widget.loader.query}"),
+        title: Text("${AppLocalizations.of(context).search} ${widget.loader.query}"),
       ),
       body: ArticleList.bodyWidget(store),
     );
