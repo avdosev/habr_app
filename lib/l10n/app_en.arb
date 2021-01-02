@@ -1,0 +1,36 @@
+{
+  "loading": "Loading",
+  "@loading": {
+    "description": "Showed when resource loading"
+  },
+  "notLoaded": "Not loaded",
+  "@notLoaded": {
+    "description": "Showed when resource not loaded"
+  },
+  "filters": "Filters",
+  "@filters": {},
+  "cachedArticles": "Cached articles",
+  "@cachedArticles": {},
+  "settings": "Settings",
+  "@settings": {},
+  "emptyContent": "it's empty here",
+  "@emptyContent": {},
+  "reload": "reload",
+  "@reload": {},
+  "lossInternet": "hey, I'm loss internet",
+  "@lossInternet": {},
+  "bannedComment": "",
+  "@bannedComment": {},
+  "appError": "wild funnel of entropy",
+  "@appError": {},
+  "comments": "Comments",
+  "@comments": {},
+  "systemTheme": "System theme",
+  "@systemTheme": {},
+  "darkTheme": "Dark theme",
+  "@darkTheme": {},
+  "customizations": "Customizations",
+  "@customizations": {},
+  "fontSize": "Font size",
+  "@fontSize": {}
+}

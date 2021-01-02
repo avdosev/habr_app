@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:habr_app/routing/routing.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class MainMenu extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final localization = AppLocalizations.of(context);
     return Drawer(
       child: ListView(
         children: [
@@ -23,7 +25,7 @@ class MainMenu extends StatelessWidget {
           ),
           ListTile(
             trailing: const Icon(Icons.settings),
-            title: Text('Settings'),
+            title: Text(localization.settings),
             onTap: () {
               // Open setting page
               Navigator.pop(context);
@@ -32,7 +34,7 @@ class MainMenu extends StatelessWidget {
           ),
           ListTile(
             trailing: const Icon(Icons.archive),
-            title: Text("Cached articles"),
+            title: Text(localization.cachedArticles),
             onTap: () {
               Navigator.pop(context);
               Navigator.pushNamed(context, 'articles/cached');
@@ -40,7 +42,7 @@ class MainMenu extends StatelessWidget {
           ),
           ListTile(
             trailing: const Icon(Icons.filter_alt),
-            title: const Text("Фильтры"),
+            title: Text(localization.filters),
             onTap: () => Navigator.popAndPushNamed(context, 'filters'),
           ),
         ],

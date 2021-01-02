@@ -2,13 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:habr_app/widgets/dropdown_list_tile.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class SettingsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text("Settings"),
+          title: Text(AppLocalizations.of(context).settings),
         ),
         body: Settings());
   }
@@ -21,6 +22,7 @@ class Settings extends StatelessWidget {
     return ValueListenableBuilder(
         valueListenable: settings.listenable(),
         builder: (context, Box<dynamic> box, widget) {
+          final localizations = AppLocalizations.of(context);
           final themeMode =
               box.get("ThemeMode", defaultValue: ThemeMode.system);
           final int fontSize = box.get("FontSize", defaultValue: 16);
@@ -33,7 +35,7 @@ class Settings extends StatelessWidget {
                 child: Column(
                   children: [
                     SwitchListTile(
-                      title: const Text("System Theme"),
+                      title: Text(localizations.systemTheme),
                       secondary: const Icon(Icons.brightness_auto),
                       value: themeMode == ThemeMode.system,
                       onChanged: (val) {
@@ -45,7 +47,7 @@ class Settings extends StatelessWidget {
                       },
                     ),
                     SwitchListTile(
-                      title: const Text("Dark Theme"),
+                      title: Text(localizations.darkTheme),
                       secondary: const Icon(Icons.brightness_2),
                       value: themeMode == ThemeMode.dark,
                       onChanged: themeMode != ThemeMode.system
@@ -70,7 +72,7 @@ class Settings extends StatelessWidget {
                     ),
                     ListTile(
                       // leading: const Icon(Icons.font_download_outlined),
-                      title: Text("Размер текста"),
+                      title: Text(localizations.fontSize),
                       subtitle: Row(
                         children: [
                           const Icon(Icons.format_size, size: 15),

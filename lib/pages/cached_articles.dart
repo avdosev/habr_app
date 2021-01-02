@@ -7,6 +7,8 @@ import 'package:habr_app/widgets/widgets.dart';
 import 'package:habr_app/stores/article_store.dart';
 import 'package:habr_app/routing/routing.dart';
 import '../stores/loading_state.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 
 class CachedArticlesList extends StatefulWidget {
   CachedArticlesList({Key key}) : super(key: key);
@@ -69,7 +71,7 @@ class _CachedArticlesListState extends State<CachedArticlesList> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text("Cached articles"),
+          title: Text(AppLocalizations.of(context).cachedArticles),
           actions: [
             IconButton(
               tooltip: "Unarchive",

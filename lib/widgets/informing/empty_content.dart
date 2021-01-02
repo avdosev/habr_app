@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class EmptyContent extends StatelessWidget {
   final double pictureHeight;
@@ -17,7 +18,7 @@ class EmptyContent extends StatelessWidget {
           height: pictureHeight, width: pictureWidth,
         ),
         const SizedBox(height: 40,),
-        Text("Судя по всему контента тут не предвидится."),
+        Text(AppLocalizations.of(context).emptyContent),
       ],
     );
   }

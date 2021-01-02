@@ -7,6 +7,7 @@ import 'package:habr_app/widgets/widgets.dart';
 import 'package:habr_app/app_error.dart';
 import 'package:habr_app/models/comment.dart';
 import '../utils/log.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class CommentsPage extends StatefulWidget {
   final String articleId;
@@ -47,7 +48,7 @@ class _CommentsPageState extends State<CommentsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Comments"),
+        title: Text(AppLocalizations.of(context).comments),
         actions: [],
       ),
       body: LoadBuilder(
@@ -120,9 +121,7 @@ class CommentView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (comment.banned) {
-      return Column(
-        children: [Text("Нло прилетело и опубликовало эту надпись")],
-      );
+      return Text(AppLocalizations.of(context).bannedComment);
     }
     return Padding(
         padding: EdgeInsets.only(top: 5, bottom: 5),

@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 import 'package:habr_app/habr_storage/habr_storage.dart';
-import 'package:either_dart/either.dart';
 import 'package:habr_app/stores/loading_state.dart';
 import 'package:habr_app/utils/date_to_text.dart';
 import 'package:habr_app/widgets/widgets.dart';
@@ -11,6 +12,7 @@ import 'package:share/share.dart';
 import 'package:habr_app/models/post.dart';
 import 'package:habr_app/app_error.dart';
 import 'package:habr_app/stores/post_store.dart';
+
 
 class ArticlePage extends StatefulWidget {
   final String articleId;
@@ -46,13 +48,13 @@ class _ArticlePageState extends State<ArticlePage> {
     String title = "";
     switch (postStorage.loadingState) {
       case LoadingState.inProgress:
-        title = "Loading";
+        title = AppLocalizations.of(context).loading;
         break;
       case LoadingState.isFinally:
         title = postStorage.post.title;
         break;
       case LoadingState.isCorrupted:
-        title = "Not loaded";
+        title = AppLocalizations.of(context).notLoaded;
         break;
     }
     return Text(title, overflow: TextOverflow.fade,);

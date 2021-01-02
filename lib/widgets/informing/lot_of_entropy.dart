@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class LotOfEntropy extends StatelessWidget {
   const LotOfEntropy();
@@ -11,7 +12,7 @@ class LotOfEntropy extends StatelessWidget {
         children: [
           Image.asset("assets/images/lot_of_entropy.webp", height: 300, width: 300,),
           SizedBox(height: 30,),
-          Text("Кругом нестабильность"),
+          Text(AppLocalizations.of(context).appError),
         ]
     );
   }

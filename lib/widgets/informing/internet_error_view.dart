@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class LossInternetConnection extends StatelessWidget {
   final VoidCallback onPressReload;
@@ -11,17 +12,18 @@ class LossInternetConnection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final localization = AppLocalizations.of(context);
     return Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Image.asset("assets/images/ufo.png"),
           SizedBox(height: 30,),
-          Text("НЛО прилетело и потеряло соединение"),
+          Text(localization.lossInternet),
           SizedBox(height: 10),
           FlatButton(
             onPressed: onPressReload,
-            child: Text("reload"),
+            child: Text(localization.reload),
           )
         ]
     );

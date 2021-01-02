@@ -7,6 +7,7 @@ import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:habr_app/models/post_preview.dart';
 import 'package:habr_app/utils/filters/filter.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 
 main() async {
@@ -40,11 +41,11 @@ class MyApp extends StatelessWidget {
           darkTheme: buildDarkTheme(mainFontSize: fontSize, lineSpacing: lineSpacing),
           themeMode: settings.get("ThemeMode", defaultValue: ThemeMode.system),
           supportedLocales: [
-            const Locale('ru'),
-            const Locale('en', 'US'),
+            const Locale('ru', ''),
+            const Locale('en', ''),
           ],
           localizationsDelegates: [
-            // ... app-specific localization delegate[s] here
+            AppLocalizations.delegate,
             GlobalMaterialLocalizations.delegate,
             GlobalWidgetsLocalizations.delegate,
           ],

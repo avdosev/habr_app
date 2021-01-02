@@ -60,6 +60,7 @@ class StatisticsScoreIcon extends StatelessWidget {
       case 0 : return Colors.grey[600];
       case 1 : return Colors.green[800];
     }
+    return Colors.grey[600];
   }
 
   StatisticsScoreIcon(this.score);

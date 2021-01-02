@@ -5,6 +5,7 @@ import 'package:habr_app/utils/filters/article_preview_filters.dart';
 import 'package:habr_app/utils/log.dart';
 import 'package:habr_app/utils/extensions/iterator_helper.dart';
 import 'package:hive/hive.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class FiltersPage extends StatefulWidget {
   @override
@@ -16,7 +17,7 @@ class _FiltersPageState extends State<FiltersPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Filters"),
+        title: Text(AppLocalizations.of(context).filters),
       ),
       body: _buildBody(),
       floatingActionButton: FloatingActionButton(
