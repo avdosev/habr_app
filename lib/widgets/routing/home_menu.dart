@@ -26,19 +26,12 @@ class MainMenu extends StatelessWidget {
           ListTile(
             trailing: const Icon(Icons.settings),
             title: Text(localization.settings),
-            onTap: () {
-              // Open setting page
-              Navigator.pop(context);
-              Navigator.pushNamed(context, "settings");
-            },
+            onTap: () => Navigator.popAndPushNamed(context, "settings"),
           ),
           ListTile(
             trailing: const Icon(Icons.archive),
             title: Text(localization.cachedArticles),
-            onTap: () {
-              Navigator.pop(context);
-              Navigator.pushNamed(context, 'articles/cached');
-            },
+            onTap: () => Navigator.popAndPushNamed(context, 'articles/cached'),
           ),
           ListTile(
             trailing: const Icon(Icons.filter_alt),

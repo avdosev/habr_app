@@ -11,90 +11,90 @@
   "@unarchive": {
     "description": "Unarchive article"
   },
-"createFilterBy": "Create filter by",
-"@createFilterBy": {
-  "description": "Create filter by"
-},
-"authorNicknameFilter": "Author nickname filter",
-"@authorNicknameFilter": {
-  "description": "Filter by author nickname"
-},
-"companyNameFilter": "Company name filter",
-"@companyNameFilter": {
-  "description": "Filter by company name"
-},
-"articles": "Articles",
-"@articles": {
-  "description": "Articles list"
-},
-"create": "Create",
-"@create": {
-  "description": "Create"
-},
-"cancel": "Cancel",
-"@cancel": {
-  "description": "Cancel"
-},
-"search": "Search",
-"@search": {
-  "description": "Search"
-},
-"keywords": "Keywords",
-"@keywords": {
-  "description": "Keywords"
-},
-"sort": "Sorting",
-"@sort": {
-  "description": "Sorting"
-},
-"relevance": "Relevance",
-"@relevance": {
-  "description": "Relevance"
-},
-"date": "Date",
-"@date": {
-  "description": "Date"
-},
-"rating": "Rating",
-"@rating": {
-  "description": "Rating"
-},
-"left": "Left",
-"@left": {
-  "description": "Left"
-},
-"right": "right",
-"@right": {
-  "description": "right"
-},
-"fullWidth": "fullWidth",
-"@fullWidth": {
-  "description": "fullWidth"
-},
-"center": "center",
-"@center": {
-  "description": "center"
-},
-"customization": "customization",
-"@customization": {
-  "description": "customization"
-},
-"lineSpacing": "lineSpacing",
-"@lineSpacing": {
-  "description": "lineSpacing"
-},
-"authorNicknameHint": "vds, for example",
-"@authorNicknameHint": {
-  "description": "Author nickname hint"
-},
-"authorNickname": "Author nickname",
-"@authorNickname": {
-  "description": "Author nickname"
-},
-"textAlign": "Text align",
-"@textAlign": {
-  "description": "Text align"
-},
+  "createFilterBy": "Create filter by",
+  "@createFilterBy": {
+    "description": "Create filter by"
+  },
+  "authorNicknameFilter": "Author nickname filter",
+  "@authorNicknameFilter": {
+    "description": "Filter by author nickname"
+  },
+  "companyNameFilter": "Company name filter",
+  "@companyNameFilter": {
+    "description": "Filter by company name"
+  },
+  "articles": "Articles",
+  "@articles": {
+    "description": "Articles list"
+  },
+  "create": "Create",
+  "@create": {
+    "description": "Create"
+  },
+  "cancel": "Cancel",
+  "@cancel": {
+    "description": "Cancel"
+  },
+  "search": "Search",
+  "@search": {
+    "description": "Search"
+  },
+  "keywords": "Keywords",
+  "@keywords": {
+    "description": "Keywords"
+  },
+  "sort": "Sorting",
+  "@sort": {
+    "description": "Sorting"
+  },
+  "relevance": "Relevance",
+  "@relevance": {
+    "description": "Relevance"
+  },
+  "date": "Date",
+  "@date": {
+    "description": "Date"
+  },
+  "rating": "Rating",
+  "@rating": {
+    "description": "Rating"
+  },
+  "left": "Left",
+  "@left": {
+    "description": "Left"
+  },
+  "right": "right",
+  "@right": {
+    "description": "right"
+  },
+  "fullWidth": "fullWidth",
+  "@fullWidth": {
+    "description": "fullWidth"
+  },
+  "center": "center",
+  "@center": {
+    "description": "center"
+  },
+  "customization": "customization",
+  "@customization": {
+    "description": "customization"
+  },
+  "lineSpacing": "lineSpacing",
+  "@lineSpacing": {
+    "description": "lineSpacing"
+  },
+  "authorNicknameHint": "vds, for example",
+  "@authorNicknameHint": {
+    "description": "Author nickname hint"
+  },
+  "authorNickname": "Author nickname",
+  "@authorNickname": {
+    "description": "Author nickname"
+  },
+  "textAlign": "Text align",
+  "@textAlign": {
+    "description": "Text align"
+  },
   "notLoaded": "Not loaded",
   "@notLoaded": {
     "description": "Showed when resource not loaded"

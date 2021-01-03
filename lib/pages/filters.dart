@@ -112,6 +112,7 @@ class _AuthorNicknameFilterDialogState
 
   @override
   void initState() {
+    super.initState();
     nickanameControll = TextEditingController();
   }
 
