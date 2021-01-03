@@ -24,7 +24,7 @@ Widget bodyWidget(ArticlesStorage store) {
     Widget widget;
     switch (store.firstLoading) {
       case LoadingState.isFinally:
-        widget = SeparatedIncrementallyLoadingListView(
+        widget = IncrementallyLoadingListView(
           itemBuilder: (context, index) {
             if (index >= store.previews.length && store.loadItems)
               return Center(child: const CircularItem());

@@ -31,7 +31,6 @@ class ArticlesStorage extends ArticlesStorageBase with _$ArticlesStorage {
 abstract class ArticlesStorageBase with Store {
   @observable
   LoadingState firstLoading;
-  @observable
   bool loadItems = false;
   @observable
   List<PostPreview> previews = [];
@@ -75,7 +74,6 @@ abstract class ArticlesStorageBase with Store {
     }, (posts) => posts);
   }
 
-  @action
   Future loadNextPage() async {
     final numberLoadingPage = pages + 1;
     loadItems = true;
@@ -91,13 +89,13 @@ abstract class ArticlesStorageBase with Store {
   }
 
   @action
-  removePreview(String id) {
+  void removePreview(String id) {
     previews.removeWhere((element) => element.id == id);
     previews = List()..addAll(previews);
   }
 
   @action
-  removeAllPreviews() {
+  void removeAllPreviews() {
     previews = [];
   }
 }

@@ -371,13 +371,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.1.18"
-  incrementally_loading_listview:
-    dependency: "direct main"
-    description:
-      name: incrementally_loading_listview
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.3.0"
   intl:
     dependency: "direct main"
     description:
@@ -623,13 +616,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.0.0"
-  rxdart:
-    dependency: transitive
-    description:
-      name: rxdart
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.23.1"
   share:
     dependency: "direct main"
     description:
