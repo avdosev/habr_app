@@ -10,13 +10,19 @@ class AuthorAvatarIcon extends StatelessWidget {
   final double height;
   final double width;
   final AuthorAvatarInfo avatar;
+  final Color defaultColor;
 
-  AuthorAvatarIcon({this.avatar, this.height = 20, this.width = 20, Key key})
-      : super(key: key);
+  AuthorAvatarIcon({
+    @required this.avatar,
+    this.height = 20,
+    this.width = 20,
+    this.defaultColor,
+    Key key,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    Color colorForDefault = DefaultAvatarColors.lilac;
+    Color colorForDefault = defaultColor ?? DefaultAvatarColors.lilac;
     Widget image;
 
     if (avatar.isDefault) {
@@ -33,14 +39,9 @@ class AuthorAvatarIcon extends StatelessWidget {
           width: width,
         ),
       );
-      // } else if (avatar.cached ?? false) {
     } else {
       if (avatar.cached) {
-        image = Image.file(
-          File(avatar.url),
-          height: height,
-          width: width
-        );
+        image = Image.file(File(avatar.url), height: height, width: width);
       } else {
         image = Image.network(
           avatar.url,
