@@ -19,7 +19,7 @@ class Statistics {
         score = json['score'],
         votesCount = json['votesCount'];
 
-  Statistics.zero() :
+  const Statistics.zero() :
         commentsCount = 0,
         favoritesCount = 0,
         readingCount = 0,

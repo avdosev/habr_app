@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:habr_app/hive/adaptors.dart';
+import 'package:habr_app/hive/register_in_hive.dart';
 import 'package:habr_app/routing/routing.dart';
 import 'package:habr_app/styles/themes/themes.dart';
 import 'package:hive/hive.dart';
@@ -17,9 +17,7 @@ main() async {
 
 Future<void> initializeHive() async {
   await Hive.initFlutter();
-  Hive.registerAdapter(ThemeAdapter());
-  Hive.registerAdapter(TextAlignAdapter());
-  Hive.registerAdapter(PostPreviewFilterAdapter());
+  registerAdapters();
   await Future.wait([
     Hive.openBox('settings'),
     Hive.openBox<Filter<PostPreview>>('filters'),
