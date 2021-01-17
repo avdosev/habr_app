@@ -10,5 +10,8 @@ Future<void> initializeHive() async {
   await Future.wait([
     Hive.openBox('settings'),
     Hive.openBox<Filter<PostPreview>>('filters'),
+    Hive.openBox<PostPreview>('bookmarked'),
+    Hive.openBox<PostPreview>('read_late'),
+    Hive.openBox<double>('bookmarks'),
   ]);
 }

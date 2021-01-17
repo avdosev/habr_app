@@ -11,7 +11,7 @@ class PostPreviewAdapter extends TypeAdapter<PostPreview> {
   PostPreview read(BinaryReader reader) {
     final id = reader.read();
     final title = reader.read();
-    final tags = reader.read();
+    final tags = reader.readList().cast<String>();
     final corporative = reader.read();
     final publishDate = reader.read();
     final author = reader.read();

@@ -4,6 +4,9 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:habr_app/habr_storage/habr_storage.dart';
+import 'package:habr_app/models/models.dart' as Models;
+import 'package:habr_app/models/models.dart';
+import 'package:habr_app/stores/bookmarks_store.dart';
 import 'package:habr_app/stores/loading_state.dart';
 import 'package:habr_app/utils/date_to_text.dart';
 import 'package:habr_app/widgets/widgets.dart';
@@ -45,7 +48,7 @@ class _ArticlePageState extends State<ArticlePage> {
   }
 
   Widget buildAppBarTitle(context) {
-    String title = "";
+    String title;
     switch (postStorage.loadingState) {
       case LoadingState.inProgress:
         title = AppLocalizations.of(context).loading;
@@ -56,6 +59,8 @@ class _ArticlePageState extends State<ArticlePage> {
       case LoadingState.isCorrupted:
         title = AppLocalizations.of(context).notLoaded;
         break;
+      default:
+        title = "";
     }
     return Text(title, overflow: TextOverflow.fade,);
   }
@@ -98,16 +103,24 @@ class _ArticlePageState extends State<ArticlePage> {
           PopupMenuButton<String>(
             icon: const Icon(Icons.more_vert),
             onSelected: (val) {
-              if (val == MoreButtons.Cache) {
-                HabrStorage().addArticleInCache(widget.articleId);
+              switch (val) {
+                case MoreButtons.Cache:
+                  HabrStorage().addArticleInCache(widget.articleId);
+                  break;
+                case MoreButtons.Bookmark:
+                  addBookMark();
+                  break;
+                case MoreButtons.BackToBookmark:
+                  returnToBookmark();
+                  break;
               }
             },
-            itemBuilder: (context) => [
-              const PopupMenuItem(
-                value: MoreButtons.Cache,
-                child: Text(MoreButtons.Cache),
-              ),
-            ],
+            itemBuilder: (context) => MoreButtons.values.map((val) =>
+              PopupMenuItem(
+                value: val,
+                child: Text(val),
+              )
+            ).toList(),
           )
         ],
       ),
@@ -133,6 +146,32 @@ class _ArticlePageState extends State<ArticlePage> {
     );
   }
 
+  void addBookMark() {
+    if (postStorage.loadingState == LoadingState.isFinally) {
+      final position = _controller.offset;
+      final post = postStorage.post;
+      final preview = PostPreview(
+        id: articleId,
+        title: post.title,
+        tags: [],
+        publishDate: post.publishDate,
+        statistics: Models.Statistics.zero(),
+        author: post.author,
+      );
+      BookmarksStore().addBookmark(articleId, position, preview);
+    }
+  }
+
+  void returnToBookmark() {
+    if (postStorage.loadingState == LoadingState.isFinally) {
+      final position = BookmarksStore().getPosition(articleId);
+      if (position != null) {
+        int duration = (_controller.offset - position).abs().round();
+        _controller.animateTo(position, duration: Duration(milliseconds: duration), curve: Curves.easeIn);
+      }
+    }
+  }
+
   void floatingButtonShowListener() {
     final needShow = _controller.position.userScrollDirection == ScrollDirection.forward;
     if (needShow != showFloatingActionButton.value)
@@ -149,9 +188,11 @@ class _ArticlePageState extends State<ArticlePage> {
 
 class MoreButtons {
   static const String Cache = "Сохранить";
+  static const String Bookmark = "Запомнить позицию";
+  static const String BackToBookmark = "Вернуться в позицию";
 
   static const List<String> values = [
-    Cache
+    Cache, Bookmark, BackToBookmark
   ];
 }
 

@@ -35,5 +35,6 @@ Map<String, WidgetBuilder> routes = {
   "settings": (BuildContext context) => SettingsPage(),
   "articles": (BuildContext context) => ArticlesList(),
   "articles/cached": (BuildContext context) => CachedArticlesList(),
+  "articles/bookmarks": (BuildContext context) => BookmarksArticlesList(),
   "filters": (BuildContext context) => FiltersPage(),
 };

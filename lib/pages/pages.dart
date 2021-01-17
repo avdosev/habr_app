@@ -6,3 +6,4 @@ export 'cached_articles.dart';
 export 'search.dart';
 export 'search_results.dart';
 export 'filters.dart';
+export 'bookmarks.dart';

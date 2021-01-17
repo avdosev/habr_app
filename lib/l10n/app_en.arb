@@ -124,5 +124,7 @@
   "customizations": "Customizations",
   "@customizations": {},
   "fontSize": "Font size",
-  "@fontSize": {}
+  "@fontSize": {},
+  "bookmarks": "Bookmarks",
+  "@bookmarks": {}
 }

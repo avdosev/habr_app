@@ -34,6 +34,11 @@ class MainMenu extends StatelessWidget {
             onTap: () => Navigator.popAndPushNamed(context, 'articles/cached'),
           ),
           ListTile(
+            trailing: const Icon(Icons.bookmark),
+            title: Text(localization.bookmarks),
+            onTap: () => Navigator.popAndPushNamed(context, 'articles/bookmarks'),
+          ),
+          ListTile(
             trailing: const Icon(Icons.filter_alt),
             title: Text(localization.filters),
             onTap: () => Navigator.popAndPushNamed(context, 'filters'),
