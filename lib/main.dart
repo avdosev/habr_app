@@ -1,27 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:habr_app/hive/register_in_hive.dart';
-import 'package:habr_app/routing/routing.dart';
-import 'package:habr_app/styles/themes/themes.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:habr_app/models/post_preview.dart';
-import 'package:habr_app/utils/filters/filter.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+import 'package:habr_app/utils/hive_helper.dart';
+import 'package:habr_app/styles/themes/themes.dart';
+import 'package:habr_app/routing/routing.dart';
 
 
 main() async {
   await initializeHive();
   runApp(MyApp());
-}
-
-Future<void> initializeHive() async {
-  await Hive.initFlutter();
-  registerAdapters();
-  await Future.wait([
-    Hive.openBox('settings'),
-    Hive.openBox<Filter<PostPreview>>('filters'),
-  ]);
 }
 
 class MyApp extends StatelessWidget {
@@ -50,7 +40,7 @@ class MyApp extends StatelessWidget {
           routes: routes,
           initialRoute: "articles",
         );
-      }
+      },
     );
   }
 }
