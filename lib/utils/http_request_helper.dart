@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:habr_app/app_error.dart';
 import 'package:either_dart/either.dart';
 import 'package:http/http.dart' as http;
@@ -37,4 +38,13 @@ Either<AppError, http.Response> checkHttpStatus(http.Response response) {
 
 dynamic parseJson(http.Response response) {
   return json.decode(response.body);
+}
+
+dynamic _parseJson(String data) {
+  final json = JsonCodec();
+  return json.decode(data);
+}
+
+Future<dynamic> asyncParseJson(http.Response response) async {
+  return await compute(_parseJson, response.body);
 }

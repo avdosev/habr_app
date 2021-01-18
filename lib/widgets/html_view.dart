@@ -50,7 +50,11 @@ InlineSpan buildInline(Map<String, dynamic> element, BuildContext context) {
 
 Widget buildTree(Map<String, dynamic> element, BuildContext context) {
   final type = element['type'];
-  logInfo(type);
+  if (type == 'hl') {
+    logInfo('$type ${element['text']}');
+  } else {
+    logInfo(type);
+  }
   Widget widget;
   if (type == 'hl') {
     final mode = HeadLineType.values[int.parse(element['mode'].substring(1)) - 1];

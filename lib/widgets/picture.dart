@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:habr_app/habr_storage/habr_storage.dart';
@@ -29,8 +30,14 @@ class Picture extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Widget image;
+    final textTheme = Theme.of(context).textTheme.bodyText2;
+
     if (url.endsWith("svg")) {
-      image = SvgPicture.network(url);
+      image = Center(child: Transform.scale(
+        scale: 2,
+        alignment: Alignment.center,
+        child: SvgPicture.network(url, color: textTheme.color),
+      ));
     } else {
       image = Container(
         height: height,
