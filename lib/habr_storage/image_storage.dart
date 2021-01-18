@@ -32,10 +32,11 @@ class ImageLocalStorage {
   }
 
   Future<String> _generateImageName(String url) async {
-    final prefix = await _hashComputer.hash(url);
-    return prefix + '_' + DateTime.now().millisecondsSinceEpoch.toRadixString(36) +
-        '.' +
-        url.split('.').last;
+    final prefix1 = await _hashComputer.hash(url);
+    final prefix2 = DateTime.now().millisecondsSinceEpoch.toRadixString(36);
+    String postfix = url.split('.').last;
+    postfix = postfix.length > 8 ? 'none' : postfix;
+    return '${prefix1}_$prefix2.$postfix';
   }
 
   /// Return AppError or path to saved file
@@ -45,12 +46,15 @@ class ImageLocalStorage {
       final filename = await _getImagePath(url);
       logInfo('Saving image to $filename');
       try {
-        await _cache.cachedImagesDao.insertImage(CachedImage(url: url, path: filename));
+        await _cache.cachedImagesDao
+            .insertImage(CachedImage(url: url, path: filename));
         final file = File(filename);
         await file.writeAsBytes(right.bodyBytes);
         return Right(filename);
       } catch (err) {
-        return Left(AppError(errCode: ErrorType.NotCached, message: "img url exist in cache"));
+        logError(err);
+        return Left(AppError(
+            errCode: ErrorType.NotCached, message: "img url exist in cache"));
       }
     });
   }
