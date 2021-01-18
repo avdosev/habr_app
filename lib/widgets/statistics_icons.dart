@@ -43,16 +43,19 @@ class Statistics extends StatelessWidget {
 
 class StatisticsFavoritesIcon extends StatelessWidget {
   final int favorites;
-  StatisticsFavoritesIcon(this.favorites);
+  final TextStyle textStyle;
+
+  StatisticsFavoritesIcon(this.favorites, {this.textStyle});
 
   @override
   Widget build(BuildContext context) {
-    return Statistics.icon(value: favorites, iconData: Icons.bookmark);
+    return Statistics.icon(value: favorites, iconData: Icons.bookmark, textStyle: textStyle,);
   }
 }
 
 class StatisticsScoreIcon extends StatelessWidget {
   final int score;
+  final TextStyle textStyle;
 
   Color scoreToColor(int score) {
     switch (score.sign) {
@@ -63,14 +66,14 @@ class StatisticsScoreIcon extends StatelessWidget {
     return Colors.grey[600];
   }
 
-  StatisticsScoreIcon(this.score);
+  StatisticsScoreIcon(this.score, {this.textStyle});
 
   @override
   Widget build(BuildContext context) {
     return Statistics.icon(
       iconData: Icons.equalizer,
       value: score,
-      textStyle: TextStyle(color: scoreToColor(score)),
+      textStyle: textStyle.copyWith(color: scoreToColor(score)),
       valueTransformer: (value) {
         String res = intToMetricPrefix(value);
         if (value > 0) res = '+' + res;
@@ -82,26 +85,32 @@ class StatisticsScoreIcon extends StatelessWidget {
 
 class StatisticsViewsIcon extends StatelessWidget {
   final int views;
-  StatisticsViewsIcon(this.views);
+  final TextStyle textStyle;
+
+  StatisticsViewsIcon(this.views, {this.textStyle});
 
   @override
   Widget build(BuildContext context) {
     return Statistics.icon(
       iconData: Icons.remove_red_eye,
       value: views,
+      textStyle: textStyle,
     );
   }
 }
 
 class StatisticsCommentsIcon extends StatelessWidget {
   final int comments;
-  StatisticsCommentsIcon(this.comments);
+  final TextStyle textStyle;
+
+  StatisticsCommentsIcon(this.comments, {this.textStyle});
 
   @override
   Widget build(BuildContext context) {
     return Statistics.icon(
       iconData: Icons.forum,
       value: comments,
+      textStyle: textStyle,
     );
   }
 }

@@ -7,8 +7,9 @@ import 'author_avatar_icon.dart';
 
 class SmallAuthorPreview extends StatelessWidget {
   final Author author;
+  final TextStyle textStyle;
 
-  SmallAuthorPreview(this.author);
+  SmallAuthorPreview(this.author, {this.textStyle});
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +23,7 @@ class SmallAuthorPreview extends StatelessWidget {
       SizedBox(
         width: 5,
       ),
-      Text(author.alias, style: TextStyle(fontSize: 15)),
+      Text(author.alias, style: textStyle),
     ]);
   }
 }
