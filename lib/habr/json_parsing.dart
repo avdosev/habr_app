@@ -1,4 +1,5 @@
 import 'package:habr_app/models/models.dart';
+import 'package:html/parser.dart' show parseFragment;
 
 AuthorAvatarInfo prepareAvatarUrl(String url) {
   if (url == null) return AuthorAvatarInfo(url: null);
@@ -74,8 +75,5 @@ PostPreviews parsePostPreviewsFromJson(Map<String, dynamic> data) {
 }
 
 String _preparePostTitle(String title) {
-  return title
-      .replaceAll(RegExp(r'<[^>]*>'), '')
-      .replaceAll(RegExp(r'\s+'), ' ')
-      .trim();
+  return parseFragment(title).text.trim();
 }
