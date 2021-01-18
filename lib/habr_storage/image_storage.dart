@@ -75,10 +75,10 @@ class ImageLocalStorage {
 
   Future<Either<AppError, String>> getImage(String url) async {
     final res = await _cache.cachedImagesDao.getImage(url);
-    return Either.condLazy(
+    return Either.cond(
         res != null,
-        () => const AppError(
+        const AppError(
             errCode: ErrorType.NotFound, message: "Image in cache not found"),
-        () => res.path);
+        res.path);
   }
 }

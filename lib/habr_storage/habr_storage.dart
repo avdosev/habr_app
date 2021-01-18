@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:habr_app/habr/habr.dart';
 import 'package:habr_app/models/models.dart';
 import 'package:habr_app/habr_storage/image_storage.dart';
@@ -175,13 +176,12 @@ class HabrStorage {
       publishTime: post.publishDate,
       insertTime: DateTime.now(),
     ));
-    final jsonedPost = htmlAsParsedJson(post.body);
+    logInfo('parse html to json');
+    final jsonedPost = await compute(htmlAsParsedJson, post.body);
     final cachedPaths = await Future.wait(_getImagesFromParsedPost(jsonedPost)
         .map((url) => imgStore.saveImage(url)));
-    final imageCacheRes = cachedPaths.every((element) => element.isRight)
-        ? "all images cached"
-        : "not all images cached";
-    logInfo(imageCacheRes);
+    final allImagesCached = cachedPaths.every((element) => element.isRight);
+    logInfo(allImagesCached ? "all images cached" : "not all images cached");
   }
 }
 
