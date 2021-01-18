@@ -42,6 +42,7 @@ class CachedAuthorDao extends DatabaseAccessor<Cache> with _$CachedAuthorDaoMixi
 
   CachedAuthorDao(this.db) : super(db);
 
+  Future<List<CachedAuthor>> getAuthors(Iterable<String> ids) => (select(cachedAuthors)..where((authors) => authors.id.isIn(ids))).get();
   Future<CachedAuthor> getAuthor(String id) => (select(cachedAuthors)..where((authors) => authors.id.equals(id))).getSingle();
   Future insertAuthor(Insertable<CachedAuthor> author) => into(cachedAuthors).insert(author);
 }

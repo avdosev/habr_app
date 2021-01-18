@@ -11,6 +11,8 @@ class Comment {
   final Author author;
   final String message;
 
+  bool get notBanned => !banned;
+
   Comment({
     this.id,
     this.parentId,
@@ -20,8 +22,32 @@ class Comment {
     this.children,
     this.author,
     this.message,
-    this.banned
+    this.banned,
   });
+
+  Comment copyWith({
+    int id,
+    int parentId,
+    int level,
+    bool banned,
+    DateTime timePublished,
+    DateTime timeChanged,
+    List<int> children,
+    Author author,
+    String message,
+  }) {
+    return Comment(
+      id: id ?? this.id,
+      parentId: parentId ?? this.parentId,
+      level: level ?? this.level,
+      timePublished: timePublished ?? this.timePublished,
+      timeChanged: timeChanged ?? this.timeChanged,
+      children: children ?? this.children,
+      author: author ?? this.author,
+      message: message ?? this.message,
+      banned: banned ?? this.banned,
+    );
+  }
 }
 
 class Comments {

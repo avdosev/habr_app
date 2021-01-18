@@ -49,13 +49,13 @@ class HabrStorage {
         () => AppError(
             errCode: ErrorType.NotFound,
             message: "Article not found in local storage"),
-        () async => Post(
+        () => Post(
             id: cachedPost.id,
             title: cachedPost.title,
             body: cachedPost.body,
             publishDate: cachedPost.publishTime,
             author: _authorFromCachedAuthor(cachedAuthor)),
-      ).asyncMap((right) => right);
+      );
     }
     return articleOrError;
   }
@@ -89,7 +89,31 @@ class HabrStorage {
   }
 
   Future<Either<AppError, Comments>> comments(String articleId) async {
-    return api.comments(articleId);
+    return api
+        .comments(articleId)
+        .then((value) => value.asyncMap(_checkCachedCommentsAuthors));
+  }
+
+  Future<Comments> _checkCachedCommentsAuthors(Comments comments) async {
+    final authorsId = comments.comments.values
+        .where((element) => element.notBanned)
+        .map((comment) => comment.author?.id)
+        .toSet();
+    final cachedAuthors = await cache.cachedAuthorDao.getAuthors(authorsId);
+    final authors = cachedAuthors.map((e) => _authorFromCachedAuthor(e));
+    final authorById =
+        Map.fromEntries(authors.map((value) => MapEntry(value.id, value)));
+    return Comments(
+        comments: comments.comments.map((key, comment) {
+          if (!comment.banned) {
+            final cachedAuthor = authorById[comment.author];
+            if (cachedAuthor != null) {
+              return MapEntry(key, comment.copyWith(author: cachedAuthor));
+            }
+          }
+          return MapEntry(key, comment);
+        }),
+        threads: comments.threads);
   }
 
   Future<Either<AppError, PostPreviews>> cachedPosts({int page = 1}) async {
