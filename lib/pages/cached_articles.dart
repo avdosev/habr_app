@@ -22,7 +22,7 @@ class _CachedArticlesListState extends State<CachedArticlesList> {
 
   Widget bodyWidget() {
     return Observer(
-      builder:(context) {
+      builder: (context) {
         Widget widget;
         switch (store.firstLoading) {
           case LoadingState.isFinally:

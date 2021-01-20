@@ -2,6 +2,7 @@ import 'package:either_dart/either.dart';
 
 import 'package:habr_app/app_error.dart';
 import 'package:habr_app/utils/workers/hasher.dart';
+import 'package:habr_app/utils/workers/image_loader.dart';
 import 'package:habr_app/utils/http_request_helper.dart';
 import 'package:habr_app/utils/log.dart';
 import 'cache_tables.dart';
@@ -12,9 +13,10 @@ import 'package:http/http.dart' as http;
 class ImageLocalStorage {
   final Cache _cache;
   final HashComputer _hashComputer;
+  final ImageLoader _imageLoader;
   String _path;
 
-  ImageLocalStorage(this._cache, this._hashComputer);
+  ImageLocalStorage(this._cache, this._hashComputer, this._imageLoader);
 
   Future<String> get _localPath async {
     if (_path == null) {
@@ -41,22 +43,38 @@ class ImageLocalStorage {
 
   /// Return AppError or path to saved file
   Future<Either<AppError, String>> saveImage(String url) async {
-    final response = (await safe(http.get(url))).then(checkHttpStatus);
-    return response.asyncThen<String>((right) async {
-      final filename = await _getImagePath(url);
-      logInfo('Saving image to $filename');
-      try {
-        await _cache.cachedImagesDao
-            .insertImage(CachedImage(url: url, path: filename));
-        final file = File(filename);
-        await file.writeAsBytes(right.bodyBytes);
-        return Right(filename);
-      } catch (err) {
-        logError(err);
-        return Left(AppError(
-            errCode: ErrorType.NotCached, message: "img url exist in cache"));
-      }
-    });
+    final maybeImage = await _cache.cachedImagesDao.getImage(url);
+    if (maybeImage != null) {
+      return Right(maybeImage.path);
+    }
+
+    final filename = await _getImagePath(url);
+    logInfo('Saving image to $filename');
+    final loaded = await _imageLoader.loadImage(url, filename);
+
+    if (!loaded) {
+      return Left(AppError(
+        errCode: ErrorType.NotCached,
+        message: 'img not loaded',
+      ));
+    }
+
+    try {
+      await _cache.cachedImagesDao
+          .insertImage(CachedImage(url: url, path: filename));
+    } catch (err) {
+      logError(err);
+      // пока изображение грузилось
+      // оно загрузилось несколько раз
+      // повторный файл не нужен, поэтому его можно удалить
+      File(filename).delete();
+      return Left(AppError(
+        errCode: ErrorType.NotCached,
+        message: "img url exist in cache",
+      ));
+    }
+
+    return Right(filename);
   }
 
   Future deleteImage(String url) async {
@@ -75,10 +93,10 @@ class ImageLocalStorage {
 
   Future<Either<AppError, String>> getImage(String url) async {
     final res = await _cache.cachedImagesDao.getImage(url);
-    return Either.cond(
+    return Either.condLazy(
         res != null,
-        const AppError(
+        () => const AppError(
             errCode: ErrorType.NotFound, message: "Image in cache not found"),
-        res.path);
+        () => res.path);
   }
 }

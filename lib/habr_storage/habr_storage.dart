@@ -7,6 +7,7 @@ import 'package:habr_app/utils/html_to_json.dart';
 import 'package:habr_app/utils/log.dart';
 import 'package:either_dart/either.dart';
 import 'package:habr_app/app_error.dart';
+import 'package:habr_app/utils/workers/image_loader.dart';
 
 import 'cache_tables.dart';
 
@@ -21,7 +22,7 @@ class HabrStorage {
   HabrStorage._privateConstructor()
       : api = Habr(),
         cache = globalCache,
-        imgStore = ImageLocalStorage(globalCache, MD5Hash());
+        imgStore = ImageLocalStorage(globalCache, MD5Hash(), ImageHttpLoader());
 
   static final HabrStorage _instance = HabrStorage._privateConstructor();
 
