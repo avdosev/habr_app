@@ -161,8 +161,9 @@ class HabrStorage {
     if (eitherPost.isLeft) return;
     final post = eitherPost.right;
     await cache.cachedPostDao.deletePost(articleId);
-    final jsonedPost = htmlAsParsedJson(post.body);
-    await Future.wait(_getImagesFromParsedPost(jsonedPost)
+    final urls = await compute(_getImageUrlsFromHtml, post.body);
+
+    await Future.wait(urls
         .map((url) => imgStore.deleteImage(url)));
   }
 
@@ -177,13 +178,19 @@ class HabrStorage {
       publishTime: post.publishDate,
       insertTime: DateTime.now(),
     ));
-    logInfo('parse html to json');
-    final jsonedPost = await compute(htmlAsParsedJson, post.body);
-    final cachedPaths = await Future.wait(_getImagesFromParsedPost(jsonedPost)
-        .map((url) => imgStore.saveImage(url)));
+    logInfo('parse urls from html');
+    final urls = await compute(_getImageUrlsFromHtml, post.body);
+    final cachedPaths =
+        await Future.wait(urls.map((url) => imgStore.saveImage(url)));
     final allImagesCached = cachedPaths.every((element) => element.isRight);
     logInfo(allImagesCached ? "all images cached" : "not all images cached");
   }
+}
+
+List<String> _getImageUrlsFromHtml(String html) {
+  final parsedHtml = htmlAsParsedJson(html);
+  final urls = _getImagesFromParsedPost(parsedHtml).toList();
+  return urls;
 }
 
 Iterable<String> _getImagesFromParsedPost(Map<String, dynamic> element) sync* {
