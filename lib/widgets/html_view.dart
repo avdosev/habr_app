@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_highlight/flutter_highlight.dart';
-import 'package:flutter_highlight/themes/androidstudio.dart';
+import 'package:habr_app/stores/app_settings.dart';
+
 
 import 'html_elements/html_elements.dart';
 import 'dividing_block.dart';
@@ -73,24 +73,16 @@ class HtmlView extends StatelessWidget {
         );
       }
     } else if (type == 'code') {
-      widget = HighlightView(
-        // The original code to be highlighted
-          element['text'],
-          // Specify language
-          // It is recommended to give it a value for performance
-          language:
-          element['language'].isNotEmpty ? element['language'].first : "",
-          padding: const EdgeInsets.all(10),
-
-          // Specify highlight theme
-          // All available themes are listed in `themes` folder
-          theme: androidstudioTheme,
-
-          // Specify text style
-          textStyle: TextStyle(
-            fontFamily: 'monospace',
-            fontSize: 14,
-          ));
+      final appSettings = AppSettings();
+      widget = HighlightCode(
+        element['text'],
+        language:
+        element['language'].isNotEmpty ? element['language'].first : "",
+        padding: const EdgeInsets.all(10),
+        themeMode: appSettings.codeThemeMode,
+        themeNameDark: appSettings.darkCodeTheme,
+        themeNameLight: appSettings.lightCodeTheme,
+      );
     } else if (type == 'blockquote') {
       widget = BlockQuote(
           child: WrappedContainer(

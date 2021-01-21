@@ -79,6 +79,10 @@
   "@customization": {
     "description": "customization"
   },
+  "customizationCode": "customization code",
+  "@customizationCode": {
+    "description": "code customization"
+  },
   "lineSpacing": "lineSpacing",
   "@lineSpacing": {
     "description": "lineSpacing"

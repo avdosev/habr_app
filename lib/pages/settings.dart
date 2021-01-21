@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:habr_app/widgets/dropdown_list_tile.dart';
+import 'package:habr_app/widgets/html_elements/highlight_code.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -25,6 +26,10 @@ class Settings extends StatelessWidget {
           final localizations = AppLocalizations.of(context);
           final themeMode =
               box.get("ThemeMode", defaultValue: ThemeMode.system);
+          final codeThemeMode =
+              box.get("CodeThemeMode", defaultValue: ThemeMode.dark);
+          final lightCodeTheme = box.get('LightCodeTheme', defaultValue: 'github');
+          final darkCodeTheme = box.get('DarkCodeTheme', defaultValue: 'androidstudio');
           final int fontSize = box.get("FontSize", defaultValue: 16);
           final TextAlign textAlignArticle = box.get('TextAlignArticle', defaultValue: TextAlign.left);
           final TextAlign textAlignComments = box.get('TextAlignComments', defaultValue: TextAlign.left);
@@ -150,6 +155,58 @@ class Settings extends StatelessWidget {
                           const Icon(Icons.format_line_spacing),
                         ],
                       ),
+                    ),
+                  ],
+                ),
+              ),
+              Card(
+                child: Column(
+                  children: [
+                    ListTile(
+                      leading: const Icon(Icons.code),
+                      title: Text(AppLocalizations.of(context).customizationCode),
+                    ),
+                    SwitchListTile(
+                      title: Text(localizations.systemTheme),
+                      secondary: const Icon(Icons.brightness_auto),
+                      value: codeThemeMode == ThemeMode.system,
+                      onChanged: (val) {
+                        if (val) {
+                          box.put('CodeThemeMode', ThemeMode.system);
+                        } else {
+                          box.put('CodeThemeMode', ThemeMode.dark);
+                        }
+                      },
+                    ),
+                    SwitchListTile(
+                      title: Text(localizations.darkTheme),
+                      secondary: const Icon(Icons.brightness_2),
+                      value: codeThemeMode == ThemeMode.dark,
+                      onChanged: codeThemeMode != ThemeMode.system
+                          ? (val) {
+                        if (val) {
+                          box.put('CodeThemeMode', ThemeMode.dark);
+                        } else {
+                          box.put('CodeThemeMode', ThemeMode.light);
+                        }
+                      }
+                          : null, // Switch будет неактивен при Null
+                    ),
+                    DropDownListTile(
+                      values: Map.fromIterables(HighlightCode.themes, HighlightCode.themes),
+                      title: Text("Стиль темной темы"),
+                      defaultKey: darkCodeTheme,
+                      onChanged: (val) {
+                        box.put('DarkCodeTheme', val);
+                      },
+                    ),
+                    DropDownListTile(
+                      values: Map.fromIterables(HighlightCode.themes, HighlightCode.themes),
+                      title: Text("Стиль светлой темы"),
+                      defaultKey: lightCodeTheme,
+                      onChanged: (val) {
+                        box.put('LightCodeTheme', val);
+                      },
                     ),
                   ],
                 ),

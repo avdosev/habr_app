@@ -36,6 +36,7 @@
   "systemTheme": "Системная тема",
   "darkTheme": "Темная тема",
   "customizations": "Кастомизация",
+  "customizationCode": "Отображение кода",
   "fontSize": "Размер текста",
   "bookmarks": "Закладки",
   "@bookmarks": {}
