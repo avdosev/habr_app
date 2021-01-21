@@ -2,6 +2,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:either_dart/either.dart';
 import 'package:habr_app/habr_storage/habr_storage.dart';
+import 'package:habr_app/stores/app_settings.dart';
 import 'package:habr_app/utils/date_to_text.dart';
 import 'package:habr_app/widgets/widgets.dart';
 import 'package:habr_app/app_error.dart';
@@ -123,6 +124,7 @@ class CommentView extends StatelessWidget {
     if (comment.banned) {
       return Text(AppLocalizations.of(context).bannedComment);
     }
+    final textAlign = AppSettings().commentTextAlign;
     return Padding(
         padding: EdgeInsets.only(top: 5, bottom: 5),
         child: Column(
@@ -139,7 +141,7 @@ class CommentView extends StatelessWidget {
             const SizedBox(
               height: 10,
             ),
-            HtmlView(comment.message),
+            HtmlView(comment.message, textAlign: textAlign,),
             // TODO: buttons
           ],
         ));

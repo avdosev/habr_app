@@ -6,6 +6,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:habr_app/habr_storage/habr_storage.dart';
 import 'package:habr_app/models/models.dart' as Models;
 import 'package:habr_app/models/models.dart';
+import 'package:habr_app/stores/app_settings.dart';
 import 'package:habr_app/stores/bookmarks_store.dart';
 import 'package:habr_app/stores/loading_state.dart';
 import 'package:habr_app/utils/date_to_text.dart';
@@ -15,7 +16,6 @@ import 'package:share/share.dart';
 import 'package:habr_app/models/post.dart';
 import 'package:habr_app/app_error.dart';
 import 'package:habr_app/stores/post_store.dart';
-
 
 class ArticlePage extends StatefulWidget {
   final String articleId;
@@ -62,7 +62,10 @@ class _ArticlePageState extends State<ArticlePage> {
       default:
         title = "";
     }
-    return Text(title, overflow: TextOverflow.fade,);
+    return Text(
+      title,
+      overflow: TextOverflow.fade,
+    );
   }
 
   void reload() {
@@ -74,7 +77,10 @@ class _ArticlePageState extends State<ArticlePage> {
       case LoadingState.inProgress:
         return const Center(child: const CircularProgressIndicator());
       case LoadingState.isFinally:
-        return ArticleView(article: postStorage.post, controller: _controller);
+        return ArticleView(
+          article: postStorage.post,
+          controller: _controller,
+        );
       case LoadingState.isCorrupted:
         switch (postStorage.lastError.errCode) {
           case ErrorType.ServerError:
@@ -84,52 +90,53 @@ class _ArticlePageState extends State<ArticlePage> {
         }
         break;
       default:
-        throw UnsupportedError("Loading state ${postStorage.loadingState} not supported");
+        throw UnsupportedError(
+            "Loading state ${postStorage.loadingState} not supported");
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Observer(
-          builder: buildAppBarTitle,
-        ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.share),
-            onPressed: () => shareArticle(context),
+        appBar: AppBar(
+          title: Observer(
+            builder: buildAppBarTitle,
           ),
-          PopupMenuButton<String>(
-            icon: const Icon(Icons.more_vert),
-            onSelected: (val) {
-              switch (val) {
-                case MoreButtons.Cache:
-                  HabrStorage().addArticleInCache(widget.articleId);
-                  break;
-                case MoreButtons.Bookmark:
-                  addBookMark();
-                  break;
-                case MoreButtons.BackToBookmark:
-                  returnToBookmark();
-                  break;
-              }
-            },
-            itemBuilder: (context) => MoreButtons.values.map((val) =>
-              PopupMenuItem(
-                value: val,
-                child: Text(val),
-              )
-            ).toList(),
-          )
-        ],
-      ),
-      body: Observer(
-        builder: buildBody,
-      ),
-      floatingActionButton: Observer(
-        builder: (context) {
-          showFloatingActionButton.value = postStorage.loadingState == LoadingState.isFinally;
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.share),
+              onPressed: () => shareArticle(context),
+            ),
+            PopupMenuButton<String>(
+              icon: const Icon(Icons.more_vert),
+              onSelected: (val) {
+                switch (val) {
+                  case MoreButtons.Cache:
+                    HabrStorage().addArticleInCache(widget.articleId);
+                    break;
+                  case MoreButtons.Bookmark:
+                    addBookMark();
+                    break;
+                  case MoreButtons.BackToBookmark:
+                    returnToBookmark();
+                    break;
+                }
+              },
+              itemBuilder: (context) => MoreButtons.values
+                  .map((val) => PopupMenuItem(
+                        value: val,
+                        child: Text(val),
+                      ))
+                  .toList(),
+            )
+          ],
+        ),
+        body: Observer(
+          builder: buildBody,
+        ),
+        floatingActionButton: Observer(builder: (context) {
+          showFloatingActionButton.value =
+              postStorage.loadingState == LoadingState.isFinally;
           return ValueListenableBuilder(
               valueListenable: showFloatingActionButton,
               builder: (BuildContext context, bool value, Widget child) =>
@@ -139,11 +146,8 @@ class _ArticlePageState extends State<ArticlePage> {
                     child: const Icon(Icons.chat_bubble_outline),
                     onPressed: () => openCommentsPage(context, articleId),
                     duration: const Duration(milliseconds: 300),
-                  )
-          );
-        }
-      )
-    );
+                  ));
+        }));
   }
 
   void addBookMark() {
@@ -167,15 +171,17 @@ class _ArticlePageState extends State<ArticlePage> {
       final position = BookmarksStore().getPosition(articleId);
       if (position != null) {
         int duration = (_controller.offset - position).abs().round();
-        _controller.animateTo(position, duration: Duration(milliseconds: duration), curve: Curves.easeIn);
+        _controller.animateTo(position,
+            duration: Duration(milliseconds: duration), curve: Curves.easeIn);
       }
     }
   }
 
   void floatingButtonShowListener() {
-    final needShow = _controller.position.userScrollDirection == ScrollDirection.forward;
+    final needShow =
+        _controller.position.userScrollDirection == ScrollDirection.forward;
     if (needShow != showFloatingActionButton.value)
-       showFloatingActionButton.value = needShow;
+      showFloatingActionButton.value = needShow;
   }
 
   @override
@@ -191,9 +197,7 @@ class MoreButtons {
   static const String Bookmark = "Запомнить позицию";
   static const String BackToBookmark = "Вернуться в позицию";
 
-  static const List<String> values = [
-    Cache, Bookmark, BackToBookmark
-  ];
+  static const List<String> values = [Cache, Bookmark, BackToBookmark];
 }
 
 class ArticleInfo extends StatelessWidget {
@@ -208,13 +212,21 @@ class ArticleInfo extends StatelessWidget {
       children: [
         Row(
           children: [
-            Expanded(child: Text(dateToStr(article.publishDate, Localizations.localeOf(context)))),
+            Expanded(
+                child: Text(dateToStr(
+                    article.publishDate, Localizations.localeOf(context)))),
             SmallAuthorPreview(article.author),
           ],
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
         ),
-        const SizedBox(height: 7,),
-        Text(article.title, style: TextStyle(fontSize: 24), textAlign: TextAlign.center,),
+        const SizedBox(
+          height: 7,
+        ),
+        Text(
+          article.title,
+          style: TextStyle(fontSize: 24),
+          textAlign: TextAlign.center,
+        ),
       ],
     );
   }
@@ -228,15 +240,25 @@ class ArticleView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final textAlign = AppSettings().articleTextAlign;
+    print(textAlign);
     return ListView(
       padding: const EdgeInsets.all(10).copyWith(bottom: 20),
       controller: controller,
       children: [
-        ArticleInfo(article: article,),
-        SizedBox(height: 30,),
-        HtmlView(article.body),
-        SizedBox(height: 20,),
-        CommentsButton(onPressed: () => openCommentsPage(context, article.id),)
+        ArticleInfo(
+          article: article,
+        ),
+        SizedBox(
+          height: 30,
+        ),
+        HtmlView(article.body, textAlign: textAlign,),
+        SizedBox(
+          height: 20,
+        ),
+        CommentsButton(
+          onPressed: () => openCommentsPage(context, article.id),
+        )
       ],
     );
   }

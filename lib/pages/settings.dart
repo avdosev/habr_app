@@ -26,7 +26,8 @@ class Settings extends StatelessWidget {
           final themeMode =
               box.get("ThemeMode", defaultValue: ThemeMode.system);
           final int fontSize = box.get("FontSize", defaultValue: 16);
-          final TextAlign textAlign = box.get('TextAlign', defaultValue: TextAlign.left);
+          final TextAlign textAlignArticle = box.get('TextAlignArticle', defaultValue: TextAlign.left);
+          final TextAlign textAlignComments = box.get('TextAlignComments', defaultValue: TextAlign.left);
           final double lineSpacing = box.get('LineSpacing', defaultValue: 1.35);
 
           return ListView(
@@ -102,10 +103,24 @@ class Settings extends StatelessWidget {
                         TextAlign.justify: AppLocalizations.of(context).fullWidth,
                       },
                       leading: const Icon(Icons.format_align_left),
-                      title: Text("Выравнивание текста"),
-                      defaultKey: textAlign,
+                      title: Text("Выравнивание текста в постах"),
+                      defaultKey: textAlignArticle,
                       onChanged: (val) {
-                        box.put(AppLocalizations.of(context).textAlign, val);
+                        box.put('TextAlignArticle', val);
+                      },
+                    ),
+                    DropDownListTile(
+                      values: {
+                        TextAlign.left: AppLocalizations.of(context).left,
+                        TextAlign.right: AppLocalizations.of(context).right,
+                        TextAlign.center: AppLocalizations.of(context).center,
+                        TextAlign.justify: AppLocalizations.of(context).fullWidth,
+                      },
+                      leading: const Icon(Icons.format_align_left),
+                      title: Text("Выравнивание текста в комментариях"),
+                      defaultKey: textAlignComments,
+                      onChanged: (val) {
+                        box.put('TextAlignComments', val);
                       },
                     ),
                     /* TODO:
