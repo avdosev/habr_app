@@ -5,6 +5,17 @@ Habr application.
 Main features:
 * Cache articles
 * Filter articles
+* Visual customizations
+
+# Visual customization
+
+* font size
+* text alignment
+* line spacing
+* code styles
+  * selection of a specific mode
+  * dark mode coloring
+  * light mode coloring
 
 ## Screenshots
 
@@ -20,7 +31,7 @@ Main features:
 
 <img src="./repo_images/img_6.jpg" height="400"></img>
 
-## build
+## Build
 
 ```
 flutter pub get
