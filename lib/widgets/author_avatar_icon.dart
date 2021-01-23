@@ -9,6 +9,7 @@ import 'package:habr_app/styles/colors/colors.dart';
 class AuthorAvatarIcon extends StatelessWidget {
   final double height;
   final double width;
+  final double borderWidth;
   final AuthorAvatarInfo avatar;
   final Color defaultColor;
 
@@ -17,6 +18,7 @@ class AuthorAvatarIcon extends StatelessWidget {
     this.height = 20,
     this.width = 20,
     this.defaultColor,
+    this.borderWidth = 1.0,
     Key key,
   }) : super(key: key);
 
@@ -29,7 +31,7 @@ class AuthorAvatarIcon extends StatelessWidget {
       image = Container(
         decoration: BoxDecoration(
           // color: Colors.white,
-          border: Border.all(color: colorForDefault),
+          border: Border.all(color: colorForDefault, width: borderWidth),
           borderRadius: const BorderRadius.all(Radius.circular(5)),
         ),
         child: SvgPicture.asset(

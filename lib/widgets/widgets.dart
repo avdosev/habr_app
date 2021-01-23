@@ -1,7 +1,7 @@
 export 'hide_floating_action_button.dart';
 export 'html_view.dart';
 export 'author_avatar_icon.dart';
-export 'small_author_preview.dart';
+export 'author_previews.dart';
 export 'material_buttons.dart';
 export 'routing/home_menu.dart';
 export 'slidable.dart';

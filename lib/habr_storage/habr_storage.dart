@@ -67,6 +67,7 @@ class HabrStorage {
       id: author.id,
       alias: author.nickname,
       avatar: AuthorAvatarInfo(url: author.avatarUrl, cached: true),
+      speciality: author.speciality,
     );
   }
 
@@ -153,7 +154,11 @@ class HabrStorage {
     }
 
     await cache.cachedAuthorDao.insertAuthor(CachedAuthor(
-        id: author.id, nickname: author.alias, avatarUrl: avatarUrl));
+      id: author.id,
+      nickname: author.alias,
+      avatarUrl: avatarUrl,
+      speciality: author.speciality,
+    ));
   }
 
   Future _uncacheArticle(String articleId) async {
@@ -163,8 +168,7 @@ class HabrStorage {
     await cache.cachedPostDao.deletePost(articleId);
     final urls = await compute(_getImageUrlsFromHtml, post.body);
 
-    await Future.wait(urls
-        .map((url) => imgStore.deleteImage(url)));
+    await Future.wait(urls.map((url) => imgStore.deleteImage(url)));
   }
 
   Future _cacheArticle(Post post) async {

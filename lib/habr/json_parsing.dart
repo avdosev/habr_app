@@ -12,6 +12,8 @@ Author parseAuthorFromJson(Map<String, dynamic> json) {
     id: json['id'],
     alias: json['alias'],
     avatar: prepareAvatarUrl(json['avatarUrl']),
+    speciality: json['speciality'],
+    fullName: json['fullname'],
   );
 }
 

@@ -241,7 +241,6 @@ class ArticleView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final textAlign = AppSettings().articleTextAlign;
-    print(textAlign);
     return ListView(
       padding: const EdgeInsets.all(10).copyWith(bottom: 20),
       controller: controller,
@@ -252,7 +251,17 @@ class ArticleView extends StatelessWidget {
         SizedBox(
           height: 30,
         ),
-        HtmlView(article.body, textAlign: textAlign,),
+        HtmlView(
+          article.body,
+          textAlign: textAlign,
+        ),
+        SizedBox(
+          height: 20,
+        ),
+        InkWell(
+          child: MediumAuthorPreview(article.author),
+          onTap: () => null, // open user page
+        ),
         SizedBox(
           height: 20,
         ),
