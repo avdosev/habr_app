@@ -55,6 +55,18 @@ class Habr {
         .then((val) => val.map((data) => parsePostPreviewsFromJson(data)));
   }
 
+  Future<Either<AppError, PostPreviews>> userPosts(String user,
+      {int page = 1}) async {
+    final url =
+        "$api_url_v2/articles/?user=$user&sort=date&fl=ru&hl=ru&page=$page";
+    logInfo("Get articles by $url");
+    final response = await safe(http.get(url));
+    return response
+        .then(checkHttpStatus)
+        .asyncMap(asyncParseJson)
+        .then((val) => val.map((data) => parsePostPreviewsFromJson(data)));
+  }
+
   Future<Either<AppError, Post>> article(String id) async {
     final url = "$api_url_v2/articles/$id";
     logInfo("Get article by $url");
