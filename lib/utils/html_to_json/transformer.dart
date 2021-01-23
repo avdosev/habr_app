@@ -197,7 +197,7 @@ Map<String, dynamic> prepareHtmlBlocElement(dom.Element element) {
     case 'h4':
     case 'h5':
     case 'h6':
-      return buildHeadLine(element.text, element.localName);
+      return buildHeadLine(element.text.trim(), element.localName);
     case 'figcaption':
       final p = buildDefaultParagraph();
       addSpanToParagraph(p, prepareHtmlInlineElement(element));

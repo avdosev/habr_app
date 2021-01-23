@@ -19,7 +19,7 @@ class HeadLine extends StatelessWidget {
       HeadLineType.h4: textTheme.headline4,
       HeadLineType.h5: textTheme.headline5,
       HeadLineType.h6: textTheme.headline6,
-    }[HeadLineType.h6];
+    }[HeadLineType.h6]; // Todo: решить нужна ли впринципе эта таблица
     return Text(text, style: textStyle);
   }
 }
