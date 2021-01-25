@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:habr_app/habr_storage/habr_storage.dart';
 import 'package:habr_app/utils/log.dart';
+import 'package:habr_app/utils/luid.dart';
 import 'package:habr_app/widgets/widgets.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:habr_app/pages/image_view.dart';
@@ -82,7 +83,7 @@ class Picture extends StatelessWidget {
 
   _buildClickableImage(
       BuildContext context, Widget child, ImageProvider imgProvider) {
-    final heroTag = url;
+    final heroTag = url + LUID.genId().toString();
     return GestureDetector(
       onTap: () {
         Navigator.push(

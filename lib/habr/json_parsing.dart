@@ -13,7 +13,7 @@ Author parseAuthorFromJson(Map<String, dynamic> json) {
     alias: json['alias'],
     avatar: prepareAvatarUrl(json['avatarUrl']),
     speciality: json['speciality'],
-    fullName: _prepareHtmlString(json['fullname']),
+    fullName: json['fullname'] == null ? null : _prepareHtmlString(json['fullname']),
   );
 }
 
