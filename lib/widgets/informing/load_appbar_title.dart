@@ -17,7 +17,7 @@ class _LoadAppBarTitleState extends State<LoadAppBarTitle>
   void initState() {
     super.initState();
     controller =
-        AnimationController(duration: Duration(milliseconds: 800), vsync: this);
+        AnimationController(duration: const Duration(milliseconds: 800), vsync: this);
     animation = Tween<double>(begin: 30, end: 85).animate(controller)
       ..addListener(() {
         setState(() {

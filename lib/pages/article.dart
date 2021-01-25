@@ -258,7 +258,9 @@ class ArticleView extends StatelessWidget {
           height: 20,
         ),
         InkWell(
-          child: MediumAuthorPreview(article.author),
+          child: Padding(
+              padding: const EdgeInsets.only(left: 5, top: 5, bottom: 5),
+              child: MediumAuthorPreview(article.author)),
           onTap: () => null, // open user page
         ),
         SizedBox(

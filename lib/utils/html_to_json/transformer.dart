@@ -168,7 +168,13 @@ List<Map<String, dynamic>> prepareChildrenHtmlBlocElement(dom.Element element) {
         makeNewParagraphAndInsertOlder();
         final block = prepareHtmlBlocElement(child);
         // block optimization
-        if (block['type'] == 'paragraph' && block['children'].isEmpty) continue;
+        if (block['type'] == 'paragraph') {
+          if (block['children'].isEmpty) continue;
+          if (block['children'].length == 1) {
+            final child = block['children'][0];
+            if (child['type'] == 'span' && child['text'].trim().isEmpty) continue;
+          }
+        }
         children.add(block);
       } else if (inlineElements.contains(child.localName)) {
         if (child.localName == 'a' && !child.attributes.containsKey('href')) {
