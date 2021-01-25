@@ -13,7 +13,7 @@ Author parseAuthorFromJson(Map<String, dynamic> json) {
     alias: json['alias'],
     avatar: prepareAvatarUrl(json['avatarUrl']),
     speciality: json['speciality'],
-    fullName: json['fullname'],
+    fullName: _prepareHtmlString(json['fullname']),
   );
 }
 
@@ -65,7 +65,7 @@ PostPreviews parsePostPreviewsFromJson(Map<String, dynamic> data) {
       return PostPreview(
           id: id,
           corporative: article['isCorporative'],
-          title: _preparePostTitle(article['titleHtml']),
+          title: _prepareHtmlString(article['titleHtml']),
           tags: article['flows']
               .map<String>((flow) => flow['title'] as String)
               .toList(),
@@ -76,6 +76,6 @@ PostPreviews parsePostPreviewsFromJson(Map<String, dynamic> data) {
   );
 }
 
-String _preparePostTitle(String title) {
-  return parseFragment(title).text.trim();
+String _prepareHtmlString(String str) {
+  return parseFragment(str).text.trim();
 }

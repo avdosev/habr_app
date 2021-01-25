@@ -51,8 +51,7 @@ class _ArticlePageState extends State<ArticlePage> {
     String title;
     switch (postStorage.loadingState) {
       case LoadingState.inProgress:
-        title = AppLocalizations.of(context).loading;
-        break;
+        return LoadAppBarTitle();
       case LoadingState.isFinally:
         title = postStorage.post.title;
         break;

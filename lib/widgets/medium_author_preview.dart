@@ -37,7 +37,7 @@ class MediumAuthorPreview extends StatelessWidget {
                 ],
                 style: TextStyle(color: theme.primaryColor),
               ),
-            ])),
+            ]), overflow: TextOverflow.fade,),
             Text(author.speciality),
           ],
           crossAxisAlignment: CrossAxisAlignment.start,
