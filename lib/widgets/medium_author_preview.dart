@@ -23,24 +23,30 @@ class MediumAuthorPreview extends StatelessWidget {
           defaultColor: AvatarColorStore().getColor(author, theme.brightness),
         ),
         SizedBox(width: 15),
-        Column(
-          children: [
-            Text.rich(TextSpan(children: [
-              if (author.fullName != null) ...[
-                TextSpan(text: author.fullName),
-                TextSpan(text: ', ')
-              ],
-              TextSpan(
-                children: [
-                  TextSpan(text: '@'),
-                  TextSpan(text: author.alias),
-                ],
-                style: TextStyle(color: theme.primaryColor),
+        Expanded(
+          child: Column(
+            children: [
+              Text.rich(
+                TextSpan(children: [
+                  if (author.fullName != null) ...[
+                    TextSpan(text: author.fullName),
+                    TextSpan(text: ', ')
+                  ],
+                  TextSpan(
+                    children: [
+                      TextSpan(text: '@'),
+                      TextSpan(text: author.alias),
+                    ],
+                    style: TextStyle(color: theme.primaryColor),
+                  ),
+                ]),
+                maxLines: 2,
+                overflow: TextOverflow.fade,
               ),
-            ]), overflow: TextOverflow.fade,),
-            Text(author.speciality),
-          ],
-          crossAxisAlignment: CrossAxisAlignment.start,
+              Text(author.speciality),
+            ],
+            crossAxisAlignment: CrossAxisAlignment.start,
+          ),
         ),
       ],
     );
