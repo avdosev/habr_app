@@ -1,5 +1,6 @@
 import 'package:either_dart/either.dart';
 import 'package:habr_app/app_error.dart';
+import 'package:habr_app/models/author_info.dart';
 import 'package:habr_app/models/models.dart';
 import 'package:habr_app/utils/log.dart';
 import 'package:habr_app/utils/http_request_helper.dart';
@@ -65,6 +66,16 @@ class Habr {
         .then(checkHttpStatus)
         .asyncMap(asyncParseJson)
         .then((val) => val.map((data) => parsePostPreviewsFromJson(data)));
+  }
+
+  Future<Either<AppError, AuthorInfo>> userInfo(String user) async {
+    final url = "$api_url_v2/users/$user/card?fl=ru&hl=ru";
+    logInfo("Get user info by $url");
+    final response = await safe(http.get(url));
+    return response
+        .then(checkHttpStatus)
+        .asyncMap(asyncParseJson)
+        .then((val) => val.map((data) => parseAuthorInfoFromJson(data)));
   }
 
   Future<Either<AppError, Post>> article(String id) async {

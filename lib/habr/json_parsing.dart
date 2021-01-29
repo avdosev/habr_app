@@ -1,3 +1,4 @@
+import 'package:habr_app/models/author_info.dart';
 import 'package:habr_app/models/models.dart';
 import 'package:html/parser.dart' show parseFragment;
 
@@ -73,6 +74,22 @@ PostPreviews parsePostPreviewsFromJson(Map<String, dynamic> data) {
           author: parseAuthorFromJson(article['author']),
           statistics: Statistics.fromJson(article['statistics']));
     }).toList(),
+  );
+}
+
+AuthorInfo parseAuthorInfoFromJson(Map<String, dynamic> data) {
+  return AuthorInfo(
+    alias: data['alias'],
+    fullName: data['fullname'],
+    speciality: data['speciality'],
+    avatar: prepareAvatarUrl(data['avatarUrl']),
+    postCount: data['counterStats']['postCount'],
+    followCount: data['followStats']['followCount'],
+    folowersCount: data['followStats']['followersCount'],
+    lastActivityTime: DateTime.parse(data['lastActivityDateTime']),
+    registerTime: DateTime.parse(data['registerDateTime']),
+    rating: data['rating'],
+    karma: data['scoreStats']['score']
   );
 }
 
