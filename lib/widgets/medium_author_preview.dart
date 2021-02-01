@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:habr_app/models/author.dart';
 import 'package:habr_app/stores/avatar_color_store.dart';
@@ -48,7 +49,7 @@ class MediumAuthorPreview extends StatelessWidget {
                 maxLines: 2,
                 overflow: TextOverflow.fade,
               ),
-              Text(author.speciality),
+              Text(author.speciality ?? AppLocalizations.of(context).user),
             ],
             crossAxisAlignment: CrossAxisAlignment.start,
           ),

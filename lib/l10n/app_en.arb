@@ -130,5 +130,7 @@
   "fontSize": "Font size",
   "@fontSize": {},
   "bookmarks": "Bookmarks",
-  "@bookmarks": {}
+  "@bookmarks": {},
+  "user": "User",
+  "@user": {}
 }

@@ -1,3 +1,4 @@
+import 'package:habr_app/models/author.dart';
 import 'package:habr_app/models/author_avatar_info.dart';
 
 class AuthorInfo {
@@ -16,7 +17,7 @@ class AuthorInfo {
 
   final int rating;
 
-  final double karma;
+  final num karma;
 
   const AuthorInfo({
     this.alias,

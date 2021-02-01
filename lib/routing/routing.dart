@@ -31,6 +31,12 @@ void openFilters(BuildContext context) {
   Navigator.pushNamed(context, "filters");
 }
 
+void openUser(BuildContext context, String username) {
+  Navigator.of(context).push(
+    MaterialPageRoute(builder: (context) => UserPage(username: username))
+  );
+}
+
 Map<String, WidgetBuilder> routes = {
   "settings": (BuildContext context) => SettingsPage(),
   "articles": (BuildContext context) => ArticlesList(),

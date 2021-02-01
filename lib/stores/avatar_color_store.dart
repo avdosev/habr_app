@@ -9,7 +9,7 @@ class AvatarColorStore {
 
   Color getColor(Author author, Brightness brightness) {
     final colors = _getColorsByBrightness(brightness);
-    return colors[author.id.hashCode.abs() % colors.length];
+    return colors[author.alias.hashCode.abs() % colors.length];
   }
 
   // ignore: missing_return

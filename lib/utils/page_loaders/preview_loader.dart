@@ -28,11 +28,21 @@ class SearchLoader extends PageLoader<Either<AppError, PostPreviews>> {
   final Order order;
 
   SearchLoader(SearchData info)
-  : query = info.query,
-    order = info.order;
+      : query = info.query,
+        order = info.order;
 
   Future<Either<AppError, PostPreviews>> load(int page) {
     return Habr().findPosts(query, page: page, order: order);
   }
 }
 
+class UserPreviewsLoader extends PageLoader<Either<AppError, PostPreviews>> {
+  final String username;
+
+  UserPreviewsLoader(this.username);
+
+  @override
+  Future<Either<AppError, PostPreviews>> load(int page) {
+    return Habr().userPosts(username, page: page);
+  }
+}

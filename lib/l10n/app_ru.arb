@@ -39,5 +39,5 @@
   "customizationCode": "Отображение кода",
   "fontSize": "Размер текста",
   "bookmarks": "Закладки",
-  "@bookmarks": {}
+  "user": "Пользователь"
 }

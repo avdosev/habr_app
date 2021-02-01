@@ -10,6 +10,7 @@ class AuthorAvatarIcon extends StatelessWidget {
   final double height;
   final double width;
   final double borderWidth;
+  final double radius;
   final AuthorAvatarInfo avatar;
   final Color defaultColor;
 
@@ -19,6 +20,7 @@ class AuthorAvatarIcon extends StatelessWidget {
     this.width = 20,
     this.defaultColor,
     this.borderWidth = 1.0,
+    this.radius = 5,
     Key key,
   }) : super(key: key);
 
@@ -32,7 +34,7 @@ class AuthorAvatarIcon extends StatelessWidget {
         decoration: BoxDecoration(
           // color: Colors.white,
           border: Border.all(color: colorForDefault, width: borderWidth),
-          borderRadius: const BorderRadius.all(Radius.circular(5)),
+          borderRadius: BorderRadius.all(Radius.circular(radius)),
         ),
         child: SvgPicture.asset(
           "assets/images/default_avatar.svg",
@@ -54,7 +56,7 @@ class AuthorAvatarIcon extends StatelessWidget {
     }
 
     return ClipRRect(
-      borderRadius: const BorderRadius.all(Radius.circular(5)),
+      borderRadius: BorderRadius.all(Radius.circular(radius)),
       child: image,
     );
   }

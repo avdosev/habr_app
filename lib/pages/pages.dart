@@ -7,3 +7,4 @@ export 'search.dart';
 export 'search_results.dart';
 export 'filters.dart';
 export 'bookmarks.dart';
+export 'user.dart';

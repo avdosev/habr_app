@@ -2,6 +2,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:either_dart/either.dart';
 import 'package:habr_app/habr_storage/habr_storage.dart';
+import 'package:habr_app/routing/routing.dart';
 import 'package:habr_app/stores/app_settings.dart';
 import 'package:habr_app/utils/date_to_text.dart';
 import 'package:habr_app/widgets/widgets.dart';
@@ -132,7 +133,10 @@ class CommentView extends StatelessWidget {
           children: [
             Row(
               children: [
-                SmallAuthorPreview(comment.author),
+                InkWell(
+                  child: SmallAuthorPreview(comment.author),
+                  onTap: () => openUser(context, comment.author.alias),
+                ),
                 Text(dateToStr(
                     (comment.timePublished), Localizations.localeOf(context))),
               ],
@@ -141,7 +145,10 @@ class CommentView extends StatelessWidget {
             const SizedBox(
               height: 10,
             ),
-            HtmlView(comment.message, textAlign: textAlign,),
+            HtmlView(
+              comment.message,
+              textAlign: textAlign,
+            ),
             // TODO: buttons
           ],
         ));

@@ -214,7 +214,10 @@ class ArticleInfo extends StatelessWidget {
             Expanded(
                 child: Text(dateToStr(
                     article.publishDate, Localizations.localeOf(context)))),
-            SmallAuthorPreview(article.author),
+            InkWell(
+              child: SmallAuthorPreview(article.author),
+              onTap: () => openUser(context, article.author.alias),
+            ),
           ],
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
         ),
@@ -261,7 +264,8 @@ class ArticleView extends StatelessWidget {
           child: Padding(
               padding: const EdgeInsets.only(left: 5, top: 5, bottom: 5),
               child: MediumAuthorPreview(article.author)),
-          onTap: () => null, // open user page
+          onTap: () =>
+              openUser(context, article.author.alias), // open user page
         ),
         SizedBox(
           height: 20,

@@ -88,7 +88,7 @@ AuthorInfo parseAuthorInfoFromJson(Map<String, dynamic> data) {
     folowersCount: data['followStats']['followersCount'],
     lastActivityTime: DateTime.parse(data['lastActivityDateTime']),
     registerTime: DateTime.parse(data['registerDateTime']),
-    rating: data['rating'],
+    rating: data['rating'].round(),
     karma: data['scoreStats']['score']
   );
 }
