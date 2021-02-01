@@ -114,7 +114,7 @@ class _UserPageState extends State<UserPage> {
     return IncrementallyLoadingListView(
       itemBuilder: (context, index) {
         final previews = articlesStorage.previews;
-        if (index >= previews.length && articlesStorage.loadItems)
+        if ((index-authorInfoElementsCount) >= previews.length && articlesStorage.loadItems)
           return Center(child: const CircularItem());
         if (index < authorInfoElementsCount) {
           return buildAuthorInfo(context);
