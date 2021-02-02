@@ -27,7 +27,7 @@ class CachedAuthors extends Table {
   TextColumn get id => text().customConstraint('UNIQUE')();
   TextColumn get nickname => text()(); // alias used in moor_flutter
   TextColumn get avatarUrl => text().nullable()();
-  TextColumn get speciality => text()();
+  TextColumn get speciality => text().nullable()();
 }
 
 class CachedImages extends Table {
