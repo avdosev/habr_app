@@ -2,13 +2,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:habr_app/stores/app_settings.dart';
 
-
 import 'html_elements/html_elements.dart';
 import 'dividing_block.dart';
 import 'link.dart';
 import 'picture.dart';
 
 import 'package:habr_app/utils/html_to_json.dart';
+import 'package:habr_app/utils/html_to_json/element_builders.dart' as view;
 import 'package:habr_app/utils/log.dart';
 
 class HtmlView extends StatelessWidget {
@@ -19,7 +19,7 @@ class HtmlView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return parseHtml(html, context);
+    return parseHtml(html, context) ?? Container();
   }
 
   Widget parseHtml(String html, BuildContext context) {
@@ -27,96 +27,94 @@ class HtmlView extends StatelessWidget {
     return buildTree(doc, context);
   }
 
-  Widget buildTree(Map<String, dynamic> element, BuildContext context) {
-    final type = element['type'];
-    if (type == 'hl') {
-      logInfo('$type ${element['text']}');
+  // may be null
+  Widget buildTree(view.Node element, BuildContext context) {
+    final type = element.type;
+    if (element is view.HeadLine) {
+      logInfo('$type ${element.text}');
+    } else if (element is view.Paragraph) {
+      logInfo('$type ${element.children}');
     } else {
       logInfo(type);
     }
+
     Widget widget;
-    if (type == 'hl') {
+    if (element is view.HeadLine) {
       final mode =
-      HeadLineType.values[int.parse(element['mode'].substring(1)) - 1];
-      widget = HeadLine(text: element['text'], type: mode);
-    } else if (type == 'tp') {
+          HeadLineType.values[int.parse(element.mode.substring(1)) - 1];
+      widget = HeadLine(text: element.text, type: mode);
+    } else if (element is view.TextParagraph) {
       widget = Text(
-        element['text'],
+        element.text,
         textAlign: textAlign,
       );
-    } else if (type == 'paragraph') {
-      logInfo(element);
+    } else if (element is view.Paragraph) {
       widget = Text.rich(
         TextSpan(
-            children: (element['children'] as List)
+            children: element.children
                 .map<InlineSpan>((child) => buildInline(child, context))
                 .toList()),
         textAlign: textAlign,
       );
-    } else if (type == 'pre') {
+    } else if (element is view.Scrollable) {
       widget = SingleChildScrollView(
-        child: buildTree(element['child'], context),
+        child: buildTree(element.child, context),
         scrollDirection: Axis.horizontal,
       );
-    } else if (type == 'image') {
+    } else if (element is view.Image) {
       widget = Picture.network(
-        element['src'],
+        element.src,
         clickable: true,
       );
-      if (element.containsKey('caption')) {
+      if (element.caption != null) {
         widget = WrappedContainer(
           children: [
             widget,
-            Text(element['caption'], style: Theme.of(context).textTheme.subtitle2)
+            Text(element.caption, style: Theme.of(context).textTheme.subtitle2)
           ],
           distance: 5,
         );
       }
-    } else if (type == 'code') {
+    } else if (element is view.Code) {
       final appSettings = AppSettings();
       widget = HighlightCode(
-        element['text'],
-        language:
-        element['language'].isNotEmpty ? element['language'].first : "",
+        element.text,
+        language: element.language,
         padding: const EdgeInsets.all(10),
         themeMode: appSettings.codeThemeMode,
         themeNameDark: appSettings.darkCodeTheme,
         themeNameLight: appSettings.lightCodeTheme,
       );
-    } else if (type == 'blockquote') {
-      widget = BlockQuote(
-          child: WrappedContainer(
-              children: (element['children'] as List)
-                  .map<Widget>((child) => buildTree(child, context))
-                  .toList()));
-    } else if (type == 'ordered_list' || type == 'unordered_list') {
+    } else if (element is view.BlockQuote) {
+      widget = BlockQuote(child: buildTree(element.child, context));
+    } else if (element is view.BlockList) {
       // TODO: ordered list
       widget = UnorderedList(
-          children: element['children']
+          children: element.children
               .map<Widget>((li) => buildTree(li, context))
               .toList());
-    } else if (type == 'div') {
+    } else if (element is view.BlockColumn) {
       widget = WrappedContainer(
-          children: (element['children'] as List)
+          children: element.children
               .map<Widget>((child) => buildTree(child, context))
               .toList());
-    } else if (type == 'details') {
+    } else if (element is view.Details) {
       widget = Spoiler(
-        title: element['title'],
-        child: buildTree(element['child'], context),
+        title: element.title,
+        child: buildTree(element.child, context),
       );
     } else {
       logInfo("Not found case for $type");
     }
+
     return widget;
   }
 
-  InlineSpan buildInline(Map<String, dynamic> element, BuildContext context) {
+  InlineSpan buildInline(view.Span element, BuildContext context) {
     InlineSpan span;
-    String type = element['type'];
-    if (element['type'] == 'span') {
+    if (element is view.TextSpan) {
       var style = TextStyle();
-      for (final mode in (element['mode'] as List<String>)) {
+      for (final mode in element.modes) {
         if (mode == 'bold' || mode == 'strong') {
           style = style.copyWith(fontWeight: FontWeight.w500);
         } else if (mode == 'italic' || mode == 'emphasis') {
@@ -127,16 +125,12 @@ class HtmlView extends StatelessWidget {
           style = style.copyWith(decoration: TextDecoration.lineThrough);
         }
       }
-      span = TextSpan(text: element['text'], style: style);
-    } else if (type == 'link_span') {
+      span = TextSpan(text: element.text, style: style);
+    } else if (element is view.LinkSpan) {
       span = InlineTextLink(
-          title: element['text'], url: element['src'], context: context);
-    } else if (type == 'image_span') {
-      span = WidgetSpan(
-          child: Picture.network(
-            element['src'],
-            clickable: true,
-          ));
+          title: element.text, url: element.link, context: context);
+    } else if (element is view.BlockSpan) {
+      span = WidgetSpan(child: buildTree(element.child, context));
     }
 
     return span;

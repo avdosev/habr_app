@@ -2,8 +2,8 @@ import 'package:flutter/foundation.dart';
 import 'package:habr_app/habr/habr.dart';
 import 'package:habr_app/models/models.dart';
 import 'package:habr_app/habr_storage/image_storage.dart';
+import 'package:habr_app/utils/images_finder.dart';
 import 'package:habr_app/utils/workers/hasher.dart';
-import 'package:habr_app/utils/html_to_json.dart';
 import 'package:habr_app/utils/log.dart';
 import 'package:either_dart/either.dart';
 import 'package:habr_app/app_error.dart';
@@ -166,7 +166,7 @@ class HabrStorage {
     if (eitherPost.isLeft) return;
     final post = eitherPost.right;
     await cache.cachedPostDao.deletePost(articleId);
-    final urls = await compute(_getImageUrlsFromHtml, post.body);
+    final urls = await compute(getImageUrlsFromHtml, post.body);
 
     await Future.wait(urls.map((url) => imgStore.deleteImage(url)));
   }
@@ -183,27 +183,10 @@ class HabrStorage {
       insertTime: DateTime.now(),
     ));
     logInfo('parse urls from html');
-    final urls = await compute(_getImageUrlsFromHtml, post.body);
+    final urls = await compute(getImageUrlsFromHtml, post.body);
     final cachedPaths =
         await Future.wait(urls.map((url) => imgStore.saveImage(url)));
     final allImagesCached = cachedPaths.every((element) => element.isRight);
     logInfo(allImagesCached ? "all images cached" : "not all images cached");
-  }
-}
-
-List<String> _getImageUrlsFromHtml(String html) {
-  final parsedHtml = htmlAsParsedJson(html);
-  final urls = _getImagesFromParsedPost(parsedHtml).toList();
-  return urls;
-}
-
-Iterable<String> _getImagesFromParsedPost(Map<String, dynamic> element) sync* {
-  if (element['type'] == 'image') {
-    yield element['src'];
-  } else if (element.containsKey('child')) {
-    yield* _getImagesFromParsedPost(element['child']);
-  } else if (element.containsKey('children')) {
-    for (final child in element['children'])
-      yield* _getImagesFromParsedPost(child);
   }
 }

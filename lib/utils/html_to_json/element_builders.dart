@@ -1,72 +1,140 @@
 import 'text_mode.dart';
 export 'text_mode.dart';
 
-Map<String, dynamic> buildWithChildren(String type, List<dynamic> children) =>
-    {'type': type, 'children': children};
+abstract class Node {
+  String get type;
+}
 
-Map<String, dynamic> buildWithChild(String type, dynamic child) =>
-    {'type': type, 'child': child};
+abstract class NodeChild extends Node {
+  Node child;
+}
+
+abstract class NodeChildren extends Node {
+  List<Node> children;
+}
+
+class Paragraph implements Node {
+  List<Span> children;
+
+  Paragraph.empty() : children = [];
+
+  addSpan(Span span) {
+    children.add(span);
+  }
+
+  @override
+  String get type => "paragraph";
+}
+
+abstract class Span {}
+
+class BlockSpan implements Span {
+  Node child;
+
+  BlockSpan(this.child);
+}
+
+class TextSpan implements Span {
+  String text;
+  List<String> modes;
+
+  TextSpan(this.text, {List<TextMode> modes = const []})
+      : modes = modes
+            .map((mode) => mode.toString().substring('TextMode'.length + 1))
+            .toList();
+}
+
+class LinkSpan implements Span {
+  String text;
+  String link;
+
+  LinkSpan(this.text, this.link);
+}
+
+class TextParagraph implements Node {
+  String text;
+
+  TextParagraph(this.text);
+
+  @override
+  String get type => "text_paragraph";
+}
+
+class HeadLine implements Node {
+  String text;
+  String mode;
+
+  HeadLine(this.text, this.mode);
+
+  @override
+  String get type => "headline";
+}
+
+class Image implements Node {
+  String src;
+  String caption;
+
+  Image(this.src, {this.caption});
+
+  @override
+  String get type => "image";
+}
+
+class Code implements Node {
+  String text;
+  String language; // can be null
+
+  Code(this.text, this.language);
+
+  @override
+  String get type => "code";
+}
 
 enum ListType { unordered, ordered }
 
-Map<String, dynamic> buildDefaultParagraph() =>
-    {'type': 'paragraph', 'children': []};
+class BlockList implements NodeChildren {
+  List<Node> children;
+  ListType listType;
 
-void addSpanToParagraph(p, span) {
-  final pch = (p['children'] as List);
-  pch.add(span);
+  BlockList(this.listType, this.children);
+
+  @override
+  String get type => "${listType}_list";
 }
 
-Map<String, dynamic> buildTextParagraph(String text) => {
-  'type': 'tp',
-  'text': text,
-};
+class Details implements NodeChild {
+  String title;
+  Node child;
 
-Map<String, dynamic> buildTextSpan(String text,
-    {List<TextMode> modes = const []}) =>
-    {
-      'type': 'span',
-      'text': text,
-      'mode': modes.map((mode) => mode.toString().substring('TextMode'.length + 1)).toList(),
-    };
+  Details(this.title, this.child);
 
-Map<String, dynamic> buildHeadLine(String text, String headline) => {
-  'type': 'hl',
-  'text': text,
-  'mode': headline,
-};
-
-Map<String, dynamic> buildImage(String src) => {
-  'type': 'image',
-  'src': src,
-};
-
-Map<String, dynamic> buildCode(String text, List<String> language) =>
-    {'type': 'code', 'text': text, 'language': language};
-
-void addCaption(image, String caption) {
-  image['caption'] = caption;
+  @override
+  String get type => "details";
 }
 
-void addLink(image, String link) {
-  image['link'] = link;
+class Scrollable implements NodeChild {
+  Node child;
+
+  Scrollable(this.child);
+
+  @override
+  String get type => "scrollable";
 }
 
-Map<String, dynamic> buildList(ListType listType, List<dynamic> children) =>
-    buildWithChildren(
-        listType.toString().substring('ListType'.length + 1) + '_list',
-        children);
+class BlockColumn implements NodeChildren {
+  List<Node> children;
 
-Map<String, dynamic> buildDetails(String title, child) =>
-    {'type': 'details', 'child': child, 'title': title};
+  BlockColumn(this.children);
 
-Map<String, dynamic> buildPre(dynamic child) => buildWithChild('pre', child);
+  @override
+  String get type => "column";
+}
 
-Map<String, dynamic> buildDiv(List<dynamic> children) =>
-    buildWithChildren('div', children);
+class BlockQuote implements NodeChild {
+  Node child;
 
-Map<String, dynamic> buildBlockQuote(List<dynamic> children) =>
-    buildWithChildren('blockquote', children);
+  BlockQuote(this.child);
 
-Map<String, dynamic> buildInlineLink(String text, String src) =>
-    {'type': 'link_span', 'text': text, 'src': src};
+  @override
+  String get type => "quote";
+}
