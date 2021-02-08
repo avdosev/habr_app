@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 typedef LoadMore = Future Function();
@@ -39,6 +40,7 @@ class IncrementallyLoadingListView extends StatefulWidget {
   final bool addAutomaticKeepAlives;
   final bool addRepaintBoundaries;
   final double cacheExtent;
+  final bool useScrollbar;
 
   /// A callback that is triggered when more items are being loaded
   final OnLoadMore onLoadMore;
@@ -51,6 +53,7 @@ class IncrementallyLoadingListView extends StatefulWidget {
         @required this.loadMore,
         this.loadMoreOffsetFromBottom = 0,
         this.key,
+        this.useScrollbar = true,
         this.scrollDirection = Axis.vertical,
         this.reverse = false,
         this.controller,
@@ -73,6 +76,7 @@ class IncrementallyLoadingListView extends StatefulWidget {
         @required this.loadMore,
         this.loadMoreOffsetFromBottom = 0,
         this.key,
+        this.useScrollbar = true,
         this.scrollDirection = Axis.vertical,
         this.reverse = false,
         this.controller,
@@ -158,7 +162,7 @@ class IncrementallyLoadingListViewState
           final itemCount =
           _isSeparated ? _separatedItemCount() : widget.itemCount();
           final itemBuilder = _isSeparated ? _separatedItemBuilder : _buildItem;
-          return ListView.builder(
+          final listview = ListView.builder(
             key: widget.key,
             scrollDirection: widget.scrollDirection,
             reverse: widget.reverse,
@@ -174,6 +178,12 @@ class IncrementallyLoadingListViewState
             addRepaintBoundaries: widget.addRepaintBoundaries,
             cacheExtent: widget.cacheExtent,
           );
+
+          if (widget.useScrollbar) {
+            return Scrollbar(child: listview, thickness: 4,);
+          }
+
+          return listview;
         });
   }
 
