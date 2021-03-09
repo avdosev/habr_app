@@ -147,3 +147,13 @@ class Iframe implements Node {
   @override
   String get type => "iframe";
 }
+
+class Table implements Node {
+  // имплементирует ноду чтобы не применялись оптимизаци
+  List<List<Node>> rows;
+
+  Table(this.rows);
+
+  @override
+  String get type => "table";
+}

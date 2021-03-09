@@ -173,8 +173,7 @@ List<Node> prepareChildrenHtmlBlocElement(dom.Element element) {
           if (block.children.isEmpty) continue;
           if (block.children.length == 1) {
             final child = block.children[0];
-            if (child is TextSpan && child.text.trim().isEmpty)
-              continue;
+            if (child is TextSpan && child.text.trim().isEmpty) continue;
           }
         }
         children.add(block);
@@ -233,6 +232,8 @@ Node prepareHtmlBlocElement(dom.Element element) {
     case 'body':
     case 'div':
     case 'li':
+    case 'th':
+    case 'td':
       if (element.classes.contains('spoiler')) {
         return Details(
           element.getElementsByClassName('spoiler_title')[0].text,
@@ -242,6 +243,8 @@ Node prepareHtmlBlocElement(dom.Element element) {
       } else if (element.classes.contains('tm-iframe_temp')) {
         final src = element.attributes['data-src'];
         return Iframe(src);
+      } else if (element.classes.contains('scrollable-table')) {
+        return Scrollable(prepareHtmlBlocElement(element.children.first));
       } else {
         return BlockColumn(prepareChildrenHtmlBlocElement(element));
       }
@@ -266,6 +269,14 @@ Node prepareHtmlBlocElement(dom.Element element) {
     case 'iframe':
       final src = element.attributes['src'];
       return Iframe(src);
+    case 'table':
+      final rows = <List<Node>>[];
+      for (final tableItems in element.children) {
+        for (final elementsRow in tableItems.children) {
+          rows.add(elementsRow.children.map(prepareHtmlBlocElement).toList());
+        }
+      }
+      return Table(rows);
     default:
       print('Not found case for ${element.localName}');
       throw UnsupportedError('${element.localName} not supported');
