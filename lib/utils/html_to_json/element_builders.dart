@@ -138,3 +138,12 @@ class BlockQuote implements NodeChild {
   @override
   String get type => "quote";
 }
+
+class Iframe implements Node {
+  String src;
+
+  Iframe(this.src);
+
+  @override
+  String get type => "iframe";
+}

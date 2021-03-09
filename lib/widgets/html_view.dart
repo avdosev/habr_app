@@ -41,7 +41,7 @@ class HtmlView extends StatelessWidget {
     Widget widget;
     if (element is view.HeadLine) {
       final mode =
-          HeadLineType.values[int.parse(element.mode.substring(1)) - 1];
+      HeadLineType.values[int.parse(element.mode.substring(1)) - 1];
       widget = HeadLine(text: element.text, type: mode);
     } else if (element is view.TextParagraph) {
       widget = Text(
@@ -70,7 +70,10 @@ class HtmlView extends StatelessWidget {
         widget = WrappedContainer(
           children: [
             widget,
-            Text(element.caption, style: Theme.of(context).textTheme.subtitle2)
+            Text(element.caption, style: Theme
+                .of(context)
+                .textTheme
+                .subtitle2)
           ],
           distance: 5,
         );
@@ -102,6 +105,10 @@ class HtmlView extends StatelessWidget {
       widget = Spoiler(
         title: element.title,
         child: buildTree(element.child, context),
+      );
+    } else if (element is view.Iframe) {
+      widget = Iframe(
+        src: element.src,
       );
     } else {
       logInfo("Not found case for $type");

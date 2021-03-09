@@ -21,6 +21,7 @@ const blockElements = {
   'blockquote',
   'ol',
   'ul',
+  'iframe',
 };
 
 const inlineElements = {
@@ -238,6 +239,9 @@ Node prepareHtmlBlocElement(dom.Element element) {
           prepareHtmlBlocElement(
               element.getElementsByClassName('spoiler_text')[0]),
         );
+      } else if (element.classes.contains('tm-iframe_temp')) {
+        final src = element.attributes['data-src'];
+        return Iframe(src);
       } else {
         return BlockColumn(prepareChildrenHtmlBlocElement(element));
       }
@@ -259,6 +263,9 @@ Node prepareHtmlBlocElement(dom.Element element) {
     case 'pre':
       if (element.children.isEmpty) return Scrollable(Code(element.text, ""));
       return Scrollable(prepareHtmlBlocElement(element.children.first));
+    case 'iframe':
+      final src = element.attributes['src'];
+      return Iframe(src);
     default:
       print('Not found case for ${element.localName}');
       throw UnsupportedError('${element.localName} not supported');
