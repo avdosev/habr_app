@@ -200,7 +200,7 @@ class MoreButtons {
 }
 
 class ArticleInfo extends StatelessWidget {
-  final Post article;
+  final PostInfo article;
 
   const ArticleInfo({this.article});
 
@@ -235,7 +235,7 @@ class ArticleInfo extends StatelessWidget {
 }
 
 class ArticleView extends StatelessWidget {
-  final Post article;
+  final ParsedPost article;
   final ScrollController controller;
 
   const ArticleView({this.article, this.controller});
@@ -253,10 +253,7 @@ class ArticleView extends StatelessWidget {
         SizedBox(
           height: 30,
         ),
-        HtmlView(
-          article.body,
-          textAlign: textAlign,
-        ),
+        HtmlView(article.parsedBody, textAlign: textAlign),
         SizedBox(
           height: 20,
         ),

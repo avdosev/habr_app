@@ -145,7 +145,7 @@ class CommentView extends StatelessWidget {
             const SizedBox(
               height: 10,
             ),
-            HtmlView(
+            HtmlView.unparsed(
               comment.message,
               textAlign: textAlign,
             ),
