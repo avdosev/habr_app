@@ -14,7 +14,10 @@ class ArticlesStorage extends ArticlesStorageBase with _$ArticlesStorage {
   final PageLoader<Either<AppError, PostPreviews>> loader;
   final Filter<PostPreview> filter;
 
-  ArticlesStorage(this.loader, {this.filter = const NoneFilter<PostPreview>()}) {
+  ArticlesStorage(
+    this.loader, {
+    this.filter = const NoneFilter<PostPreview>(),
+  }) {
     loadFirstPage();
   }
 
@@ -34,6 +37,7 @@ abstract class ArticlesStorageBase with Store {
   bool loadItems = false;
   @observable
   List<PostPreview> previews = [];
+  Set<String> _postIds = {};
 
   int maxPages = -1;
   int pages = 0;
@@ -48,7 +52,11 @@ abstract class ArticlesStorageBase with Store {
   }
 
   Future<Either<AppError, PostPreviews>> loadPage(int page);
+
   bool filterPreview(PostPreview preview);
+
+  bool isNeedToAdd(PostPreview preview) =>
+      !filterPreview(preview) && !_postIds.contains(preview.id);
 
   @action
   Future loadFirstPage() async {
@@ -58,8 +66,8 @@ abstract class ArticlesStorageBase with Store {
       lastError = left;
       return LoadingState.isCorrupted;
     }, (right) {
-      previews
-          .addAll(right.previews.where((preview) => !filterPreview(preview)));
+      previews.addAll(right.previews.where(isNeedToAdd));
+      _postIds.addAll(right.previews.map((e) => e.id));
       maxPages = right.maxCountPages;
       pages = 1;
       return LoadingState.isFinally;
@@ -79,8 +87,8 @@ abstract class ArticlesStorageBase with Store {
     loadItems = true;
     final nextPage = await loadPosts(numberLoadingPage);
     loadItems = false;
-    previews
-        .addAll(nextPage.previews.where((element) => !filterPreview(element)));
+    previews.addAll(nextPage.previews.where(isNeedToAdd));
+    _postIds.addAll(nextPage.previews.map((e) => e.id));
     pages = numberLoadingPage;
   }
 
@@ -91,11 +99,13 @@ abstract class ArticlesStorageBase with Store {
   @action
   void removePreview(String id) {
     previews.removeWhere((element) => element.id == id);
+    _postIds.remove(id);
     previews = List()..addAll(previews);
   }
 
   @action
   void removeAllPreviews() {
     previews = [];
+    _postIds = {};
   }
 }
