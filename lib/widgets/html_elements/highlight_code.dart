@@ -192,15 +192,13 @@ class _HighlightViewState extends State<_HighlightView> {
         future: parsing,
         // ignore: missing_return
         builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.done) {
-            if (snapshot.hasData) {
-              return RichText(
-                text: TextSpan(
-                  style: _textStyle,
-                  children: _convert(snapshot.data),
-                ),
-              );
-            }
+          if (snapshot.hasData) {
+            return RichText(
+              text: TextSpan(
+                style: _textStyle,
+                children: _convert(snapshot.data),
+              ),
+            );
           }
           return Text(widget.source, style: _textStyle);
         },

@@ -19,11 +19,13 @@ class HtmlView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return WrappedContainer(children: inlineTree(
-          node,
-          context,
-          BuildParams(textAlign: textAlign),
-        ).toList()) ??
+    return Column(
+            children: inlineTree(
+              node,
+              context,
+              BuildParams(textAlign: textAlign),
+            ).toList(),
+            crossAxisAlignment: CrossAxisAlignment.stretch) ??
         Container();
   }
 

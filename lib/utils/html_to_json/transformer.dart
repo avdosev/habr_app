@@ -22,6 +22,7 @@ const blockElements = {
   'ol',
   'ul',
   'iframe',
+  'table',
 };
 
 const inlineElements = {
@@ -243,8 +244,6 @@ Node prepareHtmlBlocElement(dom.Element element) {
       } else if (element.classes.contains('tm-iframe_temp')) {
         final src = element.attributes['data-src'];
         return Iframe(src);
-      } else if (element.classes.contains('scrollable-table')) {
-        return Scrollable(prepareHtmlBlocElement(element.children.first));
       } else {
         return BlockColumn(prepareChildrenHtmlBlocElement(element));
       }
@@ -276,7 +275,7 @@ Node prepareHtmlBlocElement(dom.Element element) {
           rows.add(elementsRow.children.map(prepareHtmlBlocElement).toList());
         }
       }
-      return Table(rows);
+      return Scrollable(Table(rows));
     default:
       print('Not found case for ${element.localName}');
       throw UnsupportedError('${element.localName} not supported');
