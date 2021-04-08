@@ -34,7 +34,8 @@ const inlineElements = {
   'b',
   'a',
   'um',
-  'sup'
+  'sup',
+  'u',
 };
 
 const nameToType = <String, TextMode>{
@@ -42,7 +43,8 @@ const nameToType = <String, TextMode>{
   'em': TextMode.emphasis,
   'i': TextMode.italic,
   's': TextMode.strikethrough,
-  'b': TextMode.bold
+  'b': TextMode.bold,
+  'u': TextMode.underline,
 };
 
 Node optimizeParagraph(Paragraph p) {

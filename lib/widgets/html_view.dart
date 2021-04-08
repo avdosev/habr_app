@@ -119,20 +119,24 @@ Widget buildTree(view.Node element, BuildContext context, BuildParams params) {
       src: element.src,
     );
   } else if (element is view.Table) {
-    widget = Table(
-      defaultColumnWidth: IntrinsicColumnWidth(),
-      border:
-          TableBorder.all(color: Theme.of(context).textTheme.bodyText2.color),
-      children: element.rows
-          .map((row) => TableRow(
-              children: row
-                  .map((child) => TableCell(
-                      child: Padding(
-                          padding: EdgeInsets.all(5),
-                          child: buildTree(child, context, params))))
-                  .toList()))
-          .toList(),
-    );
+    try {
+      widget = Table(
+        defaultColumnWidth: IntrinsicColumnWidth(),
+        border:
+            TableBorder.all(color: Theme.of(context).textTheme.bodyText2.color),
+        children: element.rows
+            .map((row) => TableRow(
+                children: row
+                    .map((child) => TableCell(
+                        child: Padding(
+                            padding: EdgeInsets.all(5),
+                            child: buildTree(child, context, params))))
+                    .toList()))
+            .toList(),
+      );
+    } catch (err) {
+      widget = Text("Unsupported table");
+    }
   } else {
     logInfo("Not found case for $type");
   }
