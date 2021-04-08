@@ -14,7 +14,8 @@ Author parseAuthorFromJson(Map<String, dynamic> json) {
     alias: json['alias'],
     avatar: prepareAvatarUrl(json['avatarUrl']),
     speciality: json['speciality'],
-    fullName: json['fullname'] == null ? null : _prepareHtmlString(json['fullname']),
+    fullName:
+        json['fullname'] == null ? null : _prepareHtmlString(json['fullname']),
   );
 }
 
@@ -25,8 +26,8 @@ bool _commentIsBanned(Map<String, dynamic> json) {
 Comments parseCommentsFromJson(Map<String, dynamic> data) {
   return Comments(
     threads: (data['threads'] as List).cast<int>(),
-    comments: (data['comments'] as Map<String, dynamic>).map<int,
-        Comment>((key, value) {
+    comments: (data['comments'] as Map<String, dynamic>)
+        .map<int, Comment>((key, value) {
       return MapEntry(int.parse(key), parseCommentFromJson(value));
     }),
   );
@@ -51,7 +52,7 @@ Comment parseCommentFromJson(Map<String, dynamic> json) {
 Post parsePostFromJson(Map<String, dynamic> data) {
   return Post(
     id: data['id'],
-    title: data['titleHtml'],
+    title: _prepareHtmlString(data['titleHtml']),
     body: data['textHtml'],
     publishDate: DateTime.parse(data['timePublished']),
     author: parseAuthorFromJson(data['author']),
@@ -79,18 +80,17 @@ PostPreviews parsePostPreviewsFromJson(Map<String, dynamic> data) {
 
 AuthorInfo parseAuthorInfoFromJson(Map<String, dynamic> data) {
   return AuthorInfo(
-    alias: data['alias'],
-    fullName: data['fullname'],
-    speciality: data['speciality'],
-    avatar: prepareAvatarUrl(data['avatarUrl']),
-    postCount: data['counterStats']['postCount'],
-    followCount: data['followStats']['followCount'],
-    folowersCount: data['followStats']['followersCount'],
-    lastActivityTime: DateTime.parse(data['lastActivityDateTime']),
-    registerTime: DateTime.parse(data['registerDateTime']),
-    rating: data['rating'].round(),
-    karma: data['scoreStats']['score']
-  );
+      alias: data['alias'],
+      fullName: data['fullname'],
+      speciality: data['speciality'],
+      avatar: prepareAvatarUrl(data['avatarUrl']),
+      postCount: data['counterStats']['postCount'],
+      followCount: data['followStats']['followCount'],
+      folowersCount: data['followStats']['followersCount'],
+      lastActivityTime: DateTime.parse(data['lastActivityDateTime']),
+      registerTime: DateTime.parse(data['registerDateTime']),
+      rating: data['rating'].round(),
+      karma: data['scoreStats']['score']);
 }
 
 String _prepareHtmlString(String str) {
