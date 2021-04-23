@@ -44,7 +44,7 @@ class CachedAuthorDao extends DatabaseAccessor<Cache> with _$CachedAuthorDaoMixi
   CachedAuthorDao(this.db) : super(db);
 
   Future<List<CachedAuthor>> getAuthors(Iterable<String> ids) => (select(cachedAuthors)..where((authors) => authors.id.isIn(ids))).get();
-  Future<CachedAuthor> getAuthor(String id) => (select(cachedAuthors)..where((authors) => authors.id.equals(id))).getSingle();
+  Future<CachedAuthor> getAuthor(String id) => (select(cachedAuthors)..where((authors) => authors.id.equals(id))).getSingleOrNull();
   Future insertAuthor(Insertable<CachedAuthor> author) => into(cachedAuthors).insert(author);
 }
 
@@ -78,11 +78,11 @@ class CachedPostDao extends DatabaseAccessor<Cache> with _$CachedPostDaoMixin {
   Future<int> count() async {
     final countExp = cachedPosts.id.count(distinct: true);
     final query = selectOnly(cachedPosts)..addColumns([countExp]);
-    final result = await query.map((row) => row.read(countExp)).getSingle();
+    final result = await query.map((row) => row.read(countExp)).getSingleOrNull();
     return result;
   }
 
-  Future<CachedPost> getPost(String id) => (select(cachedPosts)..where((posts) => posts.id.equals(id))).getSingle();
+  Future<CachedPost> getPost(String id) => (select(cachedPosts)..where((posts) => posts.id.equals(id))).getSingleOrNull();
   Future insertPost(Insertable<CachedPost> post) => into(cachedPosts).insert(post);
   Future updatePost(Insertable<CachedPost> post) => update(cachedPosts).replace(post);
   Future deletePost(String id) => (delete(cachedPosts)..where((posts) => posts.id.equals(id))).go();
@@ -95,7 +95,7 @@ class CachedImagesDao extends DatabaseAccessor<Cache> with _$CachedImagesDaoMixi
   // Called by the AppDatabase class
   CachedImagesDao(this.db) : super(db);
 
-  Future<CachedImage> getImage(String url) => (select(cachedImages)..where((image) => image.url.equals(url))).getSingle();
+  Future<CachedImage> getImage(String url) => (select(cachedImages)..where((image) => image.url.equals(url))).getSingleOrNull();
   Future insertImage(Insertable<CachedImage> image) => into(cachedImages).insert(image);
   Future deleteImage(String url) => (delete(cachedImages)..where((image) => image.url.equals(url))).go();
 }

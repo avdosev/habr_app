@@ -15,22 +15,21 @@ dependencies:
   flutter_localizations:
     sdk: flutter
 
-  intl: "^0.16.1"
-  cupertino_icons: ^0.1.3
+  intl: "^0.17.0"
+  cupertino_icons: ^1.0.2
   http: ">=0.12.0"
-  equatable: ">=0.1.1"
   html: "0.14.0+3"
-  share: "0.6.5"
+  share: ^2.0.1
   flutter_highlight: "0.6.0"
-  either_dart: ">=0.0.5"
-  flutter_svg: "^0.19.0"
+  either_dart: ^0.1.1
+  flutter_svg: "^0.22.0"
   url_launcher: "^5.6.0"
-  moor_flutter: ^3.1.0
+  moor_flutter: ^4.0.0
   hive: ^1.4.4
   hive_flutter: ^0.3.1
-  flutter_slidable: 0.5.4
-  flutter_mobx: ^1.1.0+2
-  photo_view: ^0.10.2
+  flutter_slidable: 0.6.0
+  flutter_mobx: ^2.0.0
+  photo_view: ^0.11.1
   path_provider: ">=1.6.22"
   crypto: ">=2.1.5"
 
@@ -38,11 +37,10 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
 
-  flutter_launcher_icons: "^0.7.3"
-  moor_generator: ^3.1.0
-  hive_generator: ^0.7.2+1
-  build_runner: ^1.8.1
-  mobx_codegen: ^1.1.1+1
+  flutter_launcher_icons: "^0.9.0"
+  moor_generator: ^4.2.2
+  build_runner: ^2.0.1
+  mobx_codegen: ^2.0.1+3
 
 
 flutter_icons:

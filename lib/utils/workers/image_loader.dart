@@ -31,7 +31,7 @@ class ImageHttpLoader implements ImageLoader {
 
   static Future<bool> _loadImage(_ArgObj args) async {
     try {
-      final response = await http.get(args.url);
+      final response = await http.get(Uri.parse(args.url));
 
       if (checkHttpStatus(response).isLeft) {
         return false;

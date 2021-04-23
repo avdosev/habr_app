@@ -27,7 +27,7 @@ class LoadBuilder<Left, Right> extends StatelessWidget {
           case ConnectionState.done:
             if (snapshot.hasError)
               return onErrorBuilder(context, snapshot.error);
-            return snapshot.data.unite<Widget>(
+            return snapshot.data.fold<Widget>(
                     (err) => (onLeftBuilder ?? onErrorBuilder)(context, err),
                     (data) => onRightBuilder(context, data));
           default:

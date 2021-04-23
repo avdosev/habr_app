@@ -74,7 +74,7 @@ class HabrStorage {
   Future<bool> addArticleInCache(String id) {
     return article(id)
         .then((postOrError) =>
-            postOrError.asyncMap((post) => _cacheArticle(post)))
+            postOrError.mapAsync((post) => _cacheArticle(post)))
         .then((cachedPost) => cachedPost.isRight);
   }
 
@@ -94,7 +94,7 @@ class HabrStorage {
   Future<Either<AppError, Comments>> comments(String articleId) async {
     return api
         .comments(articleId)
-        .then((value) => value.asyncMap(_checkCachedCommentsAuthors));
+        .then((value) => value.mapAsync(_checkCachedCommentsAuthors));
   }
 
   Future<Comments> _checkCachedCommentsAuthors(Comments comments) async {
@@ -150,7 +150,7 @@ class HabrStorage {
 
     if (author.avatar.isNotDefault) {
       final maybeSavedImage = await imgStore.saveImage(author.avatar.url);
-      avatarUrl = maybeSavedImage.unite((left) => null, (right) => right);
+      avatarUrl = maybeSavedImage.fold((left) => null, (right) => right);
     }
 
     await cache.cachedAuthorDao.insertAuthor(CachedAuthor(

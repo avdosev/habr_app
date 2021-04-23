@@ -62,7 +62,7 @@ abstract class ArticlesStorageBase with Store {
   Future loadFirstPage() async {
     firstLoading = LoadingState.inProgress;
     final firstPage = await loadPage(1);
-    firstLoading = firstPage.unite<LoadingState>((left) {
+    firstLoading = firstPage.fold<LoadingState>((left) {
       lastError = left;
       return LoadingState.isCorrupted;
     }, (right) {
@@ -76,7 +76,7 @@ abstract class ArticlesStorageBase with Store {
 
   Future<PostPreviews> loadPosts(int page) async {
     final postOrError = await loadPage(page);
-    return postOrError.unite<PostPreviews>((err) {
+    return postOrError.fold<PostPreviews>((err) {
       // TODO: informing user
       return PostPreviews(previews: [], maxCountPages: -1);
     }, (posts) => posts);
@@ -100,7 +100,7 @@ abstract class ArticlesStorageBase with Store {
   void removePreview(String id) {
     previews.removeWhere((element) => element.id == id);
     _postIds.remove(id);
-    previews = List()..addAll(previews);
+    previews = List.from(previews);
   }
 
   @action

@@ -168,7 +168,7 @@ class _UserPageState extends State<UserPage> {
         Text('@' + info.alias, style: TextStyle(color: theme.primaryColor)),
         if (info.fullName != null && info.fullName.isNotEmpty)
           Text("a.k.a. ${info.fullName}"),
-        Text(info.speciality == null || info.speciality?.isEmpty
+        Text(info.speciality == null || info.speciality.isEmpty
             ? localization.user
             : info.speciality),
         if (info.about != null) Text(info.about),

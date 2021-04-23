@@ -36,7 +36,7 @@ class Habr {
     String ordString = orderToText[order];
     final url =
         "$api_url_v2/articles/?query=$query&order=$ordString&fl=ru&hl=ru&page=$page";
-    final response = await safe(http.get(url));
+    final response = await safe(http.get(Uri.parse(url)));
     return response
         .then(checkHttpStatus)
         .map(parseJson)
@@ -49,11 +49,11 @@ class Habr {
     final url =
         "$api_url_v2/articles/?period=daily&sort=date&fl=ru&hl=ru&page=$page";
     logInfo("Get articles by $url");
-    final response = await safe(http.get(url));
+    final response = await safe(http.get(Uri.parse(url)));
     return response
         .then(checkHttpStatus)
-        .asyncMap(asyncParseJson)
-        .then((val) => val.map((data) => parsePostPreviewsFromJson(data)));
+        .mapAsync(asyncParseJson)
+        .mapRight((data) => parsePostPreviewsFromJson(data));
   }
 
   Future<Either<AppError, PostPreviews>> userPosts(String user,
@@ -61,37 +61,37 @@ class Habr {
     final url =
         "$api_url_v2/articles/?user=$user&sort=date&fl=ru&hl=ru&page=$page";
     logInfo("Get articles by $url");
-    final response = await safe(http.get(url));
+    final response = await safe(http.get(Uri.parse(url)));
     return response
         .then(checkHttpStatus)
-        .asyncMap(asyncParseJson)
-        .then((val) => val.map((data) => parsePostPreviewsFromJson(data)));
+        .mapAsync(asyncParseJson)
+        .mapRight((data) => parsePostPreviewsFromJson(data));
   }
 
   Future<Either<AppError, AuthorInfo>> userInfo(String user) async {
     final url = "$api_url_v2/users/$user/card?fl=ru&hl=ru";
     logInfo("Get user info by $url");
-    final response = await safe(http.get(url));
+    final response = await safe(http.get(Uri.parse(url)));
     return response
         .then(checkHttpStatus)
-        .asyncMap(asyncParseJson)
-        .then((val) => val.map((data) => parseAuthorInfoFromJson(data)));
+        .mapAsync(asyncParseJson)
+        .mapRight((data) => parseAuthorInfoFromJson(data));
   }
 
   Future<Either<AppError, Post>> article(String id) async {
     final url = "$api_url_v2/articles/$id";
     logInfo("Get article by $url");
-    final response = await safe(http.get(url));
+    final response = await safe(http.get(Uri.parse(url)));
     return response
         .then(checkHttpStatus)
-        .asyncMap(asyncParseJson)
-        .then((val) => val.map((data) => parsePostFromJson(data)));
+        .mapAsync(asyncParseJson)
+        .mapRight((data) => parsePostFromJson(data));
   }
 
   Future<Either<AppError, Comments>> comments(String articleId) async {
     final url = "$api_url_v2/articles/$articleId/comments";
     logInfo("Get comments by $url");
-    final response = await safe(http.get(url));
+    final response = await safe(http.get(Uri.parse(url)));
     return response
         .then(checkHttpStatus)
         .map(parseJson)
