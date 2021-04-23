@@ -25,7 +25,7 @@ bool _commentIsBanned(Map<String, dynamic> json) {
 
 Comments parseCommentsFromJson(Map<String, dynamic> data) {
   return Comments(
-    threads: (data['threads'] as List).cast<int>(),
+    threads: (data['threads'] as List).cast<String>().map(int.parse).toList(),
     comments: (data['comments'] as Map<String, dynamic>)
         .map<int, Comment>((key, value) {
       return MapEntry(int.parse(key), parseCommentFromJson(value));
@@ -36,15 +36,15 @@ Comments parseCommentsFromJson(Map<String, dynamic> data) {
 Comment parseCommentFromJson(Map<String, dynamic> json) {
   final isBanned = _commentIsBanned(json);
   return Comment(
-      id: json['id'],
-      parentId: json['parentId'],
+      id: int.parse(json['id']),
+      parentId: json['parentId'] == null ? null : int.parse(json['parentId']),
       level: json['level'],
       banned: isBanned,
       timePublished: isBanned ? null : DateTime.parse(json['timePublished']),
       timeChanged: json['timeChanged'] == null
           ? null
           : DateTime.parse(json['timeChanged']),
-      children: (json['children'] as List).cast<int>(),
+      children: (json['children'] as List).cast<String>().map(int.parse).toList(),
       author: isBanned ? null : parseAuthorFromJson(json['author']),
       message: json['message']);
 }
