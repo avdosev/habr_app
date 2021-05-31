@@ -11,6 +11,7 @@ export 'load_builder.dart';
 export 'picture.dart';
 export 'circular_item.dart';
 export 'hr.dart';
+export 'articles_list_body.dart';
 
 // local packages
 export 'informing/informing.dart';

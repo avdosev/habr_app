@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:habr_app/habr_storage/habr_storage.dart';
@@ -28,16 +28,16 @@ class ArticlePage extends StatefulWidget {
 
 class _ArticlePageState extends State<ArticlePage> {
   String get articleId => widget.articleId;
-  ValueNotifier<bool> showFloatingActionButton = ValueNotifier(false);
-  ScrollController _controller = ScrollController();
-  final PostStorage postStorage = PostStorage();
+  ValueNotifier<bool> showFloatingActionButton;
+  ScrollController _controller;
 
   _ArticlePageState();
 
   @override
   void initState() {
     super.initState();
-    postStorage.articleId = articleId;
+    _controller = ScrollController();
+    showFloatingActionButton = ValueNotifier(false);
     _controller.addListener(floatingButtonShowListener);
   }
 
@@ -47,13 +47,13 @@ class _ArticlePageState extends State<ArticlePage> {
         sharePositionOrigin: box.localToGlobal(Offset.zero) & box.size);
   }
 
-  Widget buildAppBarTitle(context) {
+  Widget buildAppBarTitle(context, PostStorage store) {
     String title;
-    switch (postStorage.loadingState) {
+    switch (store.loadingState) {
       case LoadingState.inProgress:
         return LoadAppBarTitle();
       case LoadingState.isFinally:
-        title = postStorage.post.title;
+        title = store.post.title;
         break;
       case LoadingState.isCorrupted:
         title = AppLocalizations.of(context).notLoaded;
@@ -67,11 +67,7 @@ class _ArticlePageState extends State<ArticlePage> {
     );
   }
 
-  void reload() {
-    postStorage.reload();
-  }
-
-  Widget buildBody(BuildContext context) {
+  Widget buildBody(BuildContext context, PostStorage postStorage) {
     switch (postStorage.loadingState) {
       case LoadingState.inProgress:
         return const Center(child: const CircularProgressIndicator());
@@ -85,7 +81,11 @@ class _ArticlePageState extends State<ArticlePage> {
           case ErrorType.ServerError:
             return const Center(child: const LotOfEntropy());
           default:
-            return Center(child: LossInternetConnection(onPressReload: reload));
+            return Center(
+              child: LossInternetConnection(
+                onPressReload: () => postStorage.reload(),
+              ),
+            );
         }
         break;
       default:
@@ -96,60 +96,70 @@ class _ArticlePageState extends State<ArticlePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
-          title: Observer(
-            builder: buildAppBarTitle,
-          ),
-          actions: [
-            IconButton(
-              icon: const Icon(Icons.share),
-              onPressed: () => shareArticle(context),
-            ),
-            PopupMenuButton<String>(
-              icon: const Icon(Icons.more_vert),
-              onSelected: (val) {
-                switch (val) {
-                  case MoreButtons.Cache:
-                    HabrStorage().addArticleInCache(widget.articleId);
-                    break;
-                  case MoreButtons.Bookmark:
-                    addBookMark();
-                    break;
-                  case MoreButtons.BackToBookmark:
-                    returnToBookmark();
-                    break;
-                }
-              },
-              itemBuilder: (context) => MoreButtons.values
-                  .map((val) => PopupMenuItem(
-                        value: val,
-                        child: Text(val),
-                      ))
-                  .toList(),
-            )
-          ],
-        ),
-        body: Observer(
-          builder: buildBody,
-        ),
-        floatingActionButton: Observer(builder: (context) {
+    return ChangeNotifierProvider(
+      create: (_) {
+        final store = PostStorage(widget.articleId);
+        store.reload();
+        store.addListener(() {
           showFloatingActionButton.value =
-              postStorage.loadingState == LoadingState.isFinally;
-          return ValueListenableBuilder(
-              valueListenable: showFloatingActionButton,
-              builder: (BuildContext context, bool value, Widget child) =>
-                  HideFloatingActionButton(
-                    tooltip: AppLocalizations.of(context).comments,
-                    visible: value,
-                    child: const Icon(Icons.chat_bubble_outline),
-                    onPressed: () => openCommentsPage(context, articleId),
-                    duration: const Duration(milliseconds: 300),
-                  ));
-        }));
+              store.loadingState == LoadingState.isFinally;
+        });
+        return store;
+      },
+      builder: (context, child) {
+        return Scaffold(
+          appBar: AppBar(
+            title: Consumer<PostStorage>(
+              builder: (context, store, _) => buildAppBarTitle(context, store),
+            ),
+            actions: [
+              IconButton(
+                icon: const Icon(Icons.share),
+                onPressed: () => shareArticle(context),
+              ),
+              PopupMenuButton<String>(
+                icon: const Icon(Icons.more_vert),
+                onSelected: (val) {
+                  final store =
+                      Provider.of<PostStorage>(context, listen: false);
+                  switch (val) {
+                    case MoreButtons.Cache:
+                      HabrStorage().addArticleInCache(widget.articleId);
+                      break;
+                    case MoreButtons.Bookmark:
+                      addBookMark(store);
+                      break;
+                    case MoreButtons.BackToBookmark:
+                      returnToBookmark(store);
+                      break;
+                  }
+                },
+                itemBuilder: (context) => MoreButtons.values
+                    .map((val) => PopupMenuItem(value: val, child: Text(val)))
+                    .toList(),
+              )
+            ],
+          ),
+          body: Consumer<PostStorage>(
+            builder: (context, store, _) => buildBody(context, store),
+          ),
+          floatingActionButton: ValueListenableBuilder(
+            valueListenable: showFloatingActionButton,
+            builder: (BuildContext context, bool value, Widget child) =>
+                HideFloatingActionButton(
+              tooltip: AppLocalizations.of(context).comments,
+              visible: value,
+              child: const Icon(Icons.chat_bubble_outline),
+              onPressed: () => openCommentsPage(context, articleId),
+              duration: const Duration(milliseconds: 300),
+            ),
+          ),
+        );
+      },
+    );
   }
 
-  void addBookMark() {
+  void addBookMark(PostStorage postStorage) {
     if (postStorage.loadingState == LoadingState.isFinally) {
       final position = _controller.offset;
       final post = postStorage.post;
@@ -165,7 +175,7 @@ class _ArticlePageState extends State<ArticlePage> {
     }
   }
 
-  void returnToBookmark() {
+  void returnToBookmark(PostStorage postStorage) {
     if (postStorage.loadingState == LoadingState.isFinally) {
       final position = BookmarksStore().getPosition(articleId);
       if (position != null) {

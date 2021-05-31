@@ -1,24 +1,21 @@
-import 'package:mobx/mobx.dart';
+import 'package:flutter/foundation.dart';
 
 import 'package:habr_app/app_error.dart';
 import 'package:habr_app/models/author_info.dart';
 import 'package:habr_app/stores/loading_state.dart';
 import 'package:habr_app/habr/api.dart';
 
-part 'user_info_store.g.dart';
+class UserInfoStorage with ChangeNotifier {
+  UserInfoStorage(this.username);
 
-class UserInfoStorage = UserInfoStorageBase with _$UserInfoStorage;
-
-abstract class UserInfoStorageBase with Store {
-  @observable
   LoadingState loadingState;
-
+  String username;
   AuthorInfo info;
   AppError lastError;
 
-  @action
-  Future<void> loadInfo(String username) async {
+  void loadInfo() async {
     loadingState = LoadingState.inProgress;
+    notifyListeners();
     final userInfo = await Habr().userInfo(username);
     userInfo.either((left) {
       loadingState = LoadingState.isCorrupted;
@@ -27,5 +24,6 @@ abstract class UserInfoStorageBase with Store {
       loadingState = LoadingState.isFinally;
       info = right;
     });
+    notifyListeners();
   }
 }

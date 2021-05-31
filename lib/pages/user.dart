@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:habr_app/utils/message_notifier.dart';
+import 'package:provider/provider.dart';
 import 'package:habr_app/habr_storage/habr_storage.dart';
 import 'package:habr_app/models/author.dart';
 
@@ -16,53 +17,40 @@ import 'package:habr_app/routing/routing.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:habr_app/utils/date_to_text.dart';
 
-class UserPage extends StatefulWidget {
+class UserPage extends StatelessWidget {
   final String username;
 
   UserPage({@required this.username});
 
   @override
-  createState() => _UserPageState();
+  Widget build(BuildContext context) {
+    return MultiProvider(
+        providers: [
+          ChangeNotifierProvider(
+              create: (_) =>
+                  ArticlesStorage(UserPreviewsLoader(this.username))),
+          ChangeNotifierProvider(create: (_) {
+            final store = UserInfoStorage(this.username);
+            store.loadInfo();
+            return store;
+          }),
+        ],
+        child: Scaffold(
+          appBar: AppBar(title: UserAppBarTitle()),
+          body: UserBody(),
+        ));
+  }
 }
 
-class _UserPageState extends State<UserPage> {
-  ArticlesStorage articlesStorage;
-  final userInfoStorage = UserInfoStorage();
-
-  @override
-  void initState() {
-    super.initState();
-    articlesStorage = ArticlesStorage(UserPreviewsLoader(widget.username));
-    userInfoStorage.loadInfo(widget.username);
-  }
-
-  void reload() {
-    userInfoStorage.loadInfo(widget.username);
-    articlesStorage.reload();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Observer(
-          builder: buildAppBarTitle,
-        ),
-      ),
-      body: Observer(
-        builder: buildBody,
-      ),
-    );
-  }
-
-  Widget buildAppBarTitle(BuildContext context) {
+class UserAppBarTitle extends StatelessWidget {
+  Widget buildTitle(BuildContext context, UserInfoStorage store) {
     String title;
-    final userLoading = userInfoStorage.loadingState;
+    final userLoading = store.loadingState;
     switch (userLoading) {
       case LoadingState.inProgress:
         return LoadAppBarTitle();
       case LoadingState.isFinally:
-        title = widget.username;
+        title = store.username;
         break;
       case LoadingState.isCorrupted:
         title = AppLocalizations.of(context).notLoaded;
@@ -73,51 +61,75 @@ class _UserPageState extends State<UserPage> {
     return Text(title);
   }
 
-  Widget buildBody(BuildContext bodyContext) {
-    final userLoad = userInfoStorage.loadingState;
-    final previewsLoad = articlesStorage.firstLoading;
+  Widget build(BuildContext context) {
+    return Consumer<UserInfoStorage>(
+      builder: (context, store, child) => buildTitle(context, store),
+    );
+  }
+}
+
+class UserBody extends StatelessWidget {
+  Widget build(BuildContext context) {
+    return Consumer2<UserInfoStorage, ArticlesStorage>(
+        builder: (context, userStore, articlesStore, _) =>
+            mainBuilder(context, userStore, articlesStore));
+  }
+
+  Widget mainBuilder(BuildContext bodyContext, UserInfoStorage userStore,
+      ArticlesStorage articlesStore) {
+    final userLoad = userStore.loadingState;
+    final previewsLoad = articlesStore.firstLoading;
     if (userLoad == LoadingState.inProgress) {
       return const Center(child: const CircularProgressIndicator());
     } else if (userLoad == LoadingState.isFinally) {
-      if (userInfoStorage.info.postCount == 0) {
+      if (userStore.info.postCount == 0) {
         return Column(
           children: [
-            buildAuthorInfo(context),
-            Expanded(
-                child: const Center(child: const EmptyContent())),
+            AuthorInfoView(info: userStore.info),
+            Expanded(child: const Center(child: const EmptyContent())),
           ],
         );
       }
       if (previewsLoad == LoadingState.isFinally) {
-        return buildLoadedBody(bodyContext);
+        return buildLoadedBody(bodyContext, userStore, articlesStore);
       } else if (previewsLoad == LoadingState.inProgress) {
         return Column(
           children: [
-            buildAuthorInfo(context),
+            AuthorInfoView(info: userStore.info),
             Expanded(
                 child: const Center(child: const CircularProgressIndicator())),
           ],
         );
       }
     }
-    final err = userInfoStorage.lastError ?? articlesStorage.lastError;
+    final err = userStore.lastError ?? articlesStore.lastError;
     switch (err.errCode) {
       case ErrorType.ServerError:
         return const Center(child: const LotOfEntropy());
       default:
-        return Center(child: LossInternetConnection(onPressReload: reload));
+        return Center(
+          child: LossInternetConnection(
+            onPressReload: () => reload(userStore, articlesStore),
+          ),
+        );
     }
   }
 
-  Widget buildLoadedBody(BuildContext bodyContext) {
+  void reload(UserInfoStorage userStore, ArticlesStorage articlesStore) {
+    userStore.loadInfo();
+    articlesStore.reload();
+  }
+
+  Widget buildLoadedBody(BuildContext bodyContext, UserInfoStorage userStore,
+      ArticlesStorage articlesStore) {
     const authorInfoElementsCount = 1;
     return IncrementallyLoadingListView(
       itemBuilder: (context, index) {
-        final previews = articlesStorage.previews;
-        if ((index-authorInfoElementsCount) >= previews.length && articlesStorage.loadItems)
-          return Center(child: const CircularItem());
+        final previews = articlesStore.previews;
+        if ((index - authorInfoElementsCount) >= previews.length &&
+            articlesStore.loadItems) return Center(child: const CircularItem());
         if (index < authorInfoElementsCount) {
-          return buildAuthorInfo(context);
+          return AuthorInfoView(info: userStore.info);
         }
         final preview = previews[index - authorInfoElementsCount];
         return SlidableArchive(
@@ -126,25 +138,28 @@ class _UserPageState extends State<UserPage> {
             postPreview: preview,
             onPressed: (articleId) => openArticle(context, articleId),
           ),
-          onArchive: () =>
-              HabrStorage().addArticleInCache(preview.id).then((res) {
-            Scaffold.of(context).showSnackBar(SnackBar(
-                content: Text("${preview.title} ${res ? '' : 'не'} скачено")));
-          }),
+          onArchive: () => HabrStorage().addArticleInCache(preview.id).then(
+              (res) => notifySnackbarText(
+                  context, "${preview.title} ${res ? '' : 'не'} скачено")),
         );
       },
       separatorBuilder: (context, index) => const Hr(),
       itemCount: () =>
-          articlesStorage.previews.length +
-          (articlesStorage.loadItems ? 1 : 0) +
+          articlesStore.previews.length +
+          (articlesStore.loadItems ? 1 : 0) +
           authorInfoElementsCount,
-      loadMore: articlesStorage.loadNextPage,
-      hasMore: articlesStorage.hasNextPages,
+      loadMore: articlesStore.loadNextPage,
+      hasMore: articlesStore.hasNextPages,
     );
   }
+}
 
-  Widget buildAuthorInfo(BuildContext context) {
-    final info = userInfoStorage.info;
+class AuthorInfoView extends StatelessWidget {
+  AuthorInfoView({@required this.info});
+
+  final AuthorInfo info;
+
+  Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final localization = AppLocalizations.of(context);
     final locale = Localizations.localeOf(context);

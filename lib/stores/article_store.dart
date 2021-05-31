@@ -1,5 +1,5 @@
 import 'package:either_dart/either.dart';
-import 'package:mobx/mobx.dart';
+import 'package:flutter/foundation.dart';
 
 import 'package:habr_app/utils/page_loaders/page_loader.dart';
 import 'package:habr_app/utils/filters/article_preview_filters.dart';
@@ -8,9 +8,7 @@ import 'package:habr_app/models/post_preview.dart';
 
 import 'loading_state.dart';
 
-part 'article_store.g.dart';
-
-class ArticlesStorage extends ArticlesStorageBase with _$ArticlesStorage {
+class ArticlesStorage with ChangeNotifier {
   final PageLoader<Either<AppError, PostPreviews>> loader;
   final Filter<PostPreview> filter;
 
@@ -25,17 +23,12 @@ class ArticlesStorage extends ArticlesStorageBase with _$ArticlesStorage {
     return loader.load(page);
   }
 
-  @override
   bool filterPreview(PostPreview preview) {
     return filter.filter(preview);
   }
-}
 
-abstract class ArticlesStorageBase with Store {
-  @observable
   LoadingState firstLoading;
   bool loadItems = false;
-  @observable
   List<PostPreview> previews = [];
   Set<String> _postIds = {};
 
@@ -43,7 +36,6 @@ abstract class ArticlesStorageBase with Store {
   int pages = 0;
   AppError lastError;
 
-  @action
   Future reload() async {
     maxPages = -1;
     pages = 0;
@@ -51,16 +43,12 @@ abstract class ArticlesStorageBase with Store {
     loadFirstPage();
   }
 
-  Future<Either<AppError, PostPreviews>> loadPage(int page);
-
-  bool filterPreview(PostPreview preview);
-
   bool isNeedToAdd(PostPreview preview) =>
       !filterPreview(preview) && !_postIds.contains(preview.id);
 
-  @action
-  Future loadFirstPage() async {
+  Future<void> loadFirstPage() async {
     firstLoading = LoadingState.inProgress;
+    notifyListeners();
     final firstPage = await loadPage(1);
     firstLoading = firstPage.fold<LoadingState>((left) {
       lastError = left;
@@ -72,6 +60,7 @@ abstract class ArticlesStorageBase with Store {
       pages = 1;
       return LoadingState.isFinally;
     });
+    notifyListeners();
   }
 
   Future<PostPreviews> loadPosts(int page) async {
@@ -96,16 +85,16 @@ abstract class ArticlesStorageBase with Store {
     return pages < maxPages;
   }
 
-  @action
   void removePreview(String id) {
     previews.removeWhere((element) => element.id == id);
     _postIds.remove(id);
     previews = List.from(previews);
+    notifyListeners();
   }
 
-  @action
   void removeAllPreviews() {
     previews = [];
     _postIds = {};
+    notifyListeners();
   }
 }
