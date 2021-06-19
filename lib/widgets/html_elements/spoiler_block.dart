@@ -12,7 +12,7 @@ class Spoiler extends StatefulWidget {
 }
 
 class _SpoilerState extends State<Spoiler> with TickerProviderStateMixin {
-  bool visible = false;
+  bool visible;
   Animation _arrowAnimation;
   AnimationController _arrowAnimationController;
   static const duration = Duration(milliseconds: 300);
@@ -20,10 +20,11 @@ class _SpoilerState extends State<Spoiler> with TickerProviderStateMixin {
   @override
   initState() {
     super.initState();
+    visible = false;
     _arrowAnimationController =
         AnimationController(vsync: this, duration: duration);
     _arrowAnimation =
-        Tween(begin: 0.0, end: pi/2).animate(_arrowAnimationController);
+        Tween(begin: 0.0, end: pi / 2).animate(_arrowAnimationController);
   }
 
   onTap() {
@@ -39,20 +40,21 @@ class _SpoilerState extends State<Spoiler> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     ThemeData themeData = Theme.of(context);
     return Container(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          GestureDetector(
-            child: Row(children: [
+        child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        GestureDetector(
+          child: Row(
+            children: [
               AnimatedBuilder(
                 animation: _arrowAnimationController,
                 builder: (context, child) => Transform.rotate(
-                    angle: _arrowAnimation.value,
-                    child: child
-                ),
+                    angle: _arrowAnimation.value, child: child),
                 child: Icon(Icons.arrow_right, color: themeData.primaryColor),
               ),
-              Expanded(child: Text(widget.title,
+              Expanded(
+                  child: Text(
+                widget.title,
                 style: TextStyle(
                   color: themeData.primaryColor,
                   decorationColor: themeData.primaryColor,
@@ -60,15 +62,17 @@ class _SpoilerState extends State<Spoiler> with TickerProviderStateMixin {
                   decorationStyle: TextDecorationStyle.dashed,
                 ),
               ))
-            ],),
-            onTap: onTap,
+            ],
           ),
-          if (visible) ...[
-            const SizedBox(height: 10,),
-            widget.child,
-          ],
+          onTap: onTap,
+        ),
+        if (visible) ...[
+          const SizedBox(
+            height: 10,
+          ),
+          widget.child,
         ],
-      )
-    );
+      ],
+    ));
   }
 }

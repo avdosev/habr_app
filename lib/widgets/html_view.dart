@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:habr_app/stores/app_settings.dart';
+import 'package:provider/provider.dart';
 
 import 'html_elements/html_elements.dart';
 import 'dividing_block.dart';
@@ -87,7 +88,7 @@ Widget buildTree(view.Node element, BuildContext context, BuildParams params) {
       );
     }
   } else if (element is view.Code) {
-    final appSettings = AppSettings();
+    final appSettings = context.watch<AppSettings>();
     widget = HighlightCode(
       element.text,
       language: element.language,
