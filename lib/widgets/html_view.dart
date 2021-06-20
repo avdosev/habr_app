@@ -88,7 +88,7 @@ Widget buildTree(view.Node element, BuildContext context, BuildParams params) {
       );
     }
   } else if (element is view.Code) {
-    final appSettings = context.watch<AppSettings>();
+    final appSettings = Provider.of<AppSettings>(context, listen: false);
     widget = HighlightCode(
       element.text,
       language: element.language,

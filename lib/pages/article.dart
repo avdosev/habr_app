@@ -252,7 +252,8 @@ class ArticleView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textAlign = AppSettings().articleTextAlign;
+    final appSettings = context.watch<AppSettings>();
+    final textAlign = appSettings.articleTextAlign;
     return ListView(
       padding: const EdgeInsets.all(10).copyWith(bottom: 20),
       controller: controller,

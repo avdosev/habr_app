@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:either_dart/either.dart';
 import 'package:habr_app/habr_storage/habr_storage.dart';
 import 'package:habr_app/routing/routing.dart';
@@ -125,7 +126,8 @@ class CommentView extends StatelessWidget {
     if (comment.banned) {
       return Text(AppLocalizations.of(context).bannedComment);
     }
-    final textAlign = AppSettings().commentTextAlign;
+    final appSettings = context.watch<AppSettings>();
+    final textAlign = appSettings.commentTextAlign;
     return Padding(
         padding: EdgeInsets.only(top: 5, bottom: 5),
         child: Column(
