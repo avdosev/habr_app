@@ -16,10 +16,7 @@ class SearchData {
   String query;
   Order order;
 
-  SearchData({
-    @required this.query,
-    @required this.order
-  });
+  SearchData({@required this.query, @required this.order});
 }
 
 class _SearchPageState extends State<SearchPage> {
@@ -41,47 +38,50 @@ class _SearchPageState extends State<SearchPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: false,
-      appBar: AppBar(
-        title: Text(AppLocalizations.of(context).search),
-        actions: [],
-      ),
-      body: Column(
-        children: [
+        resizeToAvoidBottomInset: false,
+        appBar: AppBar(
+          title: Text(AppLocalizations.of(context).search),
+          actions: [],
+        ),
+        body: Column(children: [
           Expanded(
-            child: ListView(
-              children: [
-                Card(
-                  child: Container(
-                    padding: EdgeInsets.all(10),
-                    child: TextFormField(
-                      textInputAction: TextInputAction.search,
-                      onFieldSubmitted: (_) => _onSearch(),
-                      autofocus: true,
-                      controller: queryController,
-                      decoration: InputDecoration(labelText: AppLocalizations.of(context).keywords),
+              child: ListView(
+            children: [
+              Card(
+                child: Container(
+                  padding: EdgeInsets.all(10),
+                  child: TextFormField(
+                    textInputAction: TextInputAction.search,
+                    onFieldSubmitted: (_) => _onSearch(),
+                    autofocus: true,
+                    controller: queryController,
+                    decoration: InputDecoration(
+                      labelText: AppLocalizations.of(context).keywords,
+                      suffixIcon: IconButton(
+                        icon: const Icon(Icons.clear),
+                        onPressed: () {
+                          queryController.clear();
+                        },
+                      ),
                     ),
-                  )
+                  ),
                 ),
-                RadioGroup<Order>(
-                  groupValue: orderBy,
-                  title: AppLocalizations.of(context).sort,
-                  enumToText: {
-                    Order.Relevance: AppLocalizations.of(context).relevance,
-                    Order.Date: AppLocalizations.of(context).date,
-                    Order.Rating: AppLocalizations.of(context).rating,
-                  },
-                ),
-              ],
-            )
-          ),
+              ),
+              RadioGroup<Order>(
+                groupValue: orderBy,
+                title: AppLocalizations.of(context).sort,
+                enumToText: {
+                  Order.Relevance: AppLocalizations.of(context).relevance,
+                  Order.Date: AppLocalizations.of(context).date,
+                  Order.Rating: AppLocalizations.of(context).rating,
+                },
+              ),
+            ],
+          )),
           Container(
-            padding: EdgeInsets.all(5),
-            child: SearchButton(onPressed: _onSearch)
-          ),
-        ]
-      )
-    );
+              padding: EdgeInsets.all(5),
+              child: SearchButton(onPressed: _onSearch)),
+        ]));
   }
 }
 
@@ -90,36 +90,31 @@ class RadioGroup<Enum> extends StatelessWidget {
   final ValueNotifier<Enum> groupValue;
   final String title;
 
-  RadioGroup({
-    this.title,
-    @required this.groupValue,
-    @required this.enumToText});
+  RadioGroup(
+      {this.title, @required this.groupValue, @required this.enumToText});
 
   @override
   Widget build(BuildContext context) {
     return Card(
-      child: ValueListenableBuilder<Enum>(
-        valueListenable: groupValue,
-        builder: (context, group, child) {
-          return Column(
+        child: ValueListenableBuilder<Enum>(
+      valueListenable: groupValue,
+      builder: (context, group, child) {
+        return Column(
             children: [
-              ListTile(
-                leading: Text(title),
-                trailing: Icon(Icons.sort),
-              )
-            ]..addAll(enumToText.keys.map<Widget>(
-                    (e) => RadioListTile(
-                      title: Text(enumToText[e]),
-                      // activeColor: Colors.blueGrey,
-                      value: e,
-                      groupValue: group,
-                      onChanged: (value) { groupValue.value = value; },
-                    )
-            ))
-          );
-        },
-      )
-    );
+          ListTile(
+            leading: Text(title),
+            trailing: Icon(Icons.sort),
+          )
+        ]..addAll(enumToText.keys.map<Widget>((e) => RadioListTile(
+                  title: Text(enumToText[e]),
+                  // activeColor: Colors.blueGrey,
+                  value: e,
+                  groupValue: group,
+                  onChanged: (value) {
+                    groupValue.value = value;
+                  },
+                ))));
+      },
+    ));
   }
-
 }
