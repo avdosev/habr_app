@@ -23,11 +23,11 @@ jobs:
         channel: 'stable'
     - name: Install dependencies
       run: flutter pub get
-#     - name: Run tests
-#       run: pub run test
-    - name: Build apk
+    - name: Codegen
       run: |
         flutter pub run build_runner build
+    - name: Build apk
+      run: |
         flutter build apk --split-per-abi
     - name: Make zip with apks
       run: |
