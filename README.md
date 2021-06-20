@@ -9,7 +9,7 @@ Main features:
 
 # Visual customization
 
-* light and dark themes of the app
+* light and dark themes of the app \
   select of a specific mode:
   * constant (dark or light)
   * system theme
@@ -17,7 +17,7 @@ Main features:
 * font size
 * text alignment
 * line spacing
-* code styles
+* code styles \
   select of a specific mode:
   * dark mode coloring
   * light mode coloring
