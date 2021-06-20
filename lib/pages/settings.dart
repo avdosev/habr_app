@@ -40,27 +40,56 @@ class Settings extends StatelessWidget {
                 title: Text(localizations.systemTheme),
                 secondary: const Icon(Icons.brightness_auto),
                 value: themeMode == ThemeMode.system,
-                onChanged: (val) {
-                  if (val) {
-                    settings.themeMode = ThemeMode.system;
-                  } else {
-                    settings.themeMode = ThemeMode.light;
-                  }
-                },
+                onChanged: !settings.timeThemeSwitcher
+                    ? (val) {
+                        if (val) {
+                          settings.themeMode = ThemeMode.system;
+                        } else {
+                          settings.themeMode = ThemeMode.light;
+                        }
+                      }
+                    : null,
               ),
               SwitchListTile(
                 title: Text(localizations.darkTheme),
                 secondary: const Icon(Icons.brightness_2),
                 value: themeMode == ThemeMode.dark,
-                onChanged: themeMode != ThemeMode.system
-                    ? (val) {
-                        if (val) {
-                          settings.themeMode = ThemeMode.dark;
-                        } else {
-                          settings.themeMode = ThemeMode.light;
-                        }
-                      }
-                    : null, // Switch будет неактивен при Null
+                onChanged:
+                    themeMode != ThemeMode.system && !settings.timeThemeSwitcher
+                        ? (val) {
+                            if (val) {
+                              settings.themeMode = ThemeMode.dark;
+                            } else {
+                              settings.themeMode = ThemeMode.light;
+                            }
+                          }
+                        : null, // Switch будет неактивен при Null
+              ),
+              SwitchListTile(
+                title: Text('Смена темы по времени'),
+                subtitle: Text('Укажите время светлой темы'),
+                value: settings.timeThemeSwitcher,
+                onChanged: (val) => settings.timeThemeSwitcher = val,
+              ),
+              Padding(
+                padding: EdgeInsets.only(left: 15),
+                child: Row(
+                  children: [
+                    TimeOfDayPickerButton(
+                      label: 'from',
+                      timeOfDay: settings.fromTimeThemeSwitch,
+                      onChange: (val) => settings.fromTimeThemeSwitch = val,
+                      active: settings.timeThemeSwitcher,
+                    ),
+                    const SizedBox(width: 10),
+                    TimeOfDayPickerButton(
+                      label: 'to',
+                      timeOfDay: settings.toTimeThemeSwitch,
+                      onChange: (val) => settings.toTimeThemeSwitch = val,
+                      active: settings.timeThemeSwitcher,
+                    ),
+                  ],
+                ),
               ),
             ],
           ),
@@ -200,6 +229,36 @@ class Settings extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+class TimeOfDayPickerButton extends StatelessWidget {
+  final String label;
+  final bool active;
+  final TimeOfDay timeOfDay;
+  final void Function(TimeOfDay value) onChange;
+
+  TimeOfDayPickerButton(
+      {@required this.timeOfDay,
+      @required this.onChange,
+      this.label,
+      this.active});
+
+  @override
+  Widget build(BuildContext context) {
+    final strTime = timeOfDay.format(context);
+    return OutlinedButton(
+      child: Text(label == null ? strTime : '$label $strTime'),
+      onPressed: (active ?? true)
+          ? () async {
+              final nextTime = await showTimePicker(
+                  context: context, initialTime: timeOfDay);
+              if (nextTime != null) {
+                this.onChange(nextTime);
+              }
+            }
+          : null,
     );
   }
 }

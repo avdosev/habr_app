@@ -8,4 +8,5 @@ void registerAdapters() {
   Hive.registerAdapter(PostPreviewAdapter());
   Hive.registerAdapter(AuthorAdapter());
   Hive.registerAdapter(AuthorAvatarInfoAdapter());
+  Hive.registerAdapter(TimeOfDayAdapter());
 }

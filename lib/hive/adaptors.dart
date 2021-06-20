@@ -1,4 +1,4 @@
-//id=0,1
+//id=0,1,6
 export 'settings_adaptors.dart';
 
 //id=2
