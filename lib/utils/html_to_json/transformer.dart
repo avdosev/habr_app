@@ -212,7 +212,7 @@ Node prepareHtmlBlocElement(dom.Element element) {
     case 'p':
       final p = Paragraph.empty();
       prepareHtmlInlineElement(element).forEach(p.addSpan);
-      return p;
+      return optimizeParagraph(p);
     case 'code':
       final code = element.text;
       return Code(

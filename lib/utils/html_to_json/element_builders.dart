@@ -18,7 +18,7 @@ class Paragraph implements Node {
 
   Paragraph.empty() : children = [];
 
-  addSpan(Span span) {
+  void addSpan(Span span) {
     children.add(span);
   }
 
