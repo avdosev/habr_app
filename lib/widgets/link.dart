@@ -16,15 +16,14 @@ class Link extends StatelessWidget {
   }
 }
 
-
-
-TextSpan InlineTextLink({@required String title, @required String url, @required BuildContext context}) {
-  final theme = Theme.of(context);
+TextSpan InlineTextLink(
+    {@required String title,
+    @required String url,
+    @required BuildContext context}) {
   return TextSpan(
-      text: title,
-      style: TextStyle(decoration: TextDecoration.underline, color: theme.primaryColor),
-      recognizer: TapGestureRecognizer()
-        ..onTap = () => launchUrl(context, url),
+    text: title,
+    style: linkTextStyleFrom(context),
+    recognizer: TapGestureRecognizer()..onTap = () => launchUrl(context, url),
   );
 }
 
@@ -35,7 +34,24 @@ class TextLink extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Link(child: Text(title, style: TextStyle(decoration: TextDecoration.underline, color: theme.primaryColor)), url: url);
+    return Link(
+      child: Text(
+        title,
+        style: linkTextStyleFrom(context),
+      ),
+      url: url,
+    );
   }
+}
+
+Color linkColorFrom(BuildContext context) {
+  return Theme.of(context).toggleableActiveColor;
+}
+
+TextStyle linkTextStyleFrom(BuildContext context) {
+  final color = linkColorFrom(context);
+  return TextStyle(
+    decoration: TextDecoration.underline,
+    color: color,
+  );
 }
