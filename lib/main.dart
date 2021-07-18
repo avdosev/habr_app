@@ -2,15 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:habr_app/stores/app_settings.dart';
-import 'package:hive/hive.dart';
-import 'package:hive_flutter/hive_flutter.dart';
 import 'package:provider/provider.dart';
 
 import 'package:habr_app/utils/hive_helper.dart';
 import 'package:habr_app/styles/themes/themes.dart';
 import 'package:habr_app/routing/routing.dart';
 
-main() async {
+void main() async {
   await initializeHive();
   runApp(MyApp());
 }
@@ -34,11 +32,11 @@ class MyApp extends StatelessWidget {
           darkTheme:
               buildDarkTheme(mainFontSize: fontSize, lineSpacing: lineSpacing),
           themeMode: settings.themeMode,
-          supportedLocales: [
-            const Locale('ru', ''),
-            const Locale('en', ''),
+          supportedLocales: const [
+            Locale('ru', ''),
+            Locale('en', ''),
           ],
-          localizationsDelegates: [
+          localizationsDelegates: const [
             AppLocalizations.delegate,
             GlobalMaterialLocalizations.delegate,
             GlobalWidgetsLocalizations.delegate,
