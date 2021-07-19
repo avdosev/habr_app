@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:habr_app/utils/platform_helper.dart';
 import 'package:provider/provider.dart';
 import 'package:habr_app/stores/filters_store.dart';
 import 'package:habr_app/utils/filters/article_preview_filters.dart';
@@ -14,10 +15,12 @@ class ArticlesList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
+    final drawerIsPartOfBody = width > 1000;
     return Scaffold(
-      drawer: MainMenu(),
+      drawer: drawerIsPartOfBody ? null : MainMenu(),
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context).articles),
+        title: Text("Habr"),
         actions: [
           IconButton(
               tooltip: AppLocalizations.of(context).search,
@@ -30,7 +33,12 @@ class ArticlesList extends StatelessWidget {
           return ArticlesStorage(FlowPreviewLoader(PostsFlow.dayTop),
               filter: AnyFilterCombine(FiltersStorage().getAll().toList()));
         },
-        builder: (context, child) => ArticlesListBody(),
+        child: Row(
+          children: [
+            if (drawerIsPartOfBody) DesktopHomeMenu(),
+            Expanded(child: ArticlesListBody()),
+          ],
+        ),
       ),
     );
   }

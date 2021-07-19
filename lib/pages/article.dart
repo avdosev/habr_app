@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:habr_app/utils/platform_helper.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -16,6 +17,7 @@ import 'package:share/share.dart';
 import 'package:habr_app/models/post.dart';
 import 'package:habr_app/app_error.dart';
 import 'package:habr_app/stores/post_store.dart';
+import 'package:habr_app/widgets/scroll_data.dart';
 
 class ArticlePage extends StatefulWidget {
   final String articleId;
@@ -181,7 +183,7 @@ class _ArticlePageState extends State<ArticlePage> {
       if (position != null) {
         int duration = (_controller.offset - position).abs().round();
         _controller.animateTo(position,
-            duration: Duration(milliseconds: duration), curve: Curves.easeIn);
+            duration: Duration(milliseconds: duration), curve: Curves.easeOut);
       }
     }
   }
@@ -254,34 +256,45 @@ class ArticleView extends StatelessWidget {
   Widget build(BuildContext context) {
     final appSettings = context.watch<AppSettings>();
     final textAlign = appSettings.articleTextAlign;
-    return ListView(
+    final listview = SingleChildScrollView(
       padding: const EdgeInsets.all(10).copyWith(bottom: 20),
       controller: controller,
-      children: [
-        ArticleInfo(
-          article: article,
+      child: CenterAdaptiveConstrait(
+        child: Column(
+          children: [
+            ArticleInfo(
+              article: article,
+            ),
+            SizedBox(
+              height: 30,
+            ),
+            HtmlView(article.parsedBody, textAlign: textAlign),
+            SizedBox(
+              height: 20,
+            ),
+            InkWell(
+              child: Padding(
+                  padding: const EdgeInsets.only(left: 5, top: 5, bottom: 5),
+                  child: MediumAuthorPreview(article.author)),
+              onTap: () =>
+                  openUser(context, article.author.alias), // open user page
+            ),
+            SizedBox(
+              height: 20,
+            ),
+            CommentsButton(
+              onPressed: () => openCommentsPage(context, article.id),
+            )
+          ],
         ),
-        SizedBox(
-          height: 30,
-        ),
-        HtmlView(article.parsedBody, textAlign: textAlign),
-        SizedBox(
-          height: 20,
-        ),
-        InkWell(
-          child: Padding(
-              padding: const EdgeInsets.only(left: 5, top: 5, bottom: 5),
-              child: MediumAuthorPreview(article.author)),
-          onTap: () =>
-              openUser(context, article.author.alias), // open user page
-        ),
-        SizedBox(
-          height: 20,
-        ),
-        CommentsButton(
-          onPressed: () => openCommentsPage(context, article.id),
-        )
-      ],
+      ),
+    );
+    return ScrollConfiguration(
+      behavior: ScrollData(
+        thinkness: 4,
+        isAlwaysShow: isDesktop(context),
+      ),
+      child: listview,
     );
   }
 }

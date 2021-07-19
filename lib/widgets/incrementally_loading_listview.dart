@@ -2,6 +2,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
+import 'scroll_data.dart';
+
 typedef LoadMore = Future Function();
 
 typedef OnLoadMore = void Function();
@@ -50,49 +52,49 @@ class IncrementallyLoadingListView extends StatefulWidget {
 
   IncrementallyLoadingListView(
       {@required this.hasMore,
-        @required this.loadMore,
-        this.loadMoreOffsetFromBottom = 0,
-        this.key,
-        this.useScrollbar = true,
-        this.scrollDirection = Axis.vertical,
-        this.reverse = false,
-        this.controller,
-        this.primary,
-        this.physics,
-        this.shrinkWrap = false,
-        this.padding,
-        this.itemExtent,
-        @required this.itemBuilder,
-        @required this.itemCount,
-        this.separatorBuilder,
-        this.addAutomaticKeepAlives = true,
-        this.addRepaintBoundaries = true,
-        this.cacheExtent,
-        this.onLoadMore,
-        this.onLoadMoreFinished});
+      @required this.loadMore,
+      this.loadMoreOffsetFromBottom = 0,
+      this.key,
+      this.useScrollbar = true,
+      this.scrollDirection = Axis.vertical,
+      this.reverse = false,
+      this.controller,
+      this.primary,
+      this.physics,
+      this.shrinkWrap = false,
+      this.padding,
+      this.itemExtent,
+      @required this.itemBuilder,
+      @required this.itemCount,
+      this.separatorBuilder,
+      this.addAutomaticKeepAlives = true,
+      this.addRepaintBoundaries = true,
+      this.cacheExtent,
+      this.onLoadMore,
+      this.onLoadMoreFinished});
 
   IncrementallyLoadingListView.separated(
       {@required this.hasMore,
-        @required this.loadMore,
-        this.loadMoreOffsetFromBottom = 0,
-        this.key,
-        this.useScrollbar = true,
-        this.scrollDirection = Axis.vertical,
-        this.reverse = false,
-        this.controller,
-        this.primary,
-        this.physics,
-        this.shrinkWrap = false,
-        this.padding,
-        this.itemExtent,
-        @required this.itemBuilder,
-        @required this.itemCount,
-        @required this.separatorBuilder,
-        this.addAutomaticKeepAlives = true,
-        this.addRepaintBoundaries = true,
-        this.cacheExtent,
-        this.onLoadMore,
-        this.onLoadMoreFinished});
+      @required this.loadMore,
+      this.loadMoreOffsetFromBottom = 0,
+      this.key,
+      this.useScrollbar = true,
+      this.scrollDirection = Axis.vertical,
+      this.reverse = false,
+      this.controller,
+      this.primary,
+      this.physics,
+      this.shrinkWrap = false,
+      this.padding,
+      this.itemExtent,
+      @required this.itemBuilder,
+      @required this.itemCount,
+      @required this.separatorBuilder,
+      this.addAutomaticKeepAlives = true,
+      this.addRepaintBoundaries = true,
+      this.cacheExtent,
+      this.onLoadMore,
+      this.onLoadMoreFinished});
 
   @override
   IncrementallyLoadingListViewState createState() {
@@ -160,7 +162,7 @@ class IncrementallyLoadingListViewState
         stream: _loadingMoreStream,
         builder: (context, snapshot) {
           final itemCount =
-          _isSeparated ? _separatedItemCount() : widget.itemCount();
+              _isSeparated ? _separatedItemCount() : widget.itemCount();
           final itemBuilder = _isSeparated ? _separatedItemBuilder : _buildItem;
           final listview = ListView.builder(
             key: widget.key,
@@ -180,7 +182,27 @@ class IncrementallyLoadingListViewState
           );
 
           if (widget.useScrollbar) {
-            return Scrollbar(child: listview, thickness: 4,);
+            final currentPlatform = Theme.of(context).platform;
+            switch (currentPlatform) {
+              case TargetPlatform.linux:
+              case TargetPlatform.macOS:
+              case TargetPlatform.windows:
+                return ScrollConfiguration(
+                  behavior: ScrollData(
+                    thinkness: 4,
+                    isAlwaysShow: true,
+                  ),
+                  child: listview,
+                );
+
+              case TargetPlatform.android:
+              case TargetPlatform.fuchsia:
+              case TargetPlatform.iOS:
+                return Scrollbar(
+                  child: listview,
+                  thickness: 4,
+                );
+            }
           }
 
           return listview;

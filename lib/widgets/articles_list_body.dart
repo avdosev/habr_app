@@ -7,6 +7,7 @@ import 'package:habr_app/utils/message_notifier.dart';
 import 'package:habr_app/app_error.dart';
 import 'package:habr_app/stores/loading_state.dart';
 
+import 'adaptive_ui.dart';
 import 'incrementally_loading_listview.dart';
 import 'hr.dart';
 import 'informing/informing.dart';
@@ -28,9 +29,10 @@ class ArticlesListBody extends StatelessWidget {
         widget = IncrementallyLoadingListView(
           itemBuilder: (context, index) {
             if (index >= store.previews.length && store.loadItems)
-              return Center(child: const CircularItem());
+              return const Center(child: CircularItem());
             final preview = store.previews[index];
-            return SlidableArchive(
+            return DefaultConstraints(
+                child: SlidableArchive(
               child: ArticlePreview(
                 key: ValueKey("preview_" + preview.id),
                 postPreview: preview,
@@ -38,10 +40,11 @@ class ArticlesListBody extends StatelessWidget {
               ),
               onArchive: () => HabrStorage().addArticleInCache(preview.id).then(
                   (res) => notifySnackbarText(
-                      context, "${preview.title} ${res ? '' : 'не'} скачено")),
-            );
+                      context, "${preview.title} ${res ? '' : 'не'} скачано")),
+            ));
           },
-          separatorBuilder: (context, index) => const Hr(),
+          separatorBuilder: (context, index) =>
+              const DefaultConstraints(child: Hr()),
           itemCount: () => store.previews.length + (store.loadItems ? 1 : 0),
           loadMore: store.loadNextPage,
           hasMore: store.hasNextPages,

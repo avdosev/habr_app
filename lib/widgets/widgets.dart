@@ -16,3 +16,4 @@ export 'articles_list_body.dart';
 // local packages
 export 'informing/informing.dart';
 export 'html_elements/html_elements.dart';
+export 'adaptive_ui.dart';
