@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:habr_app/stores/app_settings.dart';
+import 'package:habr_app/widgets/adaptive_ui.dart';
 import 'package:habr_app/widgets/dropdown_list_tile.dart';
 import 'package:habr_app/widgets/html_elements/highlight_code.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -72,7 +73,7 @@ class Settings extends StatelessWidget {
                 onChanged: (val) => settings.timeThemeSwitcher = val,
               ),
               Padding(
-                padding: EdgeInsets.only(left: 15),
+                padding: EdgeInsets.only(left: 15, bottom: 10),
                 child: Row(
                   children: [
                     TimeOfDayPickerButton(
@@ -228,7 +229,7 @@ class Settings extends StatelessWidget {
             ],
           ),
         ),
-      ],
+      ].map((card) => DefaultConstraints(child: card)).toList(),
     );
   }
 }
