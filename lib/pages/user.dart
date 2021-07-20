@@ -122,6 +122,7 @@ class UserBody extends StatelessWidget {
 
   Widget buildLoadedBody(BuildContext bodyContext, UserInfoStorage userStore,
       ArticlesStorage articlesStore) {
+    final habrStorage = bodyContext.watch<HabrStorage>();
     const authorInfoElementsCount = 1;
     return IncrementallyLoadingListView(
       itemBuilder: (context, index) {
@@ -138,7 +139,7 @@ class UserBody extends StatelessWidget {
             postPreview: preview,
             onPressed: (articleId) => openArticle(context, articleId),
           ),
-          onArchive: () => HabrStorage().addArticleInCache(preview.id).then(
+          onArchive: () => habrStorage.addArticleInCache(preview.id).then(
               (res) => notifySnackbarText(
                   context, "${preview.title} ${res ? '' : 'не'} скачено")),
         );

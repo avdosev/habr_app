@@ -7,7 +7,7 @@ import 'package:habr_app/habr_storage/habr_storage.dart';
 import 'package:habr_app/utils/log.dart';
 import 'package:habr_app/utils/luid.dart';
 import 'package:habr_app/widgets/widgets.dart';
-import 'package:photo_view/photo_view.dart';
+import 'package:provider/provider.dart';
 import 'package:habr_app/pages/image_view.dart';
 
 class Picture extends StatelessWidget {
@@ -31,16 +31,18 @@ class Picture extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme.bodyText2;
+    final habrStorage = context.watch<HabrStorage>();
     return Container(
       height: height,
       width: width,
       child: LoadBuilder(
-        future: HabrStorage().imgStore.getImage(url),
+        future: habrStorage.imgStore.getImage(url),
         onRightBuilder: (context, filePath) {
           final file = File(filePath);
           if (url.endsWith("svg")) {
             // TODO: это костыль нужно нормально определять размер
-            return Center(child: Transform.scale(
+            return Center(
+                child: Transform.scale(
               scale: 2,
               alignment: Alignment.center,
               child: SvgPicture.file(file, color: textTheme.color),
@@ -61,7 +63,8 @@ class Picture extends StatelessWidget {
           logError(err);
           if (url.endsWith("svg")) {
             // TODO: это костыль нужно нормально определять размер
-            return Center(child: Transform.scale(
+            return Center(
+                child: Transform.scale(
               scale: 2,
               alignment: Alignment.center,
               child: SvgPicture.network(url, color: textTheme.color),

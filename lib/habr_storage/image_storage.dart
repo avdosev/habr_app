@@ -12,11 +12,12 @@ import 'package:http/http.dart' as http;
 
 class ImageLocalStorage {
   final Cache _cache;
-  final HashComputer _hashComputer;
-  final ImageLoader _imageLoader;
+  final HashComputer hashComputer;
+  final ImageLoader imageLoader;
   String _path;
 
-  ImageLocalStorage(this._cache, this._hashComputer, this._imageLoader);
+  ImageLocalStorage({this.hashComputer, this.imageLoader})
+      : _cache = globalCache;
 
   Future<String> get _localPath async {
     if (_path == null) {
@@ -34,7 +35,7 @@ class ImageLocalStorage {
   }
 
   Future<String> _generateImageName(String url) async {
-    final prefix1 = await _hashComputer.hash(url);
+    final prefix1 = await hashComputer.hash(url);
     final prefix2 = DateTime.now().millisecondsSinceEpoch.toRadixString(36);
     String postfix = url.split('.').last;
     postfix = postfix.length > 8 ? 'none' : postfix;
@@ -50,7 +51,7 @@ class ImageLocalStorage {
 
     final filename = await _getImagePath(url);
     logInfo('Saving image to $filename');
-    final loaded = await _imageLoader.loadImage(url, filename);
+    final loaded = await imageLoader.loadImage(url, filename);
 
     if (!loaded) {
       return Left(AppError(

@@ -19,16 +19,8 @@ class HabrStorage {
   final Cache cache;
   final ImageLocalStorage imgStore;
 
-  HabrStorage._privateConstructor()
-      : api = Habr(),
-        cache = globalCache,
-        imgStore = ImageLocalStorage(globalCache, MD5Hash(), ImageHttpLoader());
-
-  static final HabrStorage _instance = HabrStorage._privateConstructor();
-
-  factory HabrStorage() {
-    return _instance;
-  }
+  HabrStorage({@required this.api, @required this.imgStore})
+      : cache = globalCache;
 
   Future<Either<AppError, PostPreviews>> posts(
       {int page = 1, PostsFlow flow}) async {

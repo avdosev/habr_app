@@ -6,6 +6,7 @@ import 'package:habr_app/stores/bookmarks_store.dart';
 import 'package:habr_app/widgets/widgets.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:hive/hive.dart';
+import 'package:provider/provider.dart';
 
 class BookmarksArticlesList extends StatefulWidget {
   BookmarksArticlesList({Key key}) : super(key: key);
@@ -17,7 +18,8 @@ class BookmarksArticlesList extends StatefulWidget {
 class _BookmarksArticlesListState extends State<BookmarksArticlesList> {
   final store = BookmarksStore();
 
-  Widget buildItem(BuildContext context, PostPreview preview) {
+  Widget buildItem(
+      BuildContext context, PostPreview preview, HabrStorage habrStorage) {
     return SlidableArchiveDelete(
       child: ArticlePreview(
         key: Key("preview_" + preview.id),
@@ -28,7 +30,7 @@ class _BookmarksArticlesListState extends State<BookmarksArticlesList> {
         store.removeBookmark(preview.id);
       },
       onArchive: () {
-        HabrStorage().addArticleInCache(preview.id);
+        habrStorage.addArticleInCache(preview.id);
       },
     );
   }
@@ -37,8 +39,10 @@ class _BookmarksArticlesListState extends State<BookmarksArticlesList> {
     return ValueListenableBuilder<Box<PostPreview>>(
       valueListenable: store.bookmarks(),
       builder: (context, box, _) {
+        final habrStorage = context.watch<HabrStorage>();
         final bookmarks = box.values;
-        final previews = bookmarks.map((e) => buildItem(context, e)).toList();
+        final previews =
+            bookmarks.map((e) => buildItem(context, e, habrStorage)).toList();
         if (previews.isEmpty) return Center(child: EmptyContent());
         return ListView(
           children: previews,

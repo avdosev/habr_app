@@ -16,7 +16,7 @@ import 'package:habr_app/routing/routing.dart';
 import 'package:share/share.dart';
 import 'package:habr_app/models/post.dart';
 import 'package:habr_app/app_error.dart';
-import 'package:habr_app/stores/post_store.dart';
+import 'package:habr_app/pages/article/components/post_store.dart';
 import 'package:habr_app/widgets/scroll_data.dart';
 
 class ArticlePage extends StatefulWidget {
@@ -98,9 +98,11 @@ class _ArticlePageState extends State<ArticlePage> {
 
   @override
   Widget build(BuildContext context) {
+    final habrStorage = context.watch<HabrStorage>();
     return ChangeNotifierProvider(
-      create: (_) {
-        final store = PostStorage(widget.articleId);
+      create: (context) {
+        final habrStorage = Provider.of<HabrStorage>(context, listen: false);
+        final store = PostStorage(widget.articleId, storage: habrStorage);
         store.reload();
         store.addListener(() {
           showFloatingActionButton.value =
@@ -108,56 +110,53 @@ class _ArticlePageState extends State<ArticlePage> {
         });
         return store;
       },
-      builder: (context, child) {
-        return Scaffold(
-          appBar: AppBar(
-            title: Consumer<PostStorage>(
-              builder: (context, store, _) => buildAppBarTitle(context, store),
+      child: Scaffold(
+        appBar: AppBar(
+          title: Consumer<PostStorage>(
+            builder: (context, store, _) => buildAppBarTitle(context, store),
+          ),
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.share),
+              onPressed: () => shareArticle(context),
             ),
-            actions: [
-              IconButton(
-                icon: const Icon(Icons.share),
-                onPressed: () => shareArticle(context),
-              ),
-              PopupMenuButton<String>(
-                icon: const Icon(Icons.more_vert),
-                onSelected: (val) {
-                  final store =
-                      Provider.of<PostStorage>(context, listen: false);
-                  switch (val) {
-                    case MoreButtons.Cache:
-                      HabrStorage().addArticleInCache(widget.articleId);
-                      break;
-                    case MoreButtons.Bookmark:
-                      addBookMark(store);
-                      break;
-                    case MoreButtons.BackToBookmark:
-                      returnToBookmark(store);
-                      break;
-                  }
-                },
-                itemBuilder: (context) => MoreButtons.values
-                    .map((val) => PopupMenuItem(value: val, child: Text(val)))
-                    .toList(),
-              )
-            ],
+            PopupMenuButton<String>(
+              icon: const Icon(Icons.more_vert),
+              onSelected: (val) {
+                final store = Provider.of<PostStorage>(context, listen: false);
+                switch (val) {
+                  case MoreButtons.Cache:
+                    habrStorage.addArticleInCache(widget.articleId);
+                    break;
+                  case MoreButtons.Bookmark:
+                    addBookMark(store);
+                    break;
+                  case MoreButtons.BackToBookmark:
+                    returnToBookmark(store);
+                    break;
+                }
+              },
+              itemBuilder: (context) => MoreButtons.values
+                  .map((val) => PopupMenuItem(value: val, child: Text(val)))
+                  .toList(),
+            )
+          ],
+        ),
+        body: Consumer<PostStorage>(
+          builder: (context, store, _) => buildBody(context, store),
+        ),
+        floatingActionButton: ValueListenableBuilder(
+          valueListenable: showFloatingActionButton,
+          builder: (BuildContext context, bool value, Widget child) =>
+              HideFloatingActionButton(
+            tooltip: AppLocalizations.of(context).comments,
+            visible: value,
+            child: const Icon(Icons.chat_bubble_outline),
+            onPressed: () => openCommentsPage(context, articleId),
+            duration: const Duration(milliseconds: 300),
           ),
-          body: Consumer<PostStorage>(
-            builder: (context, store, _) => buildBody(context, store),
-          ),
-          floatingActionButton: ValueListenableBuilder(
-            valueListenable: showFloatingActionButton,
-            builder: (BuildContext context, bool value, Widget child) =>
-                HideFloatingActionButton(
-              tooltip: AppLocalizations.of(context).comments,
-              visible: value,
-              child: const Icon(Icons.chat_bubble_outline),
-              onPressed: () => openCommentsPage(context, articleId),
-              duration: const Duration(milliseconds: 300),
-            ),
-          ),
-        );
-      },
+        ),
+      ),
     );
   }
 

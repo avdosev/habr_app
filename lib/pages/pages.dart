@@ -1,6 +1,6 @@
-export 'article.dart';
+export 'article/article.dart';
 export 'articles_list.dart';
-export 'comments.dart';
+export 'comments/comments.dart';
 export 'settings.dart';
 export 'cached_articles.dart';
 export 'search.dart';

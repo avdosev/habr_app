@@ -31,6 +31,8 @@ class ArticlesListBody extends StatelessWidget {
             if (index >= store.previews.length && store.loadItems)
               return const Center(child: CircularItem());
             final preview = store.previews[index];
+            final habrStorage =
+                Provider.of<HabrStorage>(context, listen: false);
             return DefaultConstraints(
                 child: SlidableArchive(
               child: ArticlePreview(
@@ -38,7 +40,7 @@ class ArticlesListBody extends StatelessWidget {
                 postPreview: preview,
                 onPressed: (articleId) => openArticle(context, articleId),
               ),
-              onArchive: () => HabrStorage().addArticleInCache(preview.id).then(
+              onArchive: () => habrStorage.addArticleInCache(preview.id).then(
                   (res) => notifySnackbarText(
                       context, "${preview.title} ${res ? '' : 'не'} скачано")),
             ));

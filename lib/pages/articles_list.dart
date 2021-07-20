@@ -30,7 +30,9 @@ class ArticlesList extends StatelessWidget {
       ),
       body: ChangeNotifierProvider(
         create: (context) {
-          return ArticlesStorage(FlowPreviewLoader(PostsFlow.dayTop),
+          final habrStorage = Provider.of<HabrStorage>(context, listen: false);
+          return ArticlesStorage(
+              FlowPreviewLoader(flow: PostsFlow.dayTop, storage: habrStorage),
               filter: AnyFilterCombine(FiltersStorage().getAll().toList()));
         },
         child: Row(

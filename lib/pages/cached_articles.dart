@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:habr_app/utils/message_notifier.dart';
 import 'package:provider/provider.dart';
 import 'package:habr_app/utils/page_loaders/preview_loader.dart';
 import 'package:habr_app/habr_storage/habr_storage.dart';
@@ -13,6 +14,8 @@ class CachedArticlesList extends StatelessWidget {
   CachedArticlesList({Key key}) : super(key: key);
 
   Widget bodyWidget(BuildContext context, ArticlesStorage store) {
+    final habrStorage = Provider.of<HabrStorage>(context, listen: false);
+
     Widget widget;
     switch (store.firstLoading) {
       case LoadingState.isFinally:
@@ -32,12 +35,11 @@ class CachedArticlesList extends StatelessWidget {
                     onDelete: () {
                       final articleId = preview.id;
                       store.removePreview(articleId);
-                      HabrStorage()
+                      habrStorage
                           .removeArticleFromCache(articleId)
                           .then((value) {
-                        Scaffold.of(context).showSnackBar(SnackBar(
-                            content: Text(
-                                "${preview.title} ${AppLocalizations.of(context).removed}")));
+                        notifySnackbarText(context,
+                            "${preview.title} ${AppLocalizations.of(context).removed}");
                       });
                     },
                   );
@@ -62,6 +64,8 @@ class CachedArticlesList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final habrStorage = context.watch<HabrStorage>();
+
     return ChangeNotifierProvider(
       create: (_) => ArticlesStorage(CachedPreviewLoader()),
       builder: (context, child) => Scaffold(
@@ -75,7 +79,7 @@ class CachedArticlesList extends StatelessWidget {
                   icon: const Icon(Icons.unarchive),
                   onPressed: () {
                     store.removeAllPreviews();
-                    HabrStorage().removeAllArticlesFromCache();
+                    habrStorage.removeAllArticlesFromCache();
                   });
             }),
           ],

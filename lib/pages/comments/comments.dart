@@ -1,7 +1,7 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:habr_app/stores/loading_state.dart';
 import 'package:provider/provider.dart';
-import 'package:either_dart/either.dart';
 import 'package:habr_app/habr_storage/habr_storage.dart';
 import 'package:habr_app/routing/routing.dart';
 import 'package:habr_app/stores/app_settings.dart';
@@ -9,70 +9,69 @@ import 'package:habr_app/utils/date_to_text.dart';
 import 'package:habr_app/widgets/widgets.dart';
 import 'package:habr_app/app_error.dart';
 import 'package:habr_app/models/comment.dart';
-import '../utils/log.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-class CommentsPage extends StatefulWidget {
+import 'components/comments_store.dart';
+
+class CommentsPage extends StatelessWidget {
   final String articleId;
 
   CommentsPage({Key key, this.articleId}) : super(key: key);
 
   @override
-  createState() => _CommentsPageState();
-}
-
-class _CommentsPageState extends State<CommentsPage> {
-  String get articleId => widget.articleId;
-  Future<Either<AppError, List<Comment>>> _initialLoad;
-
-  _CommentsPageState();
-
-  @override
-  void initState() {
-    super.initState();
-    _initialLoad = loadComments();
-  }
-
-  reload() async {
-    setState(() {
-      _initialLoad = loadComments();
-    });
-  }
-
-  Future<Either<AppError, List<Comment>>> loadComments() async {
-    return HabrStorage()
-        .comments(articleId)
-        .then((value) => value
-            .map<List<Comment>>((right) => flatCommentsTree(right).toList()))
-        .catchError(logError);
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(AppLocalizations.of(context).comments),
-        actions: [],
-      ),
-      body: LoadBuilder(
-        future: _initialLoad,
-        onRightBuilder: (context, comments) {
-          if (comments.length == 0)
-            return Center(
-              child: EmptyContent(),
-            );
-          return ListView.builder(
-            itemBuilder: (BuildContext context, int index) => Container(
-              padding: const EdgeInsets.only(left: 7, right: 7),
-              child: LeveledCommentsView(comments[index]),
-            ),
-            itemCount: comments.length,
-          );
-        },
-        onErrorBuilder: (context, err) =>
-            Center(child: LossInternetConnection(onPressReload: reload)),
+    return ChangeNotifierProvider(
+      create: (context) {
+        final habrStorage = Provider.of<HabrStorage>(context, listen: false);
+        final store = CommentsStorage(articleId, storage: habrStorage);
+        store.reload();
+        return store;
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(AppLocalizations.of(context).comments),
+          actions: [],
+        ),
+        body: Consumer<CommentsStorage>(
+          builder: (context, store, _) => buildBody(context, store),
+        ),
       ),
     );
+  }
+
+  Widget buildBody(BuildContext context, CommentsStorage commentsStorage) {
+    switch (commentsStorage.loadingState) {
+      case LoadingState.inProgress:
+        return const Center(child: const CircularProgressIndicator());
+      case LoadingState.isFinally:
+        final comments = commentsStorage.comments;
+        if (comments.length == 0)
+          return Center(
+            child: EmptyContent(),
+          );
+        return ListView.builder(
+          itemBuilder: (BuildContext context, int index) => Container(
+            padding: const EdgeInsets.only(left: 7, right: 7),
+            child: LeveledCommentsView(comments[index]),
+          ),
+          itemCount: comments.length,
+        );
+      case LoadingState.isCorrupted:
+        switch (commentsStorage.lastError.errCode) {
+          case ErrorType.ServerError:
+            return const Center(child: const LotOfEntropy());
+          default:
+            return Center(
+              child: LossInternetConnection(
+                onPressReload: () => commentsStorage.reload(),
+              ),
+            );
+        }
+        break;
+      default:
+        throw UnsupportedError(
+            "Loading state ${commentsStorage.loadingState} not supported");
+    }
   }
 }
 
@@ -101,21 +100,6 @@ class LeveledCommentsView extends StatelessWidget {
   }
 }
 
-Iterable<Comment> flatCommentsTree(Comments comments) sync* {
-  final stack = <int>[]; // так будет меньше аллокаций
-  for (final thread in comments.threads) {
-    final threadStart = comments.comments[thread];
-    yield threadStart;
-    stack.addAll(threadStart.children.reversed);
-    while (stack.isNotEmpty) {
-      final currentId = stack.removeLast();
-      final comment = comments.comments[currentId];
-      stack.addAll(comment.children.reversed);
-      yield comment;
-    }
-  }
-}
-
 class CommentView extends StatelessWidget {
   final Comment comment;
 
@@ -126,7 +110,7 @@ class CommentView extends StatelessWidget {
     if (comment.banned) {
       return Text(AppLocalizations.of(context).bannedComment);
     }
-    final appSettings = context.watch<AppSettings>();
+    final appSettings = Provider.of<AppSettings>(context, listen: false);
     final textAlign = appSettings.commentTextAlign;
     return Padding(
         padding: EdgeInsets.only(top: 5, bottom: 5),

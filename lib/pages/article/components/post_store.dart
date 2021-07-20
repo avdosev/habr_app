@@ -8,7 +8,9 @@ import 'package:habr_app/utils/html_to_json.dart';
 import 'package:either_dart/either.dart';
 
 class PostStorage with ChangeNotifier {
-  PostStorage(this._id);
+  PostStorage(this._id, {@required this.storage});
+
+  final HabrStorage storage;
 
   LoadingState loadingState;
 
@@ -25,7 +27,7 @@ class PostStorage with ChangeNotifier {
 
   void reload() {
     loadingState = LoadingState.inProgress;
-    HabrStorage()
+    storage
         .article(_id)
         .mapRight(
           (right) => ParsedPost(
