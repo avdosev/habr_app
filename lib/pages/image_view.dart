@@ -29,8 +29,10 @@ class HeroPhotoViewRouteWrapper extends StatelessWidget {
         }
       },
       child: Scaffold(
+        backgroundColor: Colors.black,
         appBar: AppBar(
           backgroundColor: Colors.transparent,
+          elevation: 0,
         ),
         body: Container(
           child: PhotoView(
