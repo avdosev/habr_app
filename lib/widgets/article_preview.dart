@@ -45,7 +45,10 @@ class ArticlePreview extends StatelessWidget {
               const SizedBox(
                 height: 10,
               ),
-              Text(postPreview.tags.join(', '),
+              Text(
+                  postPreview.tags
+                      .where((String el) => !el.startsWith('Блог компании'))
+                      .join(', '),
                   style: const TextStyle(fontSize: 15),
                   overflow: TextOverflow.ellipsis,
                   textAlign: TextAlign.left),

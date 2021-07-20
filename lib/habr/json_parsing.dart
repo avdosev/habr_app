@@ -44,7 +44,8 @@ Comment parseCommentFromJson(Map<String, dynamic> json) {
       timeChanged: json['timeChanged'] == null
           ? null
           : DateTime.parse(json['timeChanged']),
-      children: (json['children'] as List).cast<String>().map(int.parse).toList(),
+      children:
+          (json['children'] as List).cast<String>().map(int.parse).toList(),
       author: isBanned ? null : parseAuthorFromJson(json['author']),
       message: json['message']);
 }
@@ -68,7 +69,7 @@ PostPreviews parsePostPreviewsFromJson(Map<String, dynamic> data) {
           id: id,
           corporative: article['isCorporative'],
           title: _prepareHtmlString(article['titleHtml']),
-          tags: article['flows']
+          tags: article['hubs']
               .map<String>((flow) => flow['title'] as String)
               .toList(),
           publishDate: DateTime.parse(article['timePublished']),
