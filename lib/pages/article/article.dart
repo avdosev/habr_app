@@ -4,7 +4,7 @@ import 'package:habr_app/utils/platform_helper.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import 'package:habr_app/habr_storage/habr_storage.dart';
+import 'package:habr_app/stores/habr_storage.dart';
 import 'package:habr_app/models/models.dart' as Models;
 import 'package:habr_app/models/models.dart';
 import 'package:habr_app/stores/app_settings.dart';

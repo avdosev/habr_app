@@ -7,7 +7,7 @@ import 'package:habr_app/utils/page_loaders/preview_loader.dart';
 import 'package:habr_app/routing/routing.dart';
 import 'package:habr_app/stores/article_store.dart';
 import 'package:habr_app/widgets/widgets.dart';
-import 'package:habr_app/habr_storage/habr_storage.dart';
+import 'package:habr_app/stores/habr_storage.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ArticlesList extends StatelessWidget {

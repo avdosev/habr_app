@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:habr_app/habr_storage/habr_storage.dart';
+import 'package:habr_app/stores/habr_storage.dart';
 import 'package:habr_app/utils/log.dart';
 import 'package:habr_app/utils/luid.dart';
 import 'package:habr_app/widgets/widgets.dart';

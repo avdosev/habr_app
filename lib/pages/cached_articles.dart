@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:habr_app/utils/message_notifier.dart';
 import 'package:provider/provider.dart';
 import 'package:habr_app/utils/page_loaders/preview_loader.dart';
-import 'package:habr_app/habr_storage/habr_storage.dart';
+import 'package:habr_app/stores/habr_storage.dart';
 import 'package:habr_app/widgets/incrementally_loading_listview.dart';
 import 'package:habr_app/widgets/widgets.dart';
 import 'package:habr_app/stores/article_store.dart';

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:habr_app/utils/message_notifier.dart';
 import 'package:provider/provider.dart';
-import 'package:habr_app/habr_storage/habr_storage.dart';
+import 'package:habr_app/stores/habr_storage.dart';
 import 'package:habr_app/models/author.dart';
 
 import 'package:habr_app/models/author_info.dart';

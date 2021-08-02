@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:habr_app/habr_storage/habr_storage.dart';
+import 'package:habr_app/stores/habr_storage.dart';
 import 'package:habr_app/stores/app_settings.dart';
 import 'package:habr_app/utils/workers/hasher.dart';
 import 'package:habr_app/utils/workers/image_loader.dart';
@@ -12,7 +12,7 @@ import 'package:habr_app/styles/themes/themes.dart';
 import 'package:habr_app/routing/routing.dart';
 
 import 'habr/api.dart';
-import 'habr_storage/image_storage.dart';
+import 'stores/image_storage.dart';
 
 void main() async {
   await initializeHive();

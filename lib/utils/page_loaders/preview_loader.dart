@@ -2,7 +2,7 @@ import 'package:either_dart/either.dart';
 
 import 'package:habr_app/models/post_preview.dart';
 import 'package:habr_app/habr/habr.dart';
-import 'package:habr_app/habr_storage/habr_storage.dart';
+import 'package:habr_app/stores/habr_storage.dart';
 import 'package:habr_app/pages/pages.dart';
 import 'package:habr_app/app_error.dart';
 import 'page_loader.dart';

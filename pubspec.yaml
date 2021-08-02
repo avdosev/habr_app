@@ -24,7 +24,6 @@ dependencies:
   either_dart: ^0.1.1
   flutter_svg: "^0.22.0"
   url_launcher: "^5.6.0"
-  moor_flutter: ^4.0.0
   hive: ^1.4.4
   hive_flutter: ^0.3.1
   flutter_slidable: 0.6.0
@@ -32,13 +31,13 @@ dependencies:
   path_provider: ">=1.6.22"
   crypto: ">=2.1.5"
   provider: ^5.0.0
+  tuple: ^2.0.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
 
   flutter_launcher_icons: "^0.9.0"
-  moor_generator: ^4.2.2
   build_runner: ^2.0.1
   test: '>=1.14.0'
 

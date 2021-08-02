@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:habr_app/habr_storage/habr_storage.dart';
+import 'package:habr_app/stores/habr_storage.dart';
 import 'package:habr_app/routing/routing.dart';
 import 'package:provider/provider.dart';
 import 'package:habr_app/stores/article_store.dart';

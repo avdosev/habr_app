@@ -2,7 +2,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:habr_app/stores/loading_state.dart';
 import 'package:provider/provider.dart';
-import 'package:habr_app/habr_storage/habr_storage.dart';
+import 'package:habr_app/stores/habr_storage.dart';
 import 'package:habr_app/routing/routing.dart';
 import 'package:habr_app/stores/app_settings.dart';
 import 'package:habr_app/utils/date_to_text.dart';

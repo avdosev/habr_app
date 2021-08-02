@@ -1,23 +1,22 @@
 import 'package:either_dart/either.dart';
 
 import 'package:habr_app/app_error.dart';
+import 'package:habr_app/models/cached_image_info.dart';
 import 'package:habr_app/utils/workers/hasher.dart';
 import 'package:habr_app/utils/workers/image_loader.dart';
-import 'package:habr_app/utils/http_request_helper.dart';
 import 'package:habr_app/utils/log.dart';
-import 'cache_tables.dart';
+
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
-import 'package:http/http.dart' as http;
+import 'package:hive/hive.dart';
 
 class ImageLocalStorage {
-  final Cache _cache;
+  final data = Hive.lazyBox<CachedImageInfo>('cached_images');
   final HashComputer hashComputer;
   final ImageLoader imageLoader;
   String _path;
 
-  ImageLocalStorage({this.hashComputer, this.imageLoader})
-      : _cache = globalCache;
+  ImageLocalStorage({this.hashComputer, this.imageLoader}) {}
 
   Future<String> get _localPath async {
     if (_path == null) {
@@ -44,7 +43,7 @@ class ImageLocalStorage {
 
   /// Return AppError or path to saved file
   Future<Either<AppError, String>> saveImage(String url) async {
-    final maybeImage = await _cache.cachedImagesDao.getImage(url);
+    final maybeImage = await data.get(url);
     if (maybeImage != null) {
       return Right(maybeImage.path);
     }
@@ -60,11 +59,9 @@ class ImageLocalStorage {
       ));
     }
 
-    try {
-      await _cache.cachedImagesDao
-          .insertImage(CachedImage(url: url, path: filename));
-    } catch (err) {
-      logError(err);
+    if (!data.containsKey(url)) {
+      await data.put(url, CachedImageInfo(url: url, path: filename));
+    } else {
       // пока изображение грузилось
       // оно загрузилось несколько раз
       // повторный файл не нужен, поэтому его можно удалить
@@ -84,7 +81,7 @@ class ImageLocalStorage {
     final optionalImage = await getImage(url);
     if (optionalImage.isLeft) return;
     final path = optionalImage.right;
-    await _cache.cachedImagesDao.deleteImage(url);
+    await data.delete(url);
     final file = File(path);
     if (await file.exists()) {
       await file.delete();
@@ -93,7 +90,7 @@ class ImageLocalStorage {
   }
 
   Future<Either<AppError, String>> getImage(String url) async {
-    final res = await _cache.cachedImagesDao.getImage(url);
+    final res = await data.get(url);
     return Either.condLazy(
         res != null,
         () => const AppError(

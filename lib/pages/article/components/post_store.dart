@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart';
 
 import 'package:habr_app/app_error.dart';
 import 'package:habr_app/models/post.dart';
-import 'package:habr_app/habr_storage/habr_storage.dart';
+import 'package:habr_app/stores/habr_storage.dart';
 import 'package:habr_app/stores/loading_state.dart';
 import 'package:habr_app/utils/html_to_json.dart';
 import 'package:either_dart/either.dart';
