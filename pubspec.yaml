@@ -31,7 +31,7 @@ dependencies:
   path_provider: ">=1.6.22"
   crypto: ">=2.1.5"
   provider: ^5.0.0
-  tuple: ^2.0.0
+  itertools: ">=0.1.0"
 
 dev_dependencies:
   flutter_test:

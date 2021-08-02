@@ -357,6 +357,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.0"
+  itertools:
+    dependency: "direct main"
+    description:
+      name: itertools
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.1.0"
   js:
     dependency: transitive
     description:
@@ -678,7 +685,7 @@ packages:
     source: hosted
     version: "1.0.0"
   tuple:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: tuple
       url: "https://pub.dartlang.org"

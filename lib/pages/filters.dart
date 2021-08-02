@@ -3,7 +3,7 @@ import 'package:habr_app/models/post_preview.dart';
 import 'package:habr_app/stores/filters_store.dart';
 import 'package:habr_app/utils/filters/article_preview_filters.dart';
 import 'package:habr_app/utils/log.dart';
-import 'package:habr_app/utils/extensions/iterator_helper.dart';
+import 'package:itertools/itertools.dart';
 import 'package:hive/hive.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 

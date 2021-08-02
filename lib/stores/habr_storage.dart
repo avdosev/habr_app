@@ -3,7 +3,7 @@ import 'package:habr_app/habr/habr.dart';
 import 'package:habr_app/models/cached_post.dart';
 import 'package:habr_app/models/models.dart';
 import 'package:habr_app/stores/image_storage.dart';
-import 'package:habr_app/utils/extensions/iterator_helper.dart';
+import 'package:itertools/itertools.dart';
 import 'package:habr_app/utils/images_finder.dart';
 import 'package:habr_app/utils/log.dart';
 import 'package:either_dart/either.dart';
