@@ -25,23 +25,26 @@ class CachedArticlesList extends StatelessWidget {
                   if (index >= store.previews.length && store.loadItems)
                     return Center(child: const CircularItem());
                   final preview = store.previews[index];
-                  return SlidableDelete(
-                    key: Key("preview_delete_" + preview.id),
-                    child: ArticlePreview(
-                      key: Key("preview_" + preview.id),
-                      postPreview: preview,
-                      onPressed: (articleId) => openArticle(context, articleId),
+                  return DefaultConstraints(
+                    child: SlidableDelete(
+                      key: Key("preview_delete_" + preview.id),
+                      child: ArticlePreview(
+                        key: Key("preview_" + preview.id),
+                        postPreview: preview,
+                        onPressed: (articleId) =>
+                            openArticle(context, articleId),
+                      ),
+                      onDelete: () {
+                        final articleId = preview.id;
+                        store.removePreview(articleId);
+                        habrStorage
+                            .removeArticleFromCache(articleId)
+                            .then((value) {
+                          notifySnackbarText(context,
+                              "${preview.title} ${AppLocalizations.of(context).removed}");
+                        });
+                      },
                     ),
-                    onDelete: () {
-                      final articleId = preview.id;
-                      store.removePreview(articleId);
-                      habrStorage
-                          .removeArticleFromCache(articleId)
-                          .then((value) {
-                        notifySnackbarText(context,
-                            "${preview.title} ${AppLocalizations.of(context).removed}");
-                      });
-                    },
                   );
                 },
                 separatorBuilder: (context, index) => const Hr(),

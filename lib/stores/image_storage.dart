@@ -75,7 +75,7 @@ class ImageLocalStorage {
     return Right(filename);
   }
 
-  Future deleteImage(String url) async {
+  Future<void> deleteImage(String url) async {
     // картинка не удалится из кеша тк путь будет не тот,
     // путь нужно брать из бд
     final optionalImage = await getImage(url);
@@ -84,8 +84,12 @@ class ImageLocalStorage {
     await data.delete(url);
     final file = File(path);
     if (await file.exists()) {
-      await file.delete();
-      logInfo("Изображение удалено path:$path");
+      try {
+        await file.delete();
+        logInfo("Изображение удалено path:$path");
+      } catch (err) {
+        logError('Изображение не удалено path:$path');
+      }
     }
   }
 
