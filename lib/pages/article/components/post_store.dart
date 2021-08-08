@@ -29,13 +29,13 @@ class PostStorage with ChangeNotifier {
     loadingState = LoadingState.inProgress;
     storage
         .article(_id)
-        .mapRight(
-          (right) => ParsedPost(
+        .mapRightAsync(
+          (right) async => ParsedPost(
             id: right.id,
             title: right.title,
             author: right.author,
             publishDate: right.publishDate,
-            parsedBody: htmlAsParsedJson(right.body),
+            parsedBody: await compute(htmlAsParsedJson, right.body),
           ),
         )
         .either((left) {
