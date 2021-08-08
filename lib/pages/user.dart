@@ -7,7 +7,7 @@ import 'package:habr_app/models/author.dart';
 import 'package:habr_app/models/author_info.dart';
 import 'package:habr_app/stores/avatar_color_store.dart';
 import 'package:habr_app/stores/user_info_store.dart';
-import 'package:habr_app/stores/article_store.dart';
+import 'package:habr_app/stores/articles_store.dart';
 import 'package:habr_app/widgets/incrementally_loading_listview.dart';
 import '../app_error.dart';
 import '../stores/loading_state.dart';
