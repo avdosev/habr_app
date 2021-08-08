@@ -35,6 +35,7 @@ class Picture extends StatelessWidget {
     return Container(
       height: height,
       width: width,
+      alignment: Alignment.center,
       child: LoadBuilder(
         future: habrStorage.imgStore.getImage(url),
         onRightBuilder: (context, filePath) {
