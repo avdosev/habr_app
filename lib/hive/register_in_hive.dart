@@ -9,4 +9,6 @@ void registerAdapters() {
   Hive.registerAdapter(AuthorAdapter());
   Hive.registerAdapter(AuthorAvatarInfoAdapter());
   Hive.registerAdapter(TimeOfDayAdapter());
+  Hive.registerAdapter(CachedPostAdapter());
+  Hive.registerAdapter(CachedImageInfoAdapter());
 }

@@ -64,10 +64,10 @@ class CachedArticlesList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final habrStorage = context.watch<HabrStorage>();
+    final habrStorage = Provider.of<HabrStorage>(context, listen: false);
 
     return ChangeNotifierProvider(
-      create: (_) => ArticlesStorage(CachedPreviewLoader()),
+      create: (_) => ArticlesStorage(CachedPreviewLoader(storage: habrStorage)),
       builder: (context, child) => Scaffold(
         appBar: AppBar(
           title: Text(AppLocalizations.of(context).cachedArticles),

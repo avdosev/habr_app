@@ -120,7 +120,7 @@ class HabrStorage {
           statistics: Statistics.zero(),
           author: author,
         );
-      }),
+      }).toList(),
       maxCountPages: 1,
     ));
   }

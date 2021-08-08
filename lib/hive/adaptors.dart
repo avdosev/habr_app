@@ -12,3 +12,9 @@ export 'author.dart';
 
 //id=5
 export 'post_preview.dart';
+
+//id=7
+export 'post.dart';
+
+//id=8
+export 'cached_image_info.dart';
