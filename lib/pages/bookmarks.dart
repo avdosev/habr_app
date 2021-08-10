@@ -40,13 +40,13 @@ class _BookmarksArticlesListState extends State<BookmarksArticlesList> {
       valueListenable: store.bookmarks(),
       builder: (context, box, _) {
         final habrStorage = context.watch<HabrStorage>();
-        final bookmarks = box.values;
-        final previews =
-            bookmarks.map((e) => buildItem(context, e, habrStorage)).toList();
-        if (previews.isEmpty) return Center(child: EmptyContent());
-        return ListView(
-          children: previews,
-        );
+        final bookmarks = box.values.toList();
+        if (bookmarks.isEmpty) return Center(child: EmptyContent());
+        return ListView.separated(
+            itemBuilder: (context, i) => DefaultConstraints(
+                child: buildItem(context, bookmarks[i], habrStorage)),
+            separatorBuilder: (_, __) => const DefaultConstraints(child: Hr()),
+            itemCount: bookmarks.length);
       },
     );
   }
