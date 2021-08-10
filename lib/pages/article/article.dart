@@ -120,25 +120,28 @@ class _ArticlePageState extends State<ArticlePage> {
               icon: const Icon(Icons.share),
               onPressed: () => shareArticle(context),
             ),
-            PopupMenuButton<String>(
-              icon: const Icon(Icons.more_vert),
-              onSelected: (val) {
-                final store = Provider.of<PostStorage>(context, listen: false);
-                switch (val) {
-                  case MoreButtons.Cache:
-                    habrStorage.addArticleInCache(widget.articleId);
-                    break;
-                  case MoreButtons.Bookmark:
-                    addBookMark(store);
-                    break;
-                  case MoreButtons.BackToBookmark:
-                    returnToBookmark(store);
-                    break;
-                }
-              },
-              itemBuilder: (context) => MoreButtons.values
-                  .map((val) => PopupMenuItem(value: val, child: Text(val)))
-                  .toList(),
+            Builder(
+              builder: (context) => PopupMenuButton<String>(
+                icon: const Icon(Icons.more_vert),
+                onSelected: (val) {
+                  final store =
+                      Provider.of<PostStorage>(context, listen: false);
+                  switch (val) {
+                    case MoreButtons.Cache:
+                      habrStorage.addArticleInCache(widget.articleId);
+                      break;
+                    case MoreButtons.Bookmark:
+                      addBookMark(store);
+                      break;
+                    case MoreButtons.BackToBookmark:
+                      returnToBookmark(store);
+                      break;
+                  }
+                },
+                itemBuilder: (context) => MoreButtons.values
+                    .map((val) => PopupMenuItem(value: val, child: Text(val)))
+                    .toList(),
+              ),
             )
           ],
         ),
