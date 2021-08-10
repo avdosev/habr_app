@@ -3,6 +3,7 @@ import 'package:habr_app/models/post_preview.dart';
 import 'package:habr_app/stores/filters_store.dart';
 import 'package:habr_app/utils/filters/article_preview_filters.dart';
 import 'package:habr_app/utils/log.dart';
+import 'package:habr_app/widgets/adaptive_ui.dart';
 import 'package:itertools/itertools.dart';
 import 'package:hive/hive.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -30,9 +31,9 @@ class _FiltersPageState extends State<FiltersPage> {
   Widget _buildBody() {
     return ValueListenableBuilder<Box<Filter<PostPreview>>>(
       valueListenable: FiltersStorage().listenable(),
-      builder: (context, box, child) =>
-          ListView(
-            children: box.values.mapIndexed<Widget>((i, filter) {
+      builder: (context, box, child) => ListView(
+        children: box.values
+            .mapIndexed<Widget>((i, filter) {
               if (filter is NicknameAuthorFilter) {
                 return ListTile(
                   leading: const Icon(Icons.person_outline),
@@ -46,8 +47,10 @@ class _FiltersPageState extends State<FiltersPage> {
                 logInfo("filter not supported");
               }
               return null;
-            }).toList(),
-          ),
+            })
+            .map((e) => DefaultConstraints(child: e))
+            .toList(),
+      ),
     );
   }
 
@@ -131,7 +134,8 @@ class _AuthorNicknameFilterDialogState
               controller: nickanameControll,
               autofocus: true,
               decoration: InputDecoration(
-                  labelText: AppLocalizations.of(context).authorNickname, hintText: AppLocalizations.of(context).authorNicknameHint),
+                  labelText: AppLocalizations.of(context).authorNickname,
+                  hintText: AppLocalizations.of(context).authorNicknameHint),
             ),
           )
         ],
@@ -146,8 +150,8 @@ class _AuthorNicknameFilterDialogState
             child: Text(AppLocalizations.of(context).create),
             onPressed: () {
               if (nicknameValid())
-                FiltersStorage().addFilter(
-                    NicknameAuthorFilter(nickanameControll.text));
+                FiltersStorage()
+                    .addFilter(NicknameAuthorFilter(nickanameControll.text));
               Navigator.pop(context);
             })
       ],

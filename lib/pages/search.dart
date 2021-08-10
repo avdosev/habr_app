@@ -38,50 +38,57 @@ class _SearchPageState extends State<SearchPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        resizeToAvoidBottomInset: false,
-        appBar: AppBar(
-          title: Text(AppLocalizations.of(context).search),
-          actions: [],
-        ),
-        body: Column(children: [
+      resizeToAvoidBottomInset: false,
+      appBar: AppBar(
+        title: Text(AppLocalizations.of(context).search),
+        actions: [],
+      ),
+      body: Column(
+        children: [
           Expanded(
-              child: ListView(
-            children: [
-              Card(
-                child: Container(
-                  padding: EdgeInsets.all(10),
-                  child: TextFormField(
-                    textInputAction: TextInputAction.search,
-                    onFieldSubmitted: (_) => _onSearch(),
-                    autofocus: true,
-                    controller: queryController,
-                    decoration: InputDecoration(
-                      labelText: AppLocalizations.of(context).keywords,
-                      suffixIcon: IconButton(
-                        icon: const Icon(Icons.clear),
-                        onPressed: () {
-                          queryController.clear();
-                        },
+            child: ListView(
+              children: [
+                Card(
+                  child: Container(
+                    padding: EdgeInsets.all(10),
+                    child: TextFormField(
+                      textInputAction: TextInputAction.search,
+                      onFieldSubmitted: (_) => _onSearch(),
+                      autofocus: true,
+                      controller: queryController,
+                      decoration: InputDecoration(
+                        labelText: AppLocalizations.of(context).keywords,
+                        suffixIcon: IconButton(
+                          icon: const Icon(Icons.clear),
+                          onPressed: () {
+                            queryController.clear();
+                          },
+                        ),
                       ),
                     ),
                   ),
                 ),
-              ),
-              RadioGroup<Order>(
-                groupValue: orderBy,
-                title: AppLocalizations.of(context).sort,
-                enumToText: {
-                  Order.Relevance: AppLocalizations.of(context).relevance,
-                  Order.Date: AppLocalizations.of(context).date,
-                  Order.Rating: AppLocalizations.of(context).rating,
-                },
-              ),
-            ],
-          )),
-          Container(
+                RadioGroup<Order>(
+                  groupValue: orderBy,
+                  title: AppLocalizations.of(context).sort,
+                  enumToText: {
+                    Order.Relevance: AppLocalizations.of(context).relevance,
+                    Order.Date: AppLocalizations.of(context).date,
+                    Order.Rating: AppLocalizations.of(context).rating,
+                  },
+                ),
+              ].map((e) => DefaultConstraints(child: e)).toList(),
+            ),
+          ),
+          DefaultConstraints(
+            child: Container(
               padding: EdgeInsets.all(5),
-              child: SearchButton(onPressed: _onSearch)),
-        ]));
+              child: SearchButton(onPressed: _onSearch),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
 

@@ -47,7 +47,8 @@ class CachedArticlesList extends StatelessWidget {
                     ),
                   );
                 },
-                separatorBuilder: (context, index) => const Hr(),
+                separatorBuilder: (context, index) =>
+                    const DefaultConstraints(child: const Hr()),
                 itemCount: () =>
                     store.previews.length + (store.loadItems ? 1 : 0),
                 loadMore: store.loadNextPage,
