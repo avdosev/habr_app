@@ -43,6 +43,15 @@ class _FiltersPageState extends State<FiltersPage> {
                     onPressed: () => FiltersStorage().removeFilterAt(i),
                   ),
                 );
+              } else if (filter is CompanyNameFilter) {
+                return ListTile(
+                  leading: const Icon(Icons.groups),
+                  title: Text(filter.companyName),
+                  trailing: IconButton(
+                    icon: const Icon(Icons.clear),
+                    onPressed: () => FiltersStorage().removeFilterAt(i),
+                  ),
+                );
               } else {
                 logInfo("filter not supported");
               }
@@ -83,16 +92,27 @@ class _FiltersPageState extends State<FiltersPage> {
       case _DialogType.AuthorNickname:
         await _createAuthorNicknameFilter();
         break;
+      case _DialogType.CompanyName:
+        await _createCompanyNameFilter();
+        break;
       default:
         logInfo('$type not supported');
     }
   }
 
   Future<void> _createAuthorNicknameFilter() async {
-    await showDialog<_DialogType>(
+    await showDialog<void>(
         context: context,
         builder: (BuildContext context) {
           return _AuthorNicknameFilterDialog();
+        });
+  }
+
+  Future<void> _createCompanyNameFilter() async {
+    await showDialog<void>(
+        context: context,
+        builder: (BuildContext context) {
+          return _CompanyNameFilterDialog();
         });
   }
 }
@@ -134,24 +154,80 @@ class _AuthorNicknameFilterDialogState
               controller: nickanameControll,
               autofocus: true,
               decoration: InputDecoration(
-                  labelText: AppLocalizations.of(context).authorNickname,
-                  hintText: AppLocalizations.of(context).authorNicknameHint),
+                labelText: AppLocalizations.of(context).authorNickname,
+                hintText: AppLocalizations.of(context).authorNicknameHint,
+              ),
             ),
           )
         ],
       ),
       actions: <Widget>[
-        FlatButton(
+        TextButton(
             child: Text(AppLocalizations.of(context).cancel),
             onPressed: () {
               Navigator.pop(context);
             }),
-        FlatButton(
+        TextButton(
             child: Text(AppLocalizations.of(context).create),
             onPressed: () {
               if (nicknameValid())
                 FiltersStorage()
                     .addFilter(NicknameAuthorFilter(nickanameControll.text));
+              Navigator.pop(context);
+            })
+      ],
+    );
+  }
+}
+
+class _CompanyNameFilterDialog extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() => _CompanyNameFilterDialogState();
+}
+
+class _CompanyNameFilterDialogState extends State<_CompanyNameFilterDialog> {
+  TextEditingController nickanameControll;
+
+  @override
+  void initState() {
+    super.initState();
+    nickanameControll = TextEditingController();
+  }
+
+  bool nicknameValid() {
+    return nickanameControll.text.isNotEmpty;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      contentPadding: const EdgeInsets.all(16.0),
+      content: Row(
+        children: [
+          Expanded(
+            child: TextField(
+              controller: nickanameControll,
+              autofocus: true,
+              decoration: InputDecoration(
+                labelText: "Имя компании",
+                hintText: "Например, RUVDS.com",
+              ),
+            ),
+          )
+        ],
+      ),
+      actions: <Widget>[
+        TextButton(
+            child: Text(AppLocalizations.of(context).cancel),
+            onPressed: () {
+              Navigator.pop(context);
+            }),
+        TextButton(
+            child: Text(AppLocalizations.of(context).create),
+            onPressed: () {
+              if (nicknameValid())
+                FiltersStorage()
+                    .addFilter(CompanyNameFilter(nickanameControll.text));
               Navigator.pop(context);
             })
       ],

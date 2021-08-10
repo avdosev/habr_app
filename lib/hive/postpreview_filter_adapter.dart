@@ -13,6 +13,8 @@ class PostPreviewFilterAdapter extends TypeAdapter<Filter<PostPreview>> {
     switch (obj['type']) {
       case 'nickname':
         return NicknameAuthorFilter(obj['value']);
+      case 'company_name':
+        return CompanyNameFilter(obj['value']);
       default:
         return const NoneFilter();
     }
@@ -24,6 +26,11 @@ class PostPreviewFilterAdapter extends TypeAdapter<Filter<PostPreview>> {
       writer.writeMap({
         'type': 'nickname',
         'value': obj.nickname,
+      });
+    } else if (obj is CompanyNameFilter) {
+      writer.writeMap({
+        'type': 'company_name',
+        'value': obj.companyName,
       });
     }
   }
