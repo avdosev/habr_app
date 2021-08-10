@@ -170,7 +170,7 @@ class _ArticlePageState extends State<ArticlePage> {
       final preview = PostPreview(
         id: articleId,
         title: post.title,
-        hubs: [],
+        flows: [],
         publishDate: post.publishDate,
         statistics: Models.Statistics.zero(),
         author: post.author,
