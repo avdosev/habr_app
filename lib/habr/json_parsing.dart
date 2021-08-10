@@ -69,7 +69,11 @@ PostPreviews parsePostPreviewsFromJson(Map<String, dynamic> data) {
           id: id,
           corporative: article['isCorporative'],
           title: _prepareHtmlString(article['titleHtml']),
-          tags: article['hubs']
+          hubs: article['hubs']
+              .map<String>((flow) => flow['title'] as String)
+              .toList(),
+          htmlPreview: "<div>${article['leadData']['textHtml']}</div>",
+          flows: article['flows']
               .map<String>((flow) => flow['title'] as String)
               .toList(),
           publishDate: DateTime.parse(article['timePublished']),

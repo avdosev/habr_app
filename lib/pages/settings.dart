@@ -102,6 +102,11 @@ class Settings extends StatelessWidget {
                 leading: const Icon(Icons.palette),
                 title: Text(AppLocalizations.of(context).customization),
               ),
+              SwitchListTile(
+                title: Text('Использовать расширенный вид ленты'),
+                value: settings.showPreviewText,
+                onChanged: (val) => settings.showPreviewText = val,
+              ),
               ListTile(
                 // leading: const Icon(Icons.font_download_outlined),
                 title: Text(localizations.fontSize),

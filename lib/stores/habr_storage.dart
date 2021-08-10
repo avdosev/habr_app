@@ -114,7 +114,7 @@ class HabrStorage {
 
         return PostPreview(
           id: post.id,
-          tags: [],
+          hubs: [],
           title: post.title,
           publishDate: post.publishDate,
           statistics: Statistics.zero(),

@@ -62,6 +62,9 @@ class AppSettings extends ChangeNotifier {
       .put('ToTimeThemeSwitch', val)
       .whenComplete(() => changeThemeByTime());
 
+  bool get showPreviewText => data.get('ShowPreviewText', defaultValue: false);
+  set showPreviewText(bool val) => data.put('ShowPreviewText', val);
+
   static bool needSetLightTheme(
       TimeOfDay current, TimeOfDay from, TimeOfDay to) {
     final timeLower = (TimeOfDay d1, TimeOfDay d2) =>

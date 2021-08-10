@@ -1,19 +1,29 @@
 import 'package:flutter/material.dart';
+import 'package:habr_app/stores/app_settings.dart';
 import 'package:habr_app/utils/date_to_text.dart';
 import 'package:habr_app/models/post_preview.dart';
+import 'package:habr_app/widgets/html_view.dart';
+import 'package:provider/provider.dart';
 
 import 'small_author_preview.dart';
 import 'statistics_icons.dart';
 
 class ArticlePreview extends StatelessWidget {
   final PostPreview postPreview;
+  final bool showHtml;
   final Function(String articleId) onPressed;
 
-  ArticlePreview({Key key, @required this.postPreview, this.onPressed})
-      : super(key: key);
+  ArticlePreview({
+    Key key,
+    @required this.postPreview,
+    this.showHtml,
+    this.onPressed,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final needShowHtml =
+        showHtml ?? context.watch<AppSettings>().showPreviewText;
     final upIconTextStyle = const TextStyle(fontSize: 15);
     final statisticIconTextStyle = const TextStyle(fontSize: 15);
     return InkWell(
@@ -45,13 +55,20 @@ class ArticlePreview extends StatelessWidget {
               const SizedBox(
                 height: 10,
               ),
+              if (needShowHtml && postPreview.htmlPreview != null) ...[
+                HtmlView.unparsed(postPreview.htmlPreview),
+                const SizedBox(
+                  height: 20,
+                ),
+              ],
               Text(
-                  postPreview.tags
-                      .where((String el) => !el.startsWith('Блог компании'))
-                      .join(', '),
-                  style: const TextStyle(fontSize: 15),
-                  overflow: TextOverflow.ellipsis,
-                  textAlign: TextAlign.left),
+                postPreview.flows
+                    .where((String el) => !el.startsWith('Блог компании'))
+                    .join(', '),
+                style: const TextStyle(fontSize: 15),
+                overflow: TextOverflow.ellipsis,
+                textAlign: TextAlign.left,
+              ),
               const SizedBox(
                 height: 5,
               ),

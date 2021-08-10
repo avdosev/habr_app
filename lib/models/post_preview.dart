@@ -4,7 +4,9 @@ import 'statistics.dart';
 class PostPreview {
   final String id;
   final String title;
-  final List<String> tags;
+  final List<String> hubs;
+  final List<String> flows;
+  final String htmlPreview;
   final DateTime publishDate;
   final Author author;
   final Statistics statistics;
@@ -13,7 +15,9 @@ class PostPreview {
   const PostPreview(
       {this.id,
       this.title,
-      this.tags,
+      this.hubs,
+      this.flows,
+      this.htmlPreview,
       this.publishDate,
       this.author,
       this.statistics,
@@ -25,5 +29,4 @@ class PostPreviews {
   final List<PostPreview> previews;
 
   const PostPreviews({this.previews, this.maxCountPages});
-
 }

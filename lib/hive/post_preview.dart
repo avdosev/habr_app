@@ -11,14 +11,14 @@ class PostPreviewAdapter extends TypeAdapter<PostPreview> {
   PostPreview read(BinaryReader reader) {
     final id = reader.read();
     final title = reader.read();
-    final tags = reader.readList().cast<String>();
+    final hubs = reader.readList().cast<String>();
     final corporative = reader.read();
     final publishDate = reader.read();
     final author = reader.read();
     return PostPreview(
       id: id,
       title: title,
-      tags: tags,
+      hubs: hubs,
       corporative: corporative,
       publishDate: publishDate,
       author: author,
@@ -30,7 +30,7 @@ class PostPreviewAdapter extends TypeAdapter<PostPreview> {
   void write(BinaryWriter writer, PostPreview obj) {
     writer.write(obj.id);
     writer.write(obj.title);
-    writer.writeList(obj.tags);
+    writer.writeList(obj.hubs);
     writer.write(obj.corporative);
     writer.write(obj.publishDate);
     writer.write(obj.author);
