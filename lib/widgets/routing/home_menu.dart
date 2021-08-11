@@ -8,7 +8,6 @@ class MainMenu extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final localization = AppLocalizations.of(context);
-    final onDesktop = isDesktop(context);
     return Drawer(
       child: ListView(
         children: [

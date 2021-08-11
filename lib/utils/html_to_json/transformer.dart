@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'element_builders.dart';
 import 'package:html/dom.dart' as dom;
 

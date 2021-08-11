@@ -4,11 +4,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 class LossInternetConnection extends StatelessWidget {
   final VoidCallback onPressReload;
 
-
-  const LossInternetConnection({
-    @required
-    this.onPressReload
-  });
+  const LossInternetConnection({@required this.onPressReload});
 
   @override
   Widget build(BuildContext context) {
@@ -18,14 +14,13 @@ class LossInternetConnection extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Image.asset("assets/images/ufo.png"),
-          SizedBox(height: 30,),
+          const SizedBox(height: 30),
           Text(localization.lossInternet),
-          SizedBox(height: 10),
-          FlatButton(
+          const SizedBox(height: 10),
+          TextButton(
             onPressed: onPressReload,
             child: Text(localization.reload),
           )
-        ]
-    );
+        ]);
   }
 }
