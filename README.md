@@ -6,6 +6,7 @@ Main features:
 * Cache articles
 * Filter articles
 * Visual customizations
+* Desktop/Web support
 
 # Visual customization
 
