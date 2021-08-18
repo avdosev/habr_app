@@ -31,27 +31,26 @@ class HabrStorage {
   }
 
   Future<Either<AppError, Post>> article(String id) async {
-    final articleOrError = await api.article(id);
-    if (articleOrError.isLeft) {
-      final cachedPost = await articles.get(id);
-      final cachedAuthor =
-          cachedPost != null ? await authors.get(cachedPost.authorId) : null;
+    return cachedArticle(id).thenLeft((_) => api.article(id));
+  }
 
-      return Either.condLazy(
-        cachedPost != null && cachedAuthor != null,
-        () => AppError(
-            errCode: ErrorType.NotFound,
-            message: "Article not found in local storage"),
-        () => Post(
-          id: cachedPost.id,
-          title: cachedPost.title,
-          body: cachedPost.body,
-          publishDate: cachedPost.publishDate,
-          author: cachedAuthor,
-        ),
-      );
-    }
-    return articleOrError;
+  Future<Either<AppError, Post>> cachedArticle(String id) async {
+    final cachedPost = await articles.get(id);
+    final cachedAuthor =
+        cachedPost != null ? await authors.get(cachedPost.authorId) : null;
+    return Either.condLazy(
+      cachedPost != null && cachedAuthor != null,
+      () => AppError(
+          errCode: ErrorType.NotFound,
+          message: "Article not found in local storage"),
+      () => Post(
+        id: cachedPost.id,
+        title: cachedPost.title,
+        body: cachedPost.body,
+        publishDate: cachedPost.publishDate,
+        author: cachedAuthor,
+      ),
+    );
   }
 
   Future<bool> addArticleInCache(String id) {
@@ -125,18 +124,15 @@ class HabrStorage {
   }
 
   Future _cacheAuthor(Author author) async {
-    String avatarUrl;
-
     if (author.avatar.isNotDefault) {
-      final maybeSavedImage = await imgStore.saveImage(author.avatar.url);
-      avatarUrl = maybeSavedImage.fold((left) => null, (right) => right);
+      await imgStore.saveImage(author.avatar.url);
     }
 
     await authors.put(author.id, author);
   }
 
   Future _uncacheArticle(String articleId) async {
-    final eitherPost = await article(articleId);
+    final eitherPost = await cachedArticle(articleId);
     if (eitherPost.isLeft) return;
     final post = eitherPost.right;
     await articles.delete(articleId);
