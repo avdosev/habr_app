@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:habr_app/stores/app_settings.dart';
 import 'package:provider/provider.dart';
+import 'package:itertools/itertools.dart';
 
 import 'html_elements/html_elements.dart';
 import 'dividing_block.dart';
@@ -64,8 +65,8 @@ Widget? buildTree(view.Node element, BuildContext context, BuildParams params) {
     widget = Text.rich(
       TextSpan(
           children: element.children
-              .map<InlineSpan?>((child) => buildInline(child, context, params))
-              .toList() as List<InlineSpan>?),
+              .map<InlineSpan>((child) => buildInline(child, context, params))
+              .toList()),
       textAlign: params.textAlign,
     );
   } else if (element is view.Scrollable) {
@@ -102,11 +103,15 @@ Widget? buildTree(view.Node element, BuildContext context, BuildParams params) {
   } else if (element is view.BlockList) {
     // TODO: ordered list
     widget = UnorderedList(
-        children: element.children.map<Widget?>((li) => buildTree(li, context, params))
+        children: element.children
+            .map<Widget?>((li) => buildTree(li, context, params))
+            .notNull
             .toList());
   } else if (element is view.BlockColumn) {
     widget = WrappedContainer(
-        children: element.children.map<Widget?>((child) => buildTree(child, context, params))
+        children: element.children
+            .map<Widget?>((child) => buildTree(child, context, params))
+            .notNull
             .toList());
   } else if (element is view.Details) {
     widget = Spoiler(
@@ -143,7 +148,7 @@ Widget? buildTree(view.Node element, BuildContext context, BuildParams params) {
   return widget;
 }
 
-InlineSpan? buildInline(
+InlineSpan buildInline(
     view.Span element, BuildContext context, BuildParams params) {
   late InlineSpan span;
   if (element is view.TextSpan) {
@@ -181,7 +186,7 @@ Iterable<Widget> inlineTree(
     }
   } else if (element is view.BlockList) {
     for (final item in element.children) {
-      yield UnorderedItem(child: buildTree(item, context, params));
+      yield UnorderedItem(child: buildTree(item, context, params)!);
     }
   } else {
     yield buildTree(element!, context, params)!;

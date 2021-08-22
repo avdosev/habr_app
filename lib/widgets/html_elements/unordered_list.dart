@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class UnorderedList extends StatelessWidget {
-  final List<Widget?> children;
+  final List<Widget> children;
   UnorderedList({required this.children});
 
   @override
@@ -18,7 +18,7 @@ class UnorderedList extends StatelessWidget {
 }
 
 class UnorderedItem extends StatelessWidget {
-  final Widget? child;
+  final Widget child;
 
   UnorderedItem({required this.child});
 
@@ -26,7 +26,8 @@ class UnorderedItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context).textTheme.bodyText2!;
     final bulletSize = 5;
-    final centerBaseline = (theme.fontSize! * theme.height! - bulletSize / 2) / 2;
+    final centerBaseline =
+        (theme.fontSize! * theme.height! - bulletSize / 2) / 2;
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.start,
@@ -35,7 +36,7 @@ class UnorderedItem extends StatelessWidget {
           child: const Bullet(),
           padding: EdgeInsets.only(right: 10, top: centerBaseline),
         ),
-        Expanded(child: child!)
+        Expanded(child: child),
       ],
     );
   }

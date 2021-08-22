@@ -4,7 +4,7 @@ import 'package:habr_app/models/post_preview.dart';
 export 'filter.dart';
 
 class NicknameAuthorFilter extends Filter<PostPreview> {
-  final String? nickname;
+  final String nickname;
 
   const NicknameAuthorFilter(this.nickname);
 
@@ -22,19 +22,19 @@ class ScoreArticleFilter extends Filter<PostPreview> {
 
   @override
   bool filter(PostPreview obj) {
-    return (min != null && obj.statistics.score< min!) ||
-        (max != null && obj.statistics.score> max!);
+    return (min != null && obj.statistics.score < min!) ||
+        (max != null && obj.statistics.score > max!);
   }
 }
 
 class CompanyNameFilter extends Filter<PostPreview> {
-  final String? companyName;
+  final String companyName;
 
   const CompanyNameFilter(this.companyName);
 
   @override
   bool filter(PostPreview postPreview) {
-    final l = companyName!.toLowerCase();
+    final l = companyName.toLowerCase();
     return postPreview.hubs
             ?.any((element) => element.toLowerCase().contains(l)) ??
         false;

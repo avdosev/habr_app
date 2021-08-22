@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:habr_app/utils/integer_to_text.dart';
 
-typedef ValueToStringTransformer = String Function(int?);
+typedef ValueToStringTransformer = String Function(int);
 
 class Statistics extends StatelessWidget {
   final Widget leading;
-  final int? value;
+  final int value;
   final TextStyle? textStyle;
   final ValueToStringTransformer valueToStringTransformer;
 
@@ -13,57 +13,67 @@ class Statistics extends StatelessWidget {
     required this.value,
     required this.leading,
     this.textStyle,
-    ValueToStringTransformer? valueTransformer})
-      :
-    valueToStringTransformer = valueTransformer ?? intToMetricPrefix as String Function(int?)
-  ;
+    ValueToStringTransformer? valueTransformer,
+  }) : valueToStringTransformer = valueTransformer ?? intToMetricPrefix;
 
   Statistics.icon({
     required IconData iconData,
     required this.value,
     double size = 20,
     this.textStyle,
-    ValueToStringTransformer? valueTransformer})
-      :
-    valueToStringTransformer = valueTransformer ?? intToMetricPrefix as String Function(int?),
-    leading = Icon(iconData, size: size, color: Colors.grey)
-  ;
+    ValueToStringTransformer? valueTransformer,
+  })  : valueToStringTransformer = valueTransformer ?? intToMetricPrefix,
+        leading = Icon(iconData, size: size, color: Colors.grey);
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-        children: [
-          leading,
-          SizedBox(width: 5,),
-          Text(valueToStringTransformer(value), style: textStyle,),
-        ]
-    );
+    return Row(children: [
+      leading,
+      SizedBox(
+        width: 5,
+      ),
+      Text(
+        valueToStringTransformer(value),
+        style: textStyle,
+      ),
+    ]);
   }
 }
 
 class StatisticsFavoritesIcon extends StatelessWidget {
-  final int? favorites;
+  final int favorites;
   final TextStyle? textStyle;
 
   StatisticsFavoritesIcon(this.favorites, {this.textStyle});
 
   @override
   Widget build(BuildContext context) {
-    return Statistics.icon(value: favorites, iconData: Icons.bookmark, textStyle: textStyle,);
+    return Statistics.icon(
+      value: favorites,
+      iconData: Icons.bookmark,
+      textStyle: textStyle,
+    );
   }
 }
 
 class StatisticsScoreIcon extends StatelessWidget {
-  final int? score;
+  final int score;
   final TextStyle? textStyle;
 
-  Color? scoreToColor(int score) {
+  Color scoreToColor(int score) {
+    Color? color;
     switch (score.sign) {
-      case -1: return Colors.red[800];
-      case 0 : return Colors.grey[600];
-      case 1 : return Colors.green[800];
+      case -1:
+        color = Colors.red[800];
+        break;
+      case 0:
+        color = Colors.grey[600];
+        break;
+      case 1:
+        color = Colors.green[800];
+        break;
     }
-    return Colors.grey[600];
+    return color!;
   }
 
   StatisticsScoreIcon(this.score, {this.textStyle});
@@ -73,9 +83,9 @@ class StatisticsScoreIcon extends StatelessWidget {
     return Statistics.icon(
       iconData: Icons.equalizer,
       value: score,
-      textStyle: textStyle!.copyWith(color: scoreToColor(score!)),
+      textStyle: textStyle!.copyWith(color: scoreToColor(score)),
       valueTransformer: (value) {
-        String res = intToMetricPrefix(value!);
+        String res = intToMetricPrefix(value);
         if (value > 0) res = '+' + res;
         return res;
       },
@@ -84,7 +94,7 @@ class StatisticsScoreIcon extends StatelessWidget {
 }
 
 class StatisticsViewsIcon extends StatelessWidget {
-  final int? views;
+  final int views;
   final TextStyle? textStyle;
 
   StatisticsViewsIcon(this.views, {this.textStyle});
@@ -100,7 +110,7 @@ class StatisticsViewsIcon extends StatelessWidget {
 }
 
 class StatisticsCommentsIcon extends StatelessWidget {
-  final int? comments;
+  final int comments;
   final TextStyle? textStyle;
 
   StatisticsCommentsIcon(this.comments, {this.textStyle});
