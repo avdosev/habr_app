@@ -67,7 +67,6 @@ class CommentsPage extends StatelessWidget {
               ),
             );
         }
-        break;
       default:
         throw UnsupportedError(
             "Loading state ${commentsStorage.loadingState} not supported");

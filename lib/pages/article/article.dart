@@ -89,7 +89,6 @@ class _ArticlePageState extends State<ArticlePage> {
               ),
             );
         }
-        break;
       default:
         throw UnsupportedError(
             "Loading state ${postStorage.loadingState} not supported");

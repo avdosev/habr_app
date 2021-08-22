@@ -1,5 +1,4 @@
 import 'package:flutter/foundation.dart';
-import 'package:habr_app/app_error.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
@@ -18,7 +17,9 @@ class FiltersStorage {
   }
 
   Iterable<Filter<PostPreview>> getAll() {
-    return Hive.box<Filter<PostPreview>>(_boxName).values.cast<Filter<PostPreview>>();
+    return Hive.box<Filter<PostPreview>>(_boxName)
+        .values
+        .cast<Filter<PostPreview>>();
   }
 
   ValueListenable<Box<Filter<PostPreview>>> listenable() {

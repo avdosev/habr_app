@@ -1,4 +1,3 @@
-import 'package:habr_app/models/author.dart';
 import 'package:habr_app/models/author_avatar_info.dart';
 
 class AuthorInfo {

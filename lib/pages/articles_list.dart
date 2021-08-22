@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:habr_app/utils/platform_helper.dart';
 import 'package:provider/provider.dart';
 import 'package:habr_app/stores/filters_store.dart';
 import 'package:habr_app/utils/filters/article_preview_filters.dart';

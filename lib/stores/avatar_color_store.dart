@@ -1,7 +1,6 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:habr_app/models/author.dart';
 import 'package:habr_app/styles/colors/default_avatar.dart';
 
 class AvatarColorStore {
