@@ -9,7 +9,7 @@ import 'package:hive/hive.dart';
 import 'package:provider/provider.dart';
 
 class BookmarksArticlesList extends StatefulWidget {
-  BookmarksArticlesList({Key key}) : super(key: key);
+  BookmarksArticlesList({Key? key}) : super(key: key);
 
   @override
   createState() => _BookmarksArticlesListState();
@@ -55,7 +55,7 @@ class _BookmarksArticlesListState extends State<BookmarksArticlesList> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context).bookmarks),
+        title: Text(AppLocalizations.of(context)!.bookmarks),
       ),
       body: buildBody(context),
     );

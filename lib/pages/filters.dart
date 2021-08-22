@@ -18,7 +18,7 @@ class _FiltersPageState extends State<FiltersPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context).filters),
+        title: Text(AppLocalizations.of(context)!.filters),
       ),
       body: _buildBody(),
       floatingActionButton: FloatingActionButton(
@@ -37,7 +37,7 @@ class _FiltersPageState extends State<FiltersPage> {
               if (filter is NicknameAuthorFilter) {
                 return ListTile(
                   leading: const Icon(Icons.person_outline),
-                  title: Text(filter.nickname),
+                  title: Text(filter.nickname!),
                   trailing: IconButton(
                     icon: const Icon(Icons.clear),
                     onPressed: () => FiltersStorage().removeFilterAt(i),
@@ -46,7 +46,7 @@ class _FiltersPageState extends State<FiltersPage> {
               } else if (filter is CompanyNameFilter) {
                 return ListTile(
                   leading: const Icon(Icons.groups),
-                  title: Text(filter.companyName),
+                  title: Text(filter.companyName!),
                   trailing: IconButton(
                     icon: const Icon(Icons.clear),
                     onPressed: () => FiltersStorage().removeFilterAt(i),
@@ -56,7 +56,7 @@ class _FiltersPageState extends State<FiltersPage> {
                 logInfo("filter not supported");
               }
               return null;
-            })
+            } as Widget Function(int, Filter<PostPreview>))
             .map((e) => DefaultConstraints(child: e))
             .toList(),
       ),
@@ -68,19 +68,19 @@ class _FiltersPageState extends State<FiltersPage> {
         context: context,
         builder: (BuildContext context) {
           return SimpleDialog(
-            title: Text(AppLocalizations.of(context).createFilterBy),
+            title: Text(AppLocalizations.of(context)!.createFilterBy),
             children: <Widget>[
               SimpleDialogOption(
                 onPressed: () {
                   Navigator.pop(context, _DialogType.AuthorNickname);
                 },
-                child: Text(AppLocalizations.of(context).authorNicknameFilter),
+                child: Text(AppLocalizations.of(context)!.authorNicknameFilter),
               ),
               SimpleDialogOption(
                 onPressed: () {
                   Navigator.pop(context, _DialogType.CompanyName);
                 },
-                child: Text(AppLocalizations.of(context).companyNameFilter),
+                child: Text(AppLocalizations.of(context)!.companyNameFilter),
               ),
             ],
           );
@@ -131,7 +131,7 @@ class _AuthorNicknameFilterDialog extends StatefulWidget {
 
 class _AuthorNicknameFilterDialogState
     extends State<_AuthorNicknameFilterDialog> {
-  TextEditingController nickanameControll;
+  TextEditingController? nickanameControll;
 
   @override
   void initState() {
@@ -140,7 +140,7 @@ class _AuthorNicknameFilterDialogState
   }
 
   bool nicknameValid() {
-    return nickanameControll.text.isNotEmpty;
+    return nickanameControll!.text.isNotEmpty;
   }
 
   @override
@@ -154,8 +154,8 @@ class _AuthorNicknameFilterDialogState
               controller: nickanameControll,
               autofocus: true,
               decoration: InputDecoration(
-                labelText: AppLocalizations.of(context).authorNickname,
-                hintText: AppLocalizations.of(context).authorNicknameHint,
+                labelText: AppLocalizations.of(context)!.authorNickname,
+                hintText: AppLocalizations.of(context)!.authorNicknameHint,
               ),
             ),
           )
@@ -163,16 +163,16 @@ class _AuthorNicknameFilterDialogState
       ),
       actions: <Widget>[
         TextButton(
-            child: Text(AppLocalizations.of(context).cancel),
+            child: Text(AppLocalizations.of(context)!.cancel),
             onPressed: () {
               Navigator.pop(context);
             }),
         TextButton(
-            child: Text(AppLocalizations.of(context).create),
+            child: Text(AppLocalizations.of(context)!.create),
             onPressed: () {
               if (nicknameValid())
                 FiltersStorage()
-                    .addFilter(NicknameAuthorFilter(nickanameControll.text));
+                    .addFilter(NicknameAuthorFilter(nickanameControll!.text));
               Navigator.pop(context);
             })
       ],
@@ -186,7 +186,7 @@ class _CompanyNameFilterDialog extends StatefulWidget {
 }
 
 class _CompanyNameFilterDialogState extends State<_CompanyNameFilterDialog> {
-  TextEditingController nickanameControll;
+  TextEditingController? nickanameControll;
 
   @override
   void initState() {
@@ -195,7 +195,7 @@ class _CompanyNameFilterDialogState extends State<_CompanyNameFilterDialog> {
   }
 
   bool nicknameValid() {
-    return nickanameControll.text.isNotEmpty;
+    return nickanameControll!.text.isNotEmpty;
   }
 
   @override
@@ -218,16 +218,16 @@ class _CompanyNameFilterDialogState extends State<_CompanyNameFilterDialog> {
       ),
       actions: <Widget>[
         TextButton(
-            child: Text(AppLocalizations.of(context).cancel),
+            child: Text(AppLocalizations.of(context)!.cancel),
             onPressed: () {
               Navigator.pop(context);
             }),
         TextButton(
-            child: Text(AppLocalizations.of(context).create),
+            child: Text(AppLocalizations.of(context)!.create),
             onPressed: () {
               if (nicknameValid())
                 FiltersStorage()
-                    .addFilter(CompanyNameFilter(nickanameControll.text));
+                    .addFilter(CompanyNameFilter(nickanameControll!.text));
               Navigator.pop(context);
             })
       ],

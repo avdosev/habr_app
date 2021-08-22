@@ -27,14 +27,14 @@ class ArticlesStorage with ChangeNotifier {
     return filter.filter(preview);
   }
 
-  LoadingState firstLoading;
+  LoadingState? firstLoading;
   bool loadItems = false;
   List<PostPreview> previews = [];
-  Set<String> _postIds = {};
+  Set<String?> _postIds = {};
 
-  int maxPages = -1;
+  int? maxPages = -1;
   int pages = 0;
-  AppError lastError;
+  AppError? lastError;
 
   Future reload() async {
     maxPages = -1;
@@ -82,10 +82,10 @@ class ArticlesStorage with ChangeNotifier {
   }
 
   bool hasNextPages() {
-    return pages < maxPages;
+    return pages < maxPages!;
   }
 
-  void removePreview(String id) {
+  void removePreview(String? id) {
     previews.removeWhere((element) => element.id == id);
     _postIds.remove(id);
     previews = List.from(previews);

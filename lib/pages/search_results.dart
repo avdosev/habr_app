@@ -7,7 +7,7 @@ import 'package:provider/provider.dart';
 
 class SearchResultListPage extends StatelessWidget {
   final SearchLoader loader;
-  SearchResultListPage({Key key, @required this.loader}) : super(key: key);
+  SearchResultListPage({Key? key, required this.loader}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +15,7 @@ class SearchResultListPage extends StatelessWidget {
       create: (_) => ArticlesStorage(loader),
       builder: (context, _) => Scaffold(
         appBar: AppBar(
-          title: Text("${AppLocalizations.of(context).search} ${loader.query}"),
+          title: Text("${AppLocalizations.of(context)!.search} ${loader.query}"),
         ),
         body: ArticlesListBody(),
       ),

@@ -7,9 +7,9 @@ import 'package:habr_app/styles/colors/default_avatar.dart';
 class AvatarColorStore {
   AvatarColorStore();
 
-  Color getColor(Author author, Brightness brightness) {
+  Color getColor(String authorAlias, Brightness brightness) {
     final colors = _getColorsByBrightness(brightness);
-    return colors[author.alias.hashCode.abs() % colors.length];
+    return colors[authorAlias.hashCode.abs() % colors.length];
   }
 
   // ignore: missing_return

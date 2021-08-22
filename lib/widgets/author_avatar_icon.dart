@@ -11,17 +11,17 @@ class AuthorAvatarIcon extends StatelessWidget {
   final double width;
   final double borderWidth;
   final double radius;
-  final AuthorAvatarInfo avatar;
-  final Color defaultColor;
+  final AuthorAvatarInfo? avatar;
+  final Color? defaultColor;
 
   AuthorAvatarIcon({
-    @required this.avatar,
+    required this.avatar,
     this.height = 20,
     this.width = 20,
     this.defaultColor,
     this.borderWidth = 1.0,
     this.radius = 5,
-    Key key,
+    Key? key,
   }) : super(key: key);
 
   @override
@@ -29,7 +29,7 @@ class AuthorAvatarIcon extends StatelessWidget {
     Color colorForDefault = defaultColor ?? DefaultAvatarColors.lilac;
     Widget image;
 
-    if (avatar.isDefault) {
+    if (avatar!.isDefault) {
       image = Container(
         decoration: BoxDecoration(
           // color: Colors.white,
@@ -44,11 +44,11 @@ class AuthorAvatarIcon extends StatelessWidget {
         ),
       );
     } else {
-      if (avatar.cached) {
-        image = Image.file(File(avatar.url), height: height, width: width);
+      if (avatar!.cached) {
+        image = Image.file(File(avatar!.url!), height: height, width: width);
       } else {
         image = Image.network(
-          avatar.url,
+          avatar!.url!,
           height: height,
           width: width,
         );

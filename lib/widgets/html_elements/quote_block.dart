@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class BlockQuote extends StatelessWidget {
-  final Widget child;
+  final Widget? child;
   BlockQuote({this.child});
 
   @override

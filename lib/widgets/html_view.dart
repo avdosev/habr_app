@@ -14,34 +14,34 @@ import 'package:habr_app/utils/log.dart';
 
 class HtmlView extends StatelessWidget {
   final view.Node node;
-  final TextAlign textAlign;
+  final TextAlign? textAlign;
 
   HtmlView(this.node, {this.textAlign});
 
   @override
   Widget build(BuildContext context) {
     return Column(
-            children: inlineTree(
-              node,
-              context,
-              BuildParams(textAlign: textAlign),
-            ).toList(),
-            crossAxisAlignment: CrossAxisAlignment.stretch) ??
-        Container();
+      children: inlineTree(
+        node,
+        context,
+        BuildParams(textAlign: textAlign),
+      ).toList(),
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+    );
   }
 
-  HtmlView.unparsed(String html, {this.textAlign})
+  HtmlView.unparsed(String? html, {this.textAlign})
       : node = htmlAsParsedJson(html);
 }
 
 class BuildParams {
-  final TextAlign textAlign;
+  final TextAlign? textAlign;
 
   BuildParams({this.textAlign});
 }
 
 // may be null
-Widget buildTree(view.Node element, BuildContext context, BuildParams params) {
+Widget? buildTree(view.Node element, BuildContext context, BuildParams params) {
   final type = element.type;
   if (element is view.HeadLine) {
     logInfo('$type ${element.text}');
@@ -51,7 +51,7 @@ Widget buildTree(view.Node element, BuildContext context, BuildParams params) {
     logInfo(type);
   }
 
-  Widget widget;
+  Widget? widget;
   if (element is view.HeadLine) {
     final mode = HeadLineType.values[int.parse(element.mode.substring(1)) - 1];
     widget = HeadLine(text: element.text, type: mode);
@@ -64,8 +64,8 @@ Widget buildTree(view.Node element, BuildContext context, BuildParams params) {
     widget = Text.rich(
       TextSpan(
           children: element.children
-              .map<InlineSpan>((child) => buildInline(child, context, params))
-              .toList()),
+              .map<InlineSpan?>((child) => buildInline(child, context, params))
+              .toList() as List<InlineSpan>?),
       textAlign: params.textAlign,
     );
   } else if (element is view.Scrollable) {
@@ -82,7 +82,7 @@ Widget buildTree(view.Node element, BuildContext context, BuildParams params) {
       widget = WrappedContainer(
         children: [
           widget,
-          Text(element.caption, style: Theme.of(context).textTheme.subtitle2)
+          Text(element.caption!, style: Theme.of(context).textTheme.subtitle2)
         ],
         distance: 5,
       );
@@ -102,13 +102,11 @@ Widget buildTree(view.Node element, BuildContext context, BuildParams params) {
   } else if (element is view.BlockList) {
     // TODO: ordered list
     widget = UnorderedList(
-        children: element.children
-            .map<Widget>((li) => buildTree(li, context, params))
+        children: element.children.map<Widget?>((li) => buildTree(li, context, params))
             .toList());
   } else if (element is view.BlockColumn) {
     widget = WrappedContainer(
-        children: element.children
-            .map<Widget>((child) => buildTree(child, context, params))
+        children: element.children.map<Widget?>((child) => buildTree(child, context, params))
             .toList());
   } else if (element is view.Details) {
     widget = Spoiler(
@@ -123,8 +121,8 @@ Widget buildTree(view.Node element, BuildContext context, BuildParams params) {
     try {
       widget = Table(
         defaultColumnWidth: IntrinsicColumnWidth(),
-        border:
-            TableBorder.all(color: Theme.of(context).textTheme.bodyText2.color),
+        border: TableBorder.all(
+            color: Theme.of(context).textTheme.bodyText2!.color!),
         children: element.rows
             .map((row) => TableRow(
                 children: row
@@ -145,9 +143,9 @@ Widget buildTree(view.Node element, BuildContext context, BuildParams params) {
   return widget;
 }
 
-InlineSpan buildInline(
+InlineSpan? buildInline(
     view.Span element, BuildContext context, BuildParams params) {
-  InlineSpan span;
+  late InlineSpan span;
   if (element is view.TextSpan) {
     var style = TextStyle();
     for (final mode in element.modes) {
@@ -166,14 +164,14 @@ InlineSpan buildInline(
     span = InlineTextLink(
         title: element.text, url: element.link, context: context);
   } else if (element is view.BlockSpan) {
-    span = WidgetSpan(child: buildTree(element.child, context, params));
+    span = WidgetSpan(child: buildTree(element.child, context, params)!);
   }
 
   return span;
 }
 
 Iterable<Widget> inlineTree(
-    view.Node element, BuildContext context, BuildParams params) sync* {
+    view.Node? element, BuildContext context, BuildParams params) sync* {
   if (element is view.BlockColumn) {
     final children = element.children;
     for (int i = 0; i < children.length; i++) {
@@ -186,6 +184,6 @@ Iterable<Widget> inlineTree(
       yield UnorderedItem(child: buildTree(item, context, params));
     }
   } else {
-    yield buildTree(element, context, params);
+    yield buildTree(element!, context, params)!;
   }
 }

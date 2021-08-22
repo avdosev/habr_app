@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
 class MaterialButton extends StatelessWidget {
-  final VoidCallback onPressed;
-  final Color color;
-  final IconData iconData;
-  final String text;
+  final VoidCallback? onPressed;
+  final Color? color;
+  final IconData? iconData;
+  final String? text;
 
   MaterialButton({this.onPressed, this.color, this.iconData, this.text});
 
@@ -34,7 +34,7 @@ class MaterialButton extends StatelessWidget {
             width: 10,
           ),
           Text(
-            text,
+            text!,
             style: TextStyle(color: mainColor),
           ),
         ],
@@ -44,8 +44,8 @@ class MaterialButton extends StatelessWidget {
 }
 
 class CommentsButton extends StatelessWidget {
-  final VoidCallback onPressed;
-  final Color color;
+  final VoidCallback? onPressed;
+  final Color? color;
 
   CommentsButton({this.onPressed, this.color});
 
@@ -60,8 +60,8 @@ class CommentsButton extends StatelessWidget {
 }
 
 class SearchButton extends StatelessWidget {
-  final VoidCallback onPressed;
-  final Color color;
+  final VoidCallback? onPressed;
+  final Color? color;
 
   SearchButton({this.onPressed, this.color});
 

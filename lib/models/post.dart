@@ -15,7 +15,13 @@ class Post implements PostInfo {
   final DateTime publishDate;
   final Author author;
 
-  const Post({this.id, this.title, this.body, this.publishDate, this.author});
+  const Post({
+    required this.id,
+    required this.title,
+    required this.body,
+    required this.publishDate,
+    required this.author,
+  });
 }
 
 class ParsedPost implements PostInfo {
@@ -26,10 +32,10 @@ class ParsedPost implements PostInfo {
   final Author author;
 
   const ParsedPost({
-    this.id,
-    this.title,
-    this.parsedBody,
-    this.publishDate,
-    this.author,
+    required this.id,
+    required this.title,
+    required this.parsedBody,
+    required this.publishDate,
+    required this.author,
   });
 }

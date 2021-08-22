@@ -9,28 +9,28 @@ import 'runnable.dart';
 export 'runnable.dart';
 
 class Worker {
-  Isolate _isolate;
-  ReceivePort _receivePort;
-  SendPort _sendPort;
-  StreamSubscription<dynamic> _portSub;
+  Isolate? _isolate;
+  late ReceivePort _receivePort;
+  SendPort? _sendPort;
+  StreamSubscription<dynamic>? _portSub;
   final String name;
-  Completer<void> initCompleter;
+  Completer<void>? initCompleter;
 
   final _results = Map<int, Completer<dynamic>>();
   final _idGen = IdGenerator();
 
-  Worker({this.name});
+  Worker({required this.name});
 
   Future<void> initialize() async {
     final initializationBeenStarted =
-        initCompleter != null && !initCompleter.isCompleted;
+        initCompleter != null && !initCompleter!.isCompleted;
 
     if (initializationBeenStarted) {
-      await initCompleter.future;
+      await initCompleter!.future;
       return;
     }
 
-    if (name != null) logInfo('create isolate: $name');
+    logInfo('create isolate: $name');
     initCompleter = Completer<void>();
     _receivePort = ReceivePort();
     _isolate = await Isolate.spawn(_anotherIsolate, _receivePort.sendPort);
@@ -47,10 +47,10 @@ class Worker {
         _results.remove(message.taskId);
       } else {
         _sendPort = message;
-        initCompleter.complete();
+        initCompleter!.complete();
       }
     });
-    await initCompleter.future;
+    await initCompleter!.future;
   }
 
   Future<OutT> work<ArgT, OutT>(Runnable<ArgT, OutT> task) async {
@@ -86,7 +86,7 @@ class Worker {
     });
   }
 
-  bool get started => initCompleter != null && initCompleter.isCompleted;
+  bool get started => initCompleter != null && initCompleter!.isCompleted;
 
   bool get notStarted => !started;
 
@@ -105,22 +105,22 @@ class WorkMessage {
   final Runnable runnable;
 
   WorkMessage({
-    this.runnable,
-    this.taskId,
+    required this.runnable,
+    required this.taskId,
   });
 }
 
 class ResultMessage {
   final int taskId;
-  final Object result;
+  final Object? result;
 
-  ResultMessage({this.result, this.taskId});
+  ResultMessage({required this.result, required this.taskId});
 }
 
 class ErrorMessage {
   final int taskId;
   final Object error;
-  final StackTrace stackTrace;
+  final StackTrace? stackTrace;
 
-  ErrorMessage(this.error, {this.stackTrace, this.taskId});
+  ErrorMessage(this.error, {this.stackTrace, required this.taskId});
 }

@@ -11,7 +11,7 @@ class SettingsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text(AppLocalizations.of(context).settings),
+          title: Text(AppLocalizations.of(context)!.settings),
         ),
         body: Settings());
   }
@@ -22,14 +22,14 @@ class Settings extends StatelessWidget {
   Widget build(BuildContext context) {
     final settings = context.watch<AppSettings>();
 
-    final localizations = AppLocalizations.of(context);
+    final localizations = AppLocalizations.of(context)!;
     final themeMode = settings.themeMode;
     final codeThemeMode = settings.codeThemeMode;
     final lightCodeTheme = settings.lightCodeTheme;
     final darkCodeTheme = settings.darkCodeTheme;
     final fontSize = settings.fontSize;
-    final TextAlign textAlignArticle = settings.articleTextAlign;
-    final TextAlign textAlignComments = settings.commentTextAlign;
+    final TextAlign? textAlignArticle = settings.articleTextAlign;
+    final TextAlign? textAlignComments = settings.commentTextAlign;
     final double lineSpacing = settings.lineSpacing;
 
     return ListView(
@@ -41,8 +41,7 @@ class Settings extends StatelessWidget {
                 title: Text(localizations.systemTheme),
                 secondary: const Icon(Icons.brightness_auto),
                 value: themeMode == ThemeMode.system,
-                onChanged: !settings.timeThemeSwitcher
-                    ? (val) {
+                onChanged: !settings.timeThemeSwitcher? (val) {
                         if (val) {
                           settings.themeMode = ThemeMode.system;
                         } else {
@@ -56,8 +55,7 @@ class Settings extends StatelessWidget {
                 secondary: const Icon(Icons.brightness_2),
                 value: themeMode == ThemeMode.dark,
                 onChanged:
-                    themeMode != ThemeMode.system && !settings.timeThemeSwitcher
-                        ? (val) {
+                    themeMode != ThemeMode.system && !settings.timeThemeSwitcher? (val) {
                             if (val) {
                               settings.themeMode = ThemeMode.dark;
                             } else {
@@ -100,7 +98,7 @@ class Settings extends StatelessWidget {
             children: [
               ListTile(
                 leading: const Icon(Icons.palette),
-                title: Text(AppLocalizations.of(context).customization),
+                title: Text(AppLocalizations.of(context)!.customization),
               ),
               SwitchListTile(
                 title: Text('Использовать расширенный вид ленты'),
@@ -133,27 +131,27 @@ class Settings extends StatelessWidget {
               ),
               DropDownListTile(
                 values: {
-                  TextAlign.left: AppLocalizations.of(context).left,
-                  TextAlign.right: AppLocalizations.of(context).right,
-                  TextAlign.center: AppLocalizations.of(context).center,
-                  TextAlign.justify: AppLocalizations.of(context).fullWidth,
+                  TextAlign.left: AppLocalizations.of(context)!.left,
+                  TextAlign.right: AppLocalizations.of(context)!.right,
+                  TextAlign.center: AppLocalizations.of(context)!.center,
+                  TextAlign.justify: AppLocalizations.of(context)!.fullWidth,
                 },
                 leading: const Icon(Icons.format_align_left),
                 title: Text("Выравнивание текста в постах"),
                 defaultKey: textAlignArticle,
-                onChanged: (val) => settings.articleTextAlign = val,
+                onChanged: (dynamic val) => settings.articleTextAlign = val,
               ),
               DropDownListTile(
                 values: {
-                  TextAlign.left: AppLocalizations.of(context).left,
-                  TextAlign.right: AppLocalizations.of(context).right,
-                  TextAlign.center: AppLocalizations.of(context).center,
-                  TextAlign.justify: AppLocalizations.of(context).fullWidth,
+                  TextAlign.left: AppLocalizations.of(context)!.left,
+                  TextAlign.right: AppLocalizations.of(context)!.right,
+                  TextAlign.center: AppLocalizations.of(context)!.center,
+                  TextAlign.justify: AppLocalizations.of(context)!.fullWidth,
                 },
                 leading: const Icon(Icons.format_align_left),
                 title: Text("Выравнивание текста в комментариях"),
                 defaultKey: textAlignComments,
-                onChanged: (val) => settings.commentTextAlign = val,
+                onChanged: (dynamic val) => settings.commentTextAlign = val,
               ),
               /* TODO:
                     Icons:
@@ -161,7 +159,7 @@ class Settings extends StatelessWidget {
                     format_indent_increase
                      */
               ListTile(
-                title: Text(AppLocalizations.of(context).lineSpacing),
+                title: Text(AppLocalizations.of(context)!.lineSpacing),
                 subtitle: Row(
                   children: [
                     const Icon(Icons.format_line_spacing, size: 15),
@@ -189,7 +187,7 @@ class Settings extends StatelessWidget {
             children: [
               ListTile(
                 leading: const Icon(Icons.code),
-                title: Text(AppLocalizations.of(context).customizationCode),
+                title: Text(AppLocalizations.of(context)!.customizationCode),
               ),
               SwitchListTile(
                 title: Text(localizations.systemTheme),
@@ -222,14 +220,14 @@ class Settings extends StatelessWidget {
                     HighlightCode.themes, HighlightCode.themes),
                 title: Text("Стиль темной темы"),
                 defaultKey: darkCodeTheme,
-                onChanged: (val) => settings.darkCodeTheme = val,
+                onChanged: (dynamic val) => settings.darkCodeTheme = val,
               ),
               DropDownListTile(
                 values: Map.fromIterables(
                     HighlightCode.themes, HighlightCode.themes),
                 title: Text("Стиль светлой темы"),
                 defaultKey: lightCodeTheme,
-                onChanged: (val) => settings.lightCodeTheme = val,
+                onChanged: (dynamic val) => settings.lightCodeTheme = val,
               ),
             ],
           ),
@@ -240,26 +238,26 @@ class Settings extends StatelessWidget {
 }
 
 class TimeOfDayPickerButton extends StatelessWidget {
-  final String label;
-  final bool active;
-  final TimeOfDay timeOfDay;
+  final String? label;
+  final bool? active;
+  final TimeOfDay? timeOfDay;
   final void Function(TimeOfDay value) onChange;
 
   TimeOfDayPickerButton(
-      {@required this.timeOfDay,
-      @required this.onChange,
+      {required this.timeOfDay,
+      required this.onChange,
       this.label,
       this.active});
 
   @override
   Widget build(BuildContext context) {
-    final strTime = timeOfDay.format(context);
+    final strTime = timeOfDay!.format(context);
     return OutlinedButton(
       child: Text(label == null ? strTime : '$label $strTime'),
       onPressed: (active ?? true)
           ? () async {
               final nextTime = await showTimePicker(
-                  context: context, initialTime: timeOfDay);
+                  context: context, initialTime: timeOfDay!);
               if (nextTime != null) {
                 this.onChange(nextTime);
               }

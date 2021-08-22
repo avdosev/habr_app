@@ -27,32 +27,32 @@ class IncrementallyLoadingListView extends StatefulWidget {
   /// This is relative to the bottom of the list and has a default value of 0 so that it loads when the last item within the list view scrolls into view.
   /// As an example, setting this to 1 would attempt to load more items when the second last item within the list view scrolls into view
   final int loadMoreOffsetFromBottom;
-  final Key key;
+  final Key? key;
   final Axis scrollDirection;
   final bool reverse;
-  final ScrollController controller;
-  final bool primary;
-  final ScrollPhysics physics;
+  final ScrollController? controller;
+  final bool? primary;
+  final ScrollPhysics? physics;
   final bool shrinkWrap;
-  final EdgeInsetsGeometry padding;
-  final double itemExtent;
+  final EdgeInsetsGeometry? padding;
+  final double? itemExtent;
   final IndexedWidgetBuilder itemBuilder;
-  final IndexedWidgetBuilder separatorBuilder;
+  final IndexedWidgetBuilder? separatorBuilder;
   final ItemCount itemCount;
   final bool addAutomaticKeepAlives;
   final bool addRepaintBoundaries;
-  final double cacheExtent;
+  final double? cacheExtent;
   final bool useScrollbar;
 
   /// A callback that is triggered when more items are being loaded
-  final OnLoadMore onLoadMore;
+  final OnLoadMore? onLoadMore;
 
   /// A callback that is triggered when items have finished being loaded
-  final OnLoadMoreFinished onLoadMoreFinished;
+  final OnLoadMoreFinished? onLoadMoreFinished;
 
   IncrementallyLoadingListView(
-      {@required this.hasMore,
-      @required this.loadMore,
+      {required this.hasMore,
+      required this.loadMore,
       this.loadMoreOffsetFromBottom = 0,
       this.key,
       this.useScrollbar = true,
@@ -64,8 +64,8 @@ class IncrementallyLoadingListView extends StatefulWidget {
       this.shrinkWrap = false,
       this.padding,
       this.itemExtent,
-      @required this.itemBuilder,
-      @required this.itemCount,
+      required this.itemBuilder,
+      required this.itemCount,
       this.separatorBuilder,
       this.addAutomaticKeepAlives = true,
       this.addRepaintBoundaries = true,
@@ -74,8 +74,8 @@ class IncrementallyLoadingListView extends StatefulWidget {
       this.onLoadMoreFinished});
 
   IncrementallyLoadingListView.separated(
-      {@required this.hasMore,
-      @required this.loadMore,
+      {required this.hasMore,
+      required this.loadMore,
       this.loadMoreOffsetFromBottom = 0,
       this.key,
       this.useScrollbar = true,
@@ -87,9 +87,9 @@ class IncrementallyLoadingListView extends StatefulWidget {
       this.shrinkWrap = false,
       this.padding,
       this.itemExtent,
-      @required this.itemBuilder,
-      @required this.itemCount,
-      @required this.separatorBuilder,
+      required this.itemBuilder,
+      required this.itemCount,
+      required this.separatorBuilder,
       this.addAutomaticKeepAlives = true,
       this.addRepaintBoundaries = true,
       this.cacheExtent,
@@ -104,9 +104,9 @@ class IncrementallyLoadingListView extends StatefulWidget {
 
 class IncrementallyLoadingListViewState
     extends State<IncrementallyLoadingListView> {
-  bool _loadingMore;
-  StreamController<bool> _loadingMoreStreamController;
-  Stream<bool> _loadingMoreStream;
+  bool? _loadingMore;
+  late StreamController<bool?> _loadingMoreStreamController;
+  Stream<bool?>? _loadingMoreStream;
 
   IncrementallyLoadingListViewState() : super();
 
@@ -114,7 +114,7 @@ class IncrementallyLoadingListViewState
   void initState() {
     super.initState();
     _loadingMore = false;
-    _loadingMoreStreamController = StreamController<bool>();
+    _loadingMoreStreamController = StreamController<bool?>();
     _loadingMoreStream = _loadingMoreStreamController.stream;
     _loadingMoreStreamController.add(_loadingMore);
   }
@@ -139,14 +139,14 @@ class IncrementallyLoadingListViewState
     final itemIndex = index ~/ 2;
 
     if (index.isOdd) {
-      return widget.separatorBuilder(context, itemIndex);
+      return widget.separatorBuilder!(context, itemIndex);
     } else {
       return _buildItem(context, itemIndex);
     }
   }
 
   Widget _buildItem(BuildContext context, int index) {
-    if (!_loadingMore &&
+    if (!_loadingMore! &&
         index == widget.itemCount() - widget.loadMoreOffsetFromBottom - 1 &&
         widget.hasMore()) {
       print(index);
@@ -158,7 +158,7 @@ class IncrementallyLoadingListViewState
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<bool>(
+    return StreamBuilder<bool?>(
         stream: _loadingMoreStream,
         builder: (context, snapshot) {
           final itemCount =

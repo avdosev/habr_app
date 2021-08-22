@@ -18,7 +18,7 @@ class EmptyContent extends StatelessWidget {
           height: pictureHeight, width: pictureWidth,
         ),
         const SizedBox(height: 40,),
-        Text(AppLocalizations.of(context).emptyContent),
+        Text(AppLocalizations.of(context)!.emptyContent),
       ],
     );
   }

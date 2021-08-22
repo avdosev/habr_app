@@ -8,10 +8,10 @@ class LoadAppBarTitle extends StatefulWidget {
 
 class _LoadAppBarTitleState extends State<LoadAppBarTitle>
     with SingleTickerProviderStateMixin {
-  AnimationController controller;
-  Animation<double> animation;
-  int alpha;
-  bool direction;
+  late AnimationController controller;
+  late Animation<double> animation;
+  late int alpha;
+  late bool direction;
 
   @override
   void initState() {
@@ -44,8 +44,8 @@ class _LoadAppBarTitleState extends State<LoadAppBarTitle>
 
   @override
   Widget build(BuildContext context) {
-    final color = Theme.of(context).primaryTextTheme.headline6.color;
-    final loadingText = AppLocalizations.of(context).loading;
+    final color = Theme.of(context).primaryTextTheme.headline6!.color!;
+    final loadingText = AppLocalizations.of(context)!.loading;
     return Text.rich(
       TextSpan(children: [
         TextSpan(text: loadingText),

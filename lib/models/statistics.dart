@@ -6,24 +6,24 @@ class Statistics {
   final int votesCount;
 
   const Statistics({
-    this.commentsCount,
-    this.favoritesCount,
-    this.readingCount,
-    this.score,
-    this.votesCount});
+    required this.commentsCount,
+    required this.favoritesCount,
+    required this.readingCount,
+    required this.score,
+    required this.votesCount,
+  });
 
-  Statistics.fromJson(Map<String, dynamic> json) :
-        commentsCount = json['commentsCount'],
+  Statistics.fromJson(Map<String, dynamic> json)
+      : commentsCount = json['commentsCount'],
         favoritesCount = json['favoritesCount'],
         readingCount = json['readingCount'],
         score = json['score'],
         votesCount = json['votesCount'];
 
-  const Statistics.zero() :
-        commentsCount = 0,
+  const Statistics.zero()
+      : commentsCount = 0,
         favoritesCount = 0,
         readingCount = 0,
         score = 0,
-        votesCount = 0
-  ;
+        votesCount = 0;
 }

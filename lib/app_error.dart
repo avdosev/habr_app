@@ -3,21 +3,21 @@ enum ErrorType {
   BadResponse,
   ServerError,
   NotFound,
-  NotCached
+  NotCached,
 }
 
 class AppError {
   final ErrorType errCode;
-  final String message;
+  final String? message;
 
   const AppError({
-    this.errCode,
+    required this.errCode,
     this.message,
   });
 
   @override
   String toString() {
-    if (message == null || message.isEmpty) {
+    if (message == null || message!.isEmpty) {
       return errCode.toString();
     }
     return "$errCode: $message";

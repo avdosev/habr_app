@@ -8,10 +8,10 @@ import 'package:habr_app/habr/api.dart';
 class UserInfoStorage with ChangeNotifier {
   UserInfoStorage(this.username);
 
-  LoadingState loadingState;
+  LoadingState? loadingState;
   String username;
-  AuthorInfo info;
-  AppError lastError;
+  AuthorInfo? info;
+  AppError? lastError;
 
   void loadInfo() async {
     loadingState = LoadingState.inProgress;

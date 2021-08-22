@@ -20,7 +20,7 @@ import 'package:habr_app/utils/date_to_text.dart';
 class UserPage extends StatelessWidget {
   final String username;
 
-  UserPage({@required this.username});
+  UserPage({required this.username});
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +44,7 @@ class UserPage extends StatelessWidget {
 
 class UserAppBarTitle extends StatelessWidget {
   Widget buildTitle(BuildContext context, UserInfoStorage store) {
-    String title;
+    String? title;
     final userLoading = store.loadingState;
     switch (userLoading) {
       case LoadingState.inProgress:
@@ -53,7 +53,7 @@ class UserAppBarTitle extends StatelessWidget {
         title = store.username;
         break;
       case LoadingState.isCorrupted:
-        title = AppLocalizations.of(context).notLoaded;
+        title = AppLocalizations.of(context)!.notLoaded;
         break;
       default:
         title = "";
@@ -82,10 +82,10 @@ class UserBody extends StatelessWidget {
     if (userLoad == LoadingState.inProgress) {
       return const Center(child: const CircularProgressIndicator());
     } else if (userLoad == LoadingState.isFinally) {
-      if (userStore.info.postCount == 0) {
+      if (userStore.info!.postCount == 0) {
         return Column(
           children: [
-            AuthorInfoView(info: userStore.info),
+            AuthorInfoView(info: userStore.info!),
             Expanded(child: const Center(child: const EmptyContent())),
           ],
         );
@@ -95,14 +95,14 @@ class UserBody extends StatelessWidget {
       } else if (previewsLoad == LoadingState.inProgress) {
         return Column(
           children: [
-            AuthorInfoView(info: userStore.info),
+            AuthorInfoView(info: userStore.info!),
             Expanded(
                 child: const Center(child: const CircularProgressIndicator())),
           ],
         );
       }
     }
-    final err = userStore.lastError ?? articlesStore.lastError;
+    final err = userStore.lastError ?? articlesStore.lastError!;
     switch (err.errCode) {
       case ErrorType.ServerError:
         return const Center(child: const LotOfEntropy());
@@ -130,7 +130,7 @@ class UserBody extends StatelessWidget {
         if ((index - authorInfoElementsCount) >= previews.length &&
             articlesStore.loadItems) return Center(child: const CircularItem());
         if (index < authorInfoElementsCount) {
-          return AuthorInfoView(info: userStore.info);
+          return AuthorInfoView(info: userStore.info!);
         }
         final preview = previews[index - authorInfoElementsCount];
         return SlidableArchive(
@@ -156,13 +156,13 @@ class UserBody extends StatelessWidget {
 }
 
 class AuthorInfoView extends StatelessWidget {
-  AuthorInfoView({@required this.info});
-
   final AuthorInfo info;
+
+  AuthorInfoView({required this.info});
 
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final localization = AppLocalizations.of(context);
+    final localization = AppLocalizations.of(context)!;
     final locale = Localizations.localeOf(context);
     return Column(
       children: [
@@ -174,20 +174,17 @@ class AuthorInfoView extends StatelessWidget {
           height: 96,
           width: 96,
           radius: 10,
-          defaultColor: AvatarColorStore().getColor(
-              Author(
-                alias: info.alias, // TODO: make full author
-              ),
-              theme.brightness),
+          defaultColor:
+              AvatarColorStore().getColor(info.alias, theme.brightness),
           borderWidth: 2,
         ),
         Text('@' + info.alias, style: TextStyle(color: theme.primaryColor)),
-        if (info.fullName != null && info.fullName.isNotEmpty)
+        if (info.fullName != null && info.fullName!.isNotEmpty)
           Text("a.k.a. ${info.fullName}"),
-        Text(info.speciality == null || info.speciality.isEmpty
+        Text(info.speciality == null || info.speciality!.isEmpty
             ? localization.user
-            : info.speciality),
-        if (info.about != null) Text(info.about),
+            : info.speciality!),
+        if (info.about != null) Text(info.about!),
         // Row(
         //   children: [
         //     Text(info.followCount)

@@ -7,7 +7,7 @@ import 'package:habr_app/utils/platform_helper.dart';
 class MainMenu extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final localization = AppLocalizations.of(context);
+    final localization = AppLocalizations.of(context)!;
     return Drawer(
       child: ListView(
         children: [
@@ -53,7 +53,7 @@ class MainMenu extends StatelessWidget {
 class DesktopHomeMenu extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final localization = AppLocalizations.of(context);
+    final localization = AppLocalizations.of(context)!;
     return Drawer(
       child: Column(
         children: [

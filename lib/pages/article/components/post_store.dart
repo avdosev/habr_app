@@ -8,15 +8,15 @@ import 'package:habr_app/utils/html_to_json.dart';
 import 'package:either_dart/either.dart';
 
 class PostStorage with ChangeNotifier {
-  PostStorage(this._id, {@required this.storage});
-
   final HabrStorage storage;
 
-  LoadingState loadingState;
+  LoadingState? loadingState;
 
   String _id; // Article id
-  ParsedPost post;
-  AppError lastError;
+  ParsedPost? post;
+  late AppError lastError;
+
+  PostStorage(this._id, {required this.storage});
 
   set articleId(String val) {
     _id = val;

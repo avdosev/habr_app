@@ -33,7 +33,7 @@ class Habr {
 
   Future<Either<AppError, PostPreviews>> findPosts(String query,
       {int page = 1, Order order = Order.Relevance}) async {
-    String ordString = orderToText[order];
+    String ordString = orderToText[order]!;
     final url =
         "$api_url_v2/articles/?query=$query&order=$ordString&fl=ru&hl=ru&page=$page";
     final response = await safe(http.get(Uri.parse(url)));

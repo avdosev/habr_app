@@ -4,11 +4,11 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 class LossInternetConnection extends StatelessWidget {
   final VoidCallback onPressReload;
 
-  const LossInternetConnection({@required this.onPressReload});
+  const LossInternetConnection({required this.onPressReload});
 
   @override
   Widget build(BuildContext context) {
-    final localization = AppLocalizations.of(context);
+    final localization = AppLocalizations.of(context)!;
     return Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,

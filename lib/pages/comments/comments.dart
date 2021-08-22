@@ -16,7 +16,7 @@ import 'components/comments_store.dart';
 class CommentsPage extends StatelessWidget {
   final String articleId;
 
-  CommentsPage({Key key, this.articleId}) : super(key: key);
+  CommentsPage({Key? key, required this.articleId}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +29,7 @@ class CommentsPage extends StatelessWidget {
       },
       child: Scaffold(
         appBar: AppBar(
-          title: Text(AppLocalizations.of(context).comments),
+          title: Text(AppLocalizations.of(context)!.comments),
           actions: [],
         ),
         body: Consumer<CommentsStorage>(
@@ -84,7 +84,7 @@ class LeveledCommentsView extends StatelessWidget {
   Widget build(BuildContext context) {
     ThemeData themeData = Theme.of(context);
     Widget widget = CommentView(comment);
-    for (int i = 0; i < min(comment.level, 10); i++) {
+    for (int i = 0; i < min(comment.level!, 10); i++) {
       widget = Container(
         decoration: BoxDecoration(
             border: Border(
@@ -108,7 +108,7 @@ class CommentView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (comment.banned) {
-      return Text(AppLocalizations.of(context).bannedComment);
+      return Text(AppLocalizations.of(context)!.bannedComment);
     }
     final appSettings = Provider.of<AppSettings>(context, listen: false);
     final textAlign = appSettings.commentTextAlign;
@@ -120,11 +120,11 @@ class CommentView extends StatelessWidget {
             Row(
               children: [
                 InkWell(
-                  child: SmallAuthorPreview(comment.author),
-                  onTap: () => openUser(context, comment.author.alias),
+                  child: SmallAuthorPreview(comment.author!),
+                  onTap: () => openUser(context, comment.author!.alias),
                 ),
                 Text(dateToStr(
-                    (comment.timePublished), Localizations.localeOf(context))),
+                    comment.timePublished!, Localizations.localeOf(context))),
               ],
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
             ),

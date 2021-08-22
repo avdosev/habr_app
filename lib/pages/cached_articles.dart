@@ -11,13 +11,13 @@ import '../stores/loading_state.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class CachedArticlesList extends StatelessWidget {
-  CachedArticlesList({Key key}) : super(key: key);
+  CachedArticlesList({Key? key}) : super(key: key);
 
-  Widget bodyWidget(BuildContext context, ArticlesStorage store) {
+  Widget? bodyWidget(BuildContext context, ArticlesStorage store) {
     final habrStorage = Provider.of<HabrStorage>(context, listen: false);
 
-    Widget widget;
-    switch (store.firstLoading) {
+    Widget? widget;
+    switch (store.firstLoading!) {
       case LoadingState.isFinally:
         widget = store.previews.length > 0
             ? IncrementallyLoadingListView(
@@ -41,7 +41,7 @@ class CachedArticlesList extends StatelessWidget {
                             .removeArticleFromCache(articleId)
                             .then((value) {
                           notifySnackbarText(context,
-                              "${preview.title} ${AppLocalizations.of(context).removed}");
+                              "${preview.title} ${AppLocalizations.of(context)!.removed}");
                         });
                       },
                     ),
@@ -74,12 +74,12 @@ class CachedArticlesList extends StatelessWidget {
       create: (_) => ArticlesStorage(CachedPreviewLoader(storage: habrStorage)),
       builder: (context, child) => Scaffold(
         appBar: AppBar(
-          title: Text(AppLocalizations.of(context).cachedArticles),
+          title: Text(AppLocalizations.of(context)!.cachedArticles),
           actions: [
             Builder(builder: (context) {
               final store = context.watch<ArticlesStorage>();
               return IconButton(
-                  tooltip: AppLocalizations.of(context).unarchive,
+                  tooltip: AppLocalizations.of(context)!.unarchive,
                   icon: const Icon(Icons.unarchive),
                   onPressed: () {
                     store.removeAllPreviews();
@@ -89,7 +89,7 @@ class CachedArticlesList extends StatelessWidget {
           ],
         ),
         body: Consumer<ArticlesStorage>(
-          builder: (context, store, __) => bodyWidget(context, store),
+          builder: (context, store, __) => bodyWidget(context, store)!,
         ),
       ),
     );

@@ -2,8 +2,8 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 
 class Spoiler extends StatefulWidget {
-  final String title;
-  final Widget child;
+  final String? title;
+  final Widget? child;
 
   Spoiler({this.title, this.child});
 
@@ -12,9 +12,9 @@ class Spoiler extends StatefulWidget {
 }
 
 class _SpoilerState extends State<Spoiler> with TickerProviderStateMixin {
-  bool visible;
-  Animation _arrowAnimation;
-  AnimationController _arrowAnimationController;
+  late bool visible;
+  late Animation _arrowAnimation;
+  late AnimationController _arrowAnimationController;
   static const duration = Duration(milliseconds: 300);
 
   @override
@@ -54,7 +54,7 @@ class _SpoilerState extends State<Spoiler> with TickerProviderStateMixin {
               ),
               Expanded(
                   child: Text(
-                widget.title,
+                widget.title!,
                 style: TextStyle(
                   color: themeData.primaryColor,
                   decorationColor: themeData.primaryColor,
@@ -70,7 +70,7 @@ class _SpoilerState extends State<Spoiler> with TickerProviderStateMixin {
           const SizedBox(
             height: 10,
           ),
-          widget.child,
+          widget.child!,
         ],
       ],
     ));

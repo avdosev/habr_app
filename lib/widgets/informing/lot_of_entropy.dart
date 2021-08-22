@@ -12,7 +12,7 @@ class LotOfEntropy extends StatelessWidget {
         children: [
           Image.asset("assets/images/lot_of_entropy.webp", height: 300, width: 300,),
           SizedBox(height: 30,),
-          Text(AppLocalizations.of(context).appError),
+          Text(AppLocalizations.of(context)!.appError),
         ]
     );
   }

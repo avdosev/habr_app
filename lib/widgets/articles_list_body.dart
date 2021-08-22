@@ -18,13 +18,13 @@ import 'article_preview.dart';
 class ArticlesListBody extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<ArticlesStorage>(
-      builder: (context, store, _) => _build(store),
+      builder: (context, store, _) => _build(store)!,
     );
   }
 
-  Widget _build(ArticlesStorage store) {
-    Widget widget;
-    switch (store.firstLoading) {
+  Widget? _build(ArticlesStorage store) {
+    Widget? widget;
+    switch (store.firstLoading!) {
       case LoadingState.isFinally:
         widget = IncrementallyLoadingListView(
           itemBuilder: (context, index) {
@@ -56,7 +56,7 @@ class ArticlesListBody extends StatelessWidget {
         widget = Center(child: CircularProgressIndicator());
         break;
       case LoadingState.isCorrupted:
-        switch (store.lastError.errCode) {
+        switch (store.lastError!.errCode) {
           case ErrorType.ServerError:
             widget = const Center(child: const LotOfEntropy());
             break;

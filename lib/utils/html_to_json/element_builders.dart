@@ -6,11 +6,11 @@ abstract class Node {
 }
 
 abstract class NodeChild extends Node {
-  Node child;
+  Node get child;
 }
 
 abstract class NodeChildren extends Node {
-  List<Node> children;
+  List<Node> get children;
 }
 
 class Paragraph implements Node {
@@ -72,7 +72,7 @@ class HeadLine implements Node {
 
 class Image implements Node {
   String src;
-  String caption;
+  String? caption;
 
   Image(this.src, {this.caption});
 
@@ -82,7 +82,7 @@ class Image implements Node {
 
 class Code implements Node {
   String text;
-  String language; // can be null
+  String? language;
 
   Code(this.text, this.language);
 

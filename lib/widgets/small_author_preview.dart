@@ -7,7 +7,7 @@ import 'author_avatar_icon.dart';
 
 class SmallAuthorPreview extends StatelessWidget {
   final Author author;
-  final TextStyle textStyle;
+  final TextStyle? textStyle;
 
   SmallAuthorPreview(this.author, {this.textStyle});
 
@@ -18,7 +18,7 @@ class SmallAuthorPreview extends StatelessWidget {
       AuthorAvatarIcon(
         key: ValueKey('avatar_${author.avatar.hashCode}'),
         avatar: author.avatar,
-        defaultColor: AvatarColorStore().getColor(author, themeData.brightness),
+        defaultColor: AvatarColorStore().getColor(author.alias, themeData.brightness),
       ),
       SizedBox(
         width: 5,

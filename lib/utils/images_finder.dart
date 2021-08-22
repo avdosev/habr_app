@@ -3,13 +3,13 @@ import 'dart:ui';
 import 'package:habr_app/utils/html_to_json/element_builders.dart';
 import 'package:habr_app/utils/html_to_json.dart';
 
-List<String> getImageUrlsFromHtml(String html) {
+List<String> getImageUrlsFromHtml(String? html) {
   final parsedHtml = htmlAsParsedJson(html);
   final urls = getImagesFromParsedPost(parsedHtml).toList();
   return urls;
 }
 
-Iterable<String> getImagesFromParsedPost(Node element) sync* {
+Iterable<String> getImagesFromParsedPost(Node? element) sync* {
   if (element is Image) {
     yield element.src;
   } else if (element is NodeChild) {

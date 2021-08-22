@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
 class SlidableArchive extends StatelessWidget {
-  final Widget child;
-  final VoidCallback onArchive;
+  final Widget? child;
+  final VoidCallback? onArchive;
   SlidableArchive({this.child, this.onArchive});
 
   @override
   Widget build(BuildContext context) {
     return Slidable(
-        child: child,
+        child: child!,
         actionPane: SlidableDrawerActionPane(),
         actionExtentRatio: 0.25,
         secondaryActions: <Widget>[
@@ -26,9 +26,9 @@ class SlidableArchive extends StatelessWidget {
 
 class SlidableDelete extends StatelessWidget {
   final Key key;
-  final Widget child;
-  final VoidCallback onDelete;
-  SlidableDelete({this.child, this.onDelete, @required this.key});
+  final Widget? child;
+  final VoidCallback? onDelete;
+  SlidableDelete({this.child, this.onDelete, required this.key});
 
   @override
   Widget build(BuildContext context) {
@@ -37,13 +37,13 @@ class SlidableDelete extends StatelessWidget {
       dismissal: SlidableDismissal(
         child: SlidableDrawerDismissal(),
         onDismissed: (actionType) {
-          onDelete();
+          onDelete!();
         },
         dismissThresholds: <SlideActionType, double>{
           SlideActionType.secondary: 0.3
         },
       ),
-      child: child,
+      child: child!,
       actionPane: SlidableDrawerActionPane(),
       actionExtentRatio: 0,
       secondaryActions: <Widget>[
@@ -59,16 +59,16 @@ class SlidableDelete extends StatelessWidget {
 }
 
 class SlidableArchiveDelete extends StatelessWidget {
-  final Widget child;
-  final VoidCallback onArchive;
-  final VoidCallback onDelete;
+  final Widget? child;
+  final VoidCallback? onArchive;
+  final VoidCallback? onDelete;
   SlidableArchiveDelete({this.child, this.onArchive, this.onDelete});
 
   @override
   Widget build(BuildContext context) {
     final color = Theme.of(context).scaffoldBackgroundColor;
     return Slidable(
-        child: child,
+        child: child!,
         actionPane: SlidableDrawerActionPane(),
         actionExtentRatio: 0.25,
         secondaryActions: <Widget>[

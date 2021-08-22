@@ -11,13 +11,13 @@ import 'package:provider/provider.dart';
 import 'package:habr_app/pages/image_view.dart';
 
 class Picture extends StatelessWidget {
-  final String url;
+  final String? url;
   final bool clickable;
-  final double height;
-  final double width;
+  final double? height;
+  final double? width;
 
   Picture.network(this.url,
-      {this.clickable = false, this.height, this.width, Key key})
+      {this.clickable = false, this.height, this.width, Key? key})
       : super(key: key);
 
   // TODO: make asset constructor
@@ -38,15 +38,15 @@ class Picture extends StatelessWidget {
       alignment: Alignment.center,
       child: LoadBuilder(
         future: habrStorage.imgStore.getImage(url),
-        onRightBuilder: (context, filePath) {
+        onRightBuilder: (context, dynamic filePath) {
           final file = File(filePath);
-          if (url.endsWith("svg")) {
+          if (url!.endsWith("svg")) {
             // TODO: это костыль нужно нормально определять размер
             return Center(
                 child: Transform.scale(
               scale: 2,
               alignment: Alignment.center,
-              child: SvgPicture.file(file, color: textTheme.color),
+              child: SvgPicture.file(file, color: textTheme!.color),
             ));
           }
           Widget widget = Image.file(
@@ -62,22 +62,22 @@ class Picture extends StatelessWidget {
         },
         onErrorBuilder: (context, err) {
           logError(err);
-          if (url.endsWith("svg")) {
+          if (url!.endsWith("svg")) {
             // TODO: это костыль нужно нормально определять размер
             return Center(
                 child: Transform.scale(
               scale: 2,
               alignment: Alignment.center,
-              child: SvgPicture.network(url, color: textTheme.color),
+              child: SvgPicture.network(url!, color: textTheme!.color),
             ));
           }
           Widget widget = Image.network(
-            url,
+            url!,
             height: height,
             width: width,
           );
           if (clickable) {
-            widget = _buildClickableImage(context, widget, NetworkImage(url));
+            widget = _buildClickableImage(context, widget, NetworkImage(url!));
           }
           return widget;
         },
@@ -87,7 +87,7 @@ class Picture extends StatelessWidget {
 
   _buildClickableImage(
       BuildContext context, Widget child, ImageProvider imgProvider) {
-    final heroTag = url + LUID.genId().toString();
+    final heroTag = url! + LUID.genId().toString();
     return GestureDetector(
       onTap: () {
         Navigator.push(

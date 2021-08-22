@@ -8,11 +8,11 @@ class HeroPhotoViewRouteWrapper extends StatelessWidget {
     this.backgroundDecoration,
     this.minScale,
     this.maxScale,
-    @required this.tag,
+    required this.tag,
   });
 
-  final ImageProvider imageProvider;
-  final Decoration backgroundDecoration;
+  final ImageProvider? imageProvider;
+  final Decoration? backgroundDecoration;
   final String tag;
   final dynamic minScale;
   final dynamic maxScale;
@@ -37,7 +37,7 @@ class HeroPhotoViewRouteWrapper extends StatelessWidget {
         body: Container(
           child: PhotoView(
             imageProvider: imageProvider,
-            backgroundDecoration: backgroundDecoration,
+            backgroundDecoration: backgroundDecoration as BoxDecoration?,
             minScale: minScale,
             maxScale: maxScale,
             heroAttributes: PhotoViewHeroAttributes(tag: tag),

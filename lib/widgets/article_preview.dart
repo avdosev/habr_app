@@ -10,12 +10,12 @@ import 'statistics_icons.dart';
 
 class ArticlePreview extends StatelessWidget {
   final PostPreview postPreview;
-  final bool showHtml;
-  final Function(String articleId) onPressed;
+  final bool? showHtml;
+  final Function(String articleId)? onPressed;
 
   ArticlePreview({
-    Key key,
-    @required this.postPreview,
+    Key? key,
+    required this.postPreview,
     this.showHtml,
     this.onPressed,
   }) : super(key: key);

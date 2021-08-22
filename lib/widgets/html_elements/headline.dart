@@ -5,8 +5,8 @@ enum HeadLineType {
 }
 
 class HeadLine extends StatelessWidget {
-  final String text;
-  final HeadLineType type;
+  final String? text;
+  final HeadLineType? type;
   const HeadLine({this.text, this.type});
 
   @override
@@ -20,6 +20,6 @@ class HeadLine extends StatelessWidget {
       HeadLineType.h5: textTheme.headline5,
       HeadLineType.h6: textTheme.headline6,
     }[HeadLineType.h6]; // Todo: решить нужна ли впринципе эта таблица
-    return Text(text, style: textStyle);
+    return Text(text!, style: textStyle);
   }
 }

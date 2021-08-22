@@ -1,5 +1,5 @@
 class CachedImageInfo {
-  CachedImageInfo({this.url, this.path});
+  CachedImageInfo({required this.url, required this.path});
 
   String url;
   String path;

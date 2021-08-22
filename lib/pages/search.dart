@@ -6,7 +6,7 @@ import '../habr/api.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class SearchPage extends StatefulWidget {
-  SearchPage({Key key}) : super(key: key);
+  SearchPage({Key? key}) : super(key: key);
 
   @override
   createState() => _SearchPageState();
@@ -16,7 +16,7 @@ class SearchData {
   String query;
   Order order;
 
-  SearchData({@required this.query, @required this.order});
+  SearchData({required this.query, required this.order});
 }
 
 class _SearchPageState extends State<SearchPage> {
@@ -40,7 +40,7 @@ class _SearchPageState extends State<SearchPage> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context).search),
+        title: Text(AppLocalizations.of(context)!.search),
         actions: [],
       ),
       body: Column(
@@ -57,7 +57,7 @@ class _SearchPageState extends State<SearchPage> {
                       autofocus: true,
                       controller: queryController,
                       decoration: InputDecoration(
-                        labelText: AppLocalizations.of(context).keywords,
+                        labelText: AppLocalizations.of(context)!.keywords,
                         suffixIcon: IconButton(
                           icon: const Icon(Icons.clear),
                           onPressed: () {
@@ -70,11 +70,11 @@ class _SearchPageState extends State<SearchPage> {
                 ),
                 RadioGroup<Order>(
                   groupValue: orderBy,
-                  title: AppLocalizations.of(context).sort,
+                  title: AppLocalizations.of(context)!.sort,
                   enumToText: {
-                    Order.Relevance: AppLocalizations.of(context).relevance,
-                    Order.Date: AppLocalizations.of(context).date,
-                    Order.Rating: AppLocalizations.of(context).rating,
+                    Order.Relevance: AppLocalizations.of(context)!.relevance,
+                    Order.Date: AppLocalizations.of(context)!.date,
+                    Order.Rating: AppLocalizations.of(context)!.rating,
                   },
                 ),
               ].map((e) => DefaultConstraints(child: e)).toList(),
@@ -94,30 +94,30 @@ class _SearchPageState extends State<SearchPage> {
 
 class RadioGroup<Enum> extends StatelessWidget {
   final Map<Enum, String> enumToText;
-  final ValueNotifier<Enum> groupValue;
-  final String title;
+  final ValueNotifier<Enum?> groupValue;
+  final String? title;
 
   RadioGroup(
-      {this.title, @required this.groupValue, @required this.enumToText});
+      {this.title, required this.groupValue, required this.enumToText});
 
   @override
   Widget build(BuildContext context) {
     return Card(
-        child: ValueListenableBuilder<Enum>(
+        child: ValueListenableBuilder<Enum?>(
       valueListenable: groupValue,
       builder: (context, group, child) {
         return Column(
             children: [
           ListTile(
-            leading: Text(title),
+            leading: Text(title!),
             trailing: Icon(Icons.sort),
           )
         ]..addAll(enumToText.keys.map<Widget>((e) => RadioListTile(
-                  title: Text(enumToText[e]),
+                  title: Text(enumToText[e]!),
                   // activeColor: Colors.blueGrey,
                   value: e,
                   groupValue: group,
-                  onChanged: (value) {
+                  onChanged: (dynamic value) {
                     groupValue.value = value;
                   },
                 ))));

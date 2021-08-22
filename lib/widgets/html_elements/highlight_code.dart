@@ -5,10 +5,10 @@ import 'package:highlight/highlight.dart' show highlight, Node, Result;
 
 class HighlightCode extends StatelessWidget {
   final String text;
-  final String language;
-  final EdgeInsets padding;
-  final TextStyle codeStyle;
-  final ThemeMode themeMode;
+  final String? language;
+  final EdgeInsets? padding;
+  final TextStyle? codeStyle;
+  final ThemeMode? themeMode;
   final String themeNameDark;
   final String themeNameLight;
 
@@ -25,7 +25,7 @@ class HighlightCode extends StatelessWidget {
   Widget build(BuildContext context) {
     final mode = _getThemeMode(context);
 
-    Map<String, TextStyle> theme;
+    Map<String, TextStyle>? theme;
     if (mode == ThemeMode.dark) {
       theme = themeMap[themeNameDark];
     } else {
@@ -54,7 +54,7 @@ class HighlightCode extends StatelessWidget {
     );
   }
 
-  ThemeMode _getThemeMode(BuildContext context) {
+  ThemeMode? _getThemeMode(BuildContext context) {
     var mode = themeMode;
     if (mode == null || mode == ThemeMode.system) {
       switch (Theme.of(context).brightness) {
@@ -82,21 +82,21 @@ class _HighlightView extends StatefulWidget {
   /// It is recommended to give it a value for performance
   ///
   /// [All available languages](https://github.com/pd4d10/highlight/tree/master/highlight/lib/languages)
-  final String language;
+  final String? language;
 
   /// Highlight theme
   ///
   /// [All available themes](https://github.com/pd4d10/highlight/blob/master/flutter_highlight/lib/themes)
-  final Map<String, TextStyle> theme;
+  final Map<String, TextStyle>? theme;
 
   /// Padding
-  final EdgeInsetsGeometry padding;
-  final bool autoDetection;
+  final EdgeInsetsGeometry? padding;
+  final bool? autoDetection;
 
   /// Text styles
   ///
   /// Specify text styles such as font family and font size
-  final TextStyle textStyle;
+  final TextStyle? textStyle;
 
   _HighlightView(
     String input, {
@@ -116,7 +116,7 @@ class _HighlightView extends StatefulWidget {
 
 class _HighlightViewState extends State<_HighlightView> {
   static final parserWorker = Worker(name: "language_detector");
-  Future<List<Node>> parsing;
+  Future<List<Node>?>? parsing;
 
   List<TextSpan> _convert(List<Node> nodes) {
     List<TextSpan> spans = [];
@@ -127,17 +127,18 @@ class _HighlightViewState extends State<_HighlightView> {
       if (node.value != null) {
         currentSpans.add(node.className == null
             ? TextSpan(text: node.value)
-            : TextSpan(text: node.value, style: widget.theme[node.className]));
+            : TextSpan(
+                text: node.value, style: widget.theme![node.className!]));
       } else if (node.children != null) {
         List<TextSpan> tmp = [];
-        currentSpans
-            .add(TextSpan(children: tmp, style: widget.theme[node.className]));
+        currentSpans.add(
+            TextSpan(children: tmp, style: widget.theme![node.className!]));
         stack.add(currentSpans);
         currentSpans = tmp;
 
-        node.children.forEach((n) {
+        node.children!.forEach((n) {
           _traverse(n);
-          if (n == node.children.last) {
+          if (n == node.children!.last) {
             currentSpans = stack.isEmpty ? spans : stack.removeLast();
           }
         });
@@ -163,7 +164,7 @@ class _HighlightViewState extends State<_HighlightView> {
   @override
   void initState() {
     super.initState();
-    parsing = parserWorker.work(
+    parsing = parserWorker.work<HighlightArg, List<Node>?>(
       Runnable(
         fun: _highlightParse,
         arg: HighlightArg(
@@ -179,26 +180,30 @@ class _HighlightViewState extends State<_HighlightView> {
   Widget build(BuildContext context) {
     var _textStyle = TextStyle(
       fontFamily: _defaultFontFamily,
-      color: widget.theme[_rootKey]?.color ?? _defaultFontColor,
+      color: widget.theme![_rootKey]?.color ?? _defaultFontColor,
     );
     if (widget.textStyle != null) {
       _textStyle = _textStyle.merge(widget.textStyle);
     }
 
     return Container(
-      color: widget.theme[_rootKey]?.backgroundColor ?? _defaultBackgroundColor,
+      color:
+          widget.theme![_rootKey]?.backgroundColor ?? _defaultBackgroundColor,
       padding: widget.padding,
-      child: FutureBuilder<List<Node>>(
+      child: FutureBuilder<List<Node>?>(
         future: parsing,
         // ignore: missing_return
         builder: (context, snapshot) {
           if (snapshot.hasData) {
-            return RichText(
-              text: TextSpan(
-                style: _textStyle,
-                children: _convert(snapshot.data),
-              ),
-            );
+            final data = snapshot.data;
+            if (data != null) {
+              return RichText(
+                text: TextSpan(
+                  style: _textStyle,
+                  children: _convert(data),
+                ),
+              );
+            }
           }
           return Text(widget.source, style: _textStyle);
         },
@@ -206,11 +211,11 @@ class _HighlightViewState extends State<_HighlightView> {
     );
   }
 
-  static List<Node> _highlightParse(HighlightArg arg) {
+  static List<Node>? _highlightParse(HighlightArg arg) {
     final res = highlight.parse(
       arg.source,
       language: arg.language,
-      autoDetection: arg.autoDetection,
+      autoDetection: arg.autoDetection!,
     );
     return res.nodes;
   }
@@ -218,8 +223,8 @@ class _HighlightViewState extends State<_HighlightView> {
 
 class HighlightArg {
   final String source;
-  final String language;
-  final bool autoDetection;
+  final String? language;
+  final bool? autoDetection;
 
-  HighlightArg({this.source, this.language, this.autoDetection});
+  HighlightArg({required this.source, this.language, this.autoDetection});
 }

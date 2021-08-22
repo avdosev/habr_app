@@ -8,17 +8,18 @@ class CachedPost {
   final DateTime insertDate;
   final String authorId;
 
-  const CachedPost(
-      {this.id,
-      this.title,
-      this.body,
-      this.publishDate,
-      this.authorId,
-      this.insertDate});
+  const CachedPost({
+    required this.id,
+    required this.title,
+    required this.body,
+    required this.publishDate,
+    required this.authorId,
+    required this.insertDate,
+  });
 
   CachedPost.fromPost(
     Post post, {
-    this.insertDate,
+    required this.insertDate,
   })  : id = post.id,
         title = post.title,
         body = post.body,

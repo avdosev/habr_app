@@ -1,8 +1,8 @@
 import 'package:flutter/widgets.dart';
 
 class ScrollData extends ScrollBehavior {
-  final double thinkness;
-  final bool isAlwaysShow;
+  final double? thinkness;
+  final bool? isAlwaysShow;
 
   const ScrollData({this.thinkness, this.isAlwaysShow});
 

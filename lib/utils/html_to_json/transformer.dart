@@ -55,7 +55,7 @@ Node optimizeParagraph(Paragraph p) {
   return p;
 }
 
-void optimizeBlock(Node block) {
+void optimizeBlock(Node? block) {
   if (block is NodeChildren) {
     final children = block.children;
     for (int i = 0; i < children.length; i++) {
@@ -95,21 +95,21 @@ List<Span> prepareHtmlInlineElement(dom.Element element) {
   void walk(dom.Element elem, List<TextMode> modes) {
     for (final node in elem.nodes) {
       if (node.nodeType == dom.Node.TEXT_NODE) {
-        final text = prepareTextNode(node.text);
+        final text = prepareTextNode(node.text!);
         if (text.isNotEmpty) {
           children.add(TextSpan(text, modes: List.of(modes)));
         }
       } else if (node.nodeType == dom.Node.ELEMENT_NODE) {
         final child = node as dom.Element;
         if (nameToType.containsKey(child.localName)) {
-          modes.add(nameToType[child.localName]);
+          modes.add(nameToType[child.localName]!);
           walk(child, modes);
           modes.removeLast();
         } else if (child.localName == 'a') {
           if (child.text.isEmpty && child.children.length > 0) {
             walk(child, modes);
           } else {
-            children.add(LinkSpan(child.text, child.attributes['href']));
+            children.add(LinkSpan(child.text, child.attributes['href'] ?? ''));
           }
         } else if (child.localName == 'img') {
           final el = prepareHtmlBlocElement(child);
@@ -123,9 +123,9 @@ List<Span> prepareHtmlInlineElement(dom.Element element) {
 
   final defaultStyles = <TextMode>[];
   if (nameToType.containsKey(element.localName)) {
-    defaultStyles.add(nameToType[element.localName]);
+    defaultStyles.add(nameToType[element.localName]!);
   } else if (element.localName == 'a' && element.text.isNotEmpty) {
-    return [LinkSpan(element.text, element.attributes['href'])];
+    return [LinkSpan(element.text, element.attributes['href'] ?? '')];
   }
 
   walk(element, defaultStyles);
@@ -146,7 +146,7 @@ List<Node> prepareChildrenHtmlBlocElement(dom.Element element) {
 
   for (var node in element.nodes) {
     if (node.nodeType == dom.Node.TEXT_NODE) {
-      final text = prepareTextNode(node.text);
+      final text = prepareTextNode(node.text!);
       if (text.isNotEmpty && text.trim().isNotEmpty) {
         print('text node');
         final pch = paragraph.children;
@@ -205,7 +205,7 @@ Node prepareHtmlBlocElement(dom.Element element) {
     case 'h4':
     case 'h5':
     case 'h6':
-      return HeadLine(element.text.trim(), element.localName);
+      return HeadLine(element.text.trim(), element.localName!);
     case 'figcaption':
     case 'p':
       final p = Paragraph.empty();
@@ -219,8 +219,7 @@ Node prepareHtmlBlocElement(dom.Element element) {
       );
     case 'img':
       final url = element.attributes['data-src'] ?? element.attributes['src'];
-      return Image(url);
-      break;
+      return Image(url!);
     case 'blockquote':
       return BlockQuote(BlockColumn(prepareChildrenHtmlBlocElement(element)));
     case 'ol':
@@ -229,7 +228,6 @@ Node prepareHtmlBlocElement(dom.Element element) {
           element.localName == 'ol' ? ListType.ordered : ListType.unordered;
       return BlockList(type,
           element.children.map((li) => prepareHtmlBlocElement(li)).toList());
-      break;
     case 'body':
     case 'div':
     case 'li':
@@ -243,11 +241,10 @@ Node prepareHtmlBlocElement(dom.Element element) {
         );
       } else if (element.classes.contains('tm-iframe_temp')) {
         final src = element.attributes['data-src'];
-        return Iframe(src);
+        return Iframe(src!);
       } else {
         return BlockColumn(prepareChildrenHtmlBlocElement(element));
       }
-      break;
     case 'details':
       return Details(
         element.children[0].text,
@@ -257,7 +254,7 @@ Node prepareHtmlBlocElement(dom.Element element) {
       final img = element.getElementsByTagName('img')[0];
       final caption = element.getElementsByTagName('figcaption')[0];
       final url = img.attributes['data-src'] ?? img.attributes['src'];
-      final imgBlock = Image(url);
+      final imgBlock = Image(url!);
       if (caption.text.isNotEmpty) {
         imgBlock.caption = caption.text;
       }
@@ -267,7 +264,7 @@ Node prepareHtmlBlocElement(dom.Element element) {
       return Scrollable(prepareHtmlBlocElement(element.children.first));
     case 'iframe':
       final src = element.attributes['src'];
-      return Iframe(src);
+      return Iframe(src!);
     case 'table':
       final rows = <List<Node>>[];
       for (final tableItems in element.children) {
@@ -282,7 +279,7 @@ Node prepareHtmlBlocElement(dom.Element element) {
   }
 }
 
-String findLanguageFromClass(List<String> classes) {
+String? findLanguageFromClass(List<String> classes) {
   classes.removeWhere((element) => element == 'hljs');
   if (classes.isEmpty) return null;
   return classes.first;

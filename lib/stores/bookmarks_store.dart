@@ -7,18 +7,18 @@ class BookmarksStore {
   final bookmarksBox = Hive.box<double>('bookmarks');
   final bookmarkedBox = Hive.box<PostPreview>('bookmarked');
 
-  void addBookmark(String postId, double position, PostPreview preview) {
+  void addBookmark(String? postId, double position, PostPreview preview) {
     bookmarksBox.put(postId, position);
     bookmarkedBox.put(postId, preview);
   }
 
-  void removeBookmark(String postId) {
+  void removeBookmark(String? postId) {
     print(postId);
     bookmarksBox.delete(postId);
     bookmarkedBox.delete(postId);
   }
 
-  double getPosition(String postId) {
+  double? getPosition(String? postId) {
     return bookmarksBox.get(postId);
   }
 

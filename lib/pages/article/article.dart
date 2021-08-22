@@ -22,7 +22,7 @@ import 'package:habr_app/widgets/scroll_data.dart';
 class ArticlePage extends StatefulWidget {
   final String articleId;
 
-  ArticlePage({Key key, this.articleId}) : super(key: key);
+  ArticlePage({Key? key, required this.articleId}) : super(key: key);
 
   @override
   createState() => _ArticlePageState();
@@ -30,8 +30,8 @@ class ArticlePage extends StatefulWidget {
 
 class _ArticlePageState extends State<ArticlePage> {
   String get articleId => widget.articleId;
-  ValueNotifier<bool> showFloatingActionButton;
-  ScrollController _controller;
+  late ValueNotifier<bool> showFloatingActionButton;
+  ScrollController? _controller;
 
   _ArticlePageState();
 
@@ -40,25 +40,25 @@ class _ArticlePageState extends State<ArticlePage> {
     super.initState();
     _controller = ScrollController();
     showFloatingActionButton = ValueNotifier(false);
-    _controller.addListener(floatingButtonShowListener);
+    _controller!.addListener(floatingButtonShowListener);
   }
 
   Future shareArticle(BuildContext context) async {
-    final RenderBox box = context.findRenderObject();
+    final RenderBox box = context.findRenderObject() as RenderBox;
     await Share.share('https://habr.com/post/$articleId',
         sharePositionOrigin: box.localToGlobal(Offset.zero) & box.size);
   }
 
   Widget buildAppBarTitle(context, PostStorage store) {
-    String title;
+    String? title;
     switch (store.loadingState) {
       case LoadingState.inProgress:
         return LoadAppBarTitle();
       case LoadingState.isFinally:
-        title = store.post.title;
+        title = store.post!.title;
         break;
       case LoadingState.isCorrupted:
-        title = AppLocalizations.of(context).notLoaded;
+        title = AppLocalizations.of(context)!.notLoaded;
         break;
       default:
         title = "";
@@ -150,9 +150,9 @@ class _ArticlePageState extends State<ArticlePage> {
         ),
         floatingActionButton: ValueListenableBuilder(
           valueListenable: showFloatingActionButton,
-          builder: (BuildContext context, bool value, Widget child) =>
+          builder: (BuildContext context, bool value, Widget? child) =>
               HideFloatingActionButton(
-            tooltip: AppLocalizations.of(context).comments,
+            tooltip: AppLocalizations.of(context)!.comments,
             visible: value,
             child: const Icon(Icons.chat_bubble_outline),
             onPressed: () => openCommentsPage(context, articleId),
@@ -165,8 +165,8 @@ class _ArticlePageState extends State<ArticlePage> {
 
   void addBookMark(PostStorage postStorage) {
     if (postStorage.loadingState == LoadingState.isFinally) {
-      final position = _controller.offset;
-      final post = postStorage.post;
+      final position = _controller!.offset;
+      final post = postStorage.post!;
       final preview = PostPreview(
         id: articleId,
         title: post.title,
@@ -183,8 +183,8 @@ class _ArticlePageState extends State<ArticlePage> {
     if (postStorage.loadingState == LoadingState.isFinally) {
       final position = BookmarksStore().getPosition(articleId);
       if (position != null) {
-        int duration = (_controller.offset - position).abs().round();
-        _controller.animateTo(position,
+        int duration = (_controller!.offset - position).abs().round();
+        _controller!.animateTo(position,
             duration: Duration(milliseconds: duration), curve: Curves.easeOut);
       }
     }
@@ -192,14 +192,14 @@ class _ArticlePageState extends State<ArticlePage> {
 
   void floatingButtonShowListener() {
     final needShow =
-        _controller.position.userScrollDirection == ScrollDirection.forward;
+        _controller!.position.userScrollDirection == ScrollDirection.forward;
     if (needShow != showFloatingActionButton.value)
       showFloatingActionButton.value = needShow;
   }
 
   @override
   void dispose() {
-    _controller.removeListener(floatingButtonShowListener);
+    _controller!.removeListener(floatingButtonShowListener);
     showFloatingActionButton.dispose();
     super.dispose();
   }
@@ -214,7 +214,7 @@ class MoreButtons {
 }
 
 class ArticleInfo extends StatelessWidget {
-  final PostInfo article;
+  final PostInfo? article;
 
   const ArticleInfo({this.article});
 
@@ -227,10 +227,10 @@ class ArticleInfo extends StatelessWidget {
           children: [
             Expanded(
                 child: Text(dateToStr(
-                    article.publishDate, Localizations.localeOf(context)))),
+                    article!.publishDate, Localizations.localeOf(context)))),
             InkWell(
-              child: SmallAuthorPreview(article.author),
-              onTap: () => openUser(context, article.author.alias),
+              child: SmallAuthorPreview(article!.author),
+              onTap: () => openUser(context, article!.author.alias),
             ),
           ],
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -239,7 +239,7 @@ class ArticleInfo extends StatelessWidget {
           height: 7,
         ),
         Text(
-          article.title,
+          article!.title,
           style: TextStyle(fontSize: 24),
           textAlign: TextAlign.center,
         ),
@@ -249,8 +249,8 @@ class ArticleInfo extends StatelessWidget {
 }
 
 class ArticleView extends StatelessWidget {
-  final ParsedPost article;
-  final ScrollController controller;
+  final ParsedPost? article;
+  final ScrollController? controller;
 
   const ArticleView({this.article, this.controller});
 
@@ -270,22 +270,22 @@ class ArticleView extends StatelessWidget {
             SizedBox(
               height: 30,
             ),
-            HtmlView(article.parsedBody, textAlign: textAlign),
+            HtmlView(article!.parsedBody, textAlign: textAlign),
             SizedBox(
               height: 20,
             ),
             InkWell(
               child: Padding(
                   padding: const EdgeInsets.only(left: 5, top: 5, bottom: 5),
-                  child: MediumAuthorPreview(article.author)),
+                  child: MediumAuthorPreview(article!.author)),
               onTap: () =>
-                  openUser(context, article.author.alias), // open user page
+                  openUser(context, article!.author.alias), // open user page
             ),
             SizedBox(
               height: 20,
             ),
             CommentsButton(
-              onPressed: () => openCommentsPage(context, article.id),
+              onPressed: () => openCommentsPage(context, article!.id),
             )
           ],
         ),

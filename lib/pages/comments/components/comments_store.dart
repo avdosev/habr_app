@@ -8,15 +8,15 @@ import 'package:either_dart/either.dart';
 import 'package:habr_app/utils/log.dart';
 
 class CommentsStorage with ChangeNotifier {
-  CommentsStorage(this._id, {@required this.storage});
-
   final HabrStorage storage;
 
-  LoadingState loadingState;
+  LoadingState? loadingState;
 
   String _id; // Article id
-  List<Comment> comments;
-  AppError lastError;
+  late List<Comment> comments;
+  late AppError lastError;
+
+  CommentsStorage(this._id, {required this.storage});
 
   set articleId(String val) {
     _id = val;
@@ -46,13 +46,13 @@ class CommentsStorage with ChangeNotifier {
 Iterable<Comment> flatCommentsTree(Comments comments) sync* {
   final stack = <int>[]; // так будет меньше аллокаций
   for (final thread in comments.threads) {
-    final threadStart = comments.comments[thread];
+    final threadStart = comments.comments[thread]!;
     yield threadStart;
-    stack.addAll(threadStart.children.reversed);
+    stack.addAll(threadStart.children!.reversed);
     while (stack.isNotEmpty) {
       final currentId = stack.removeLast();
-      final comment = comments.comments[currentId];
-      stack.addAll(comment.children.reversed);
+      final comment = comments.comments[currentId]!;
+      stack.addAll(comment.children!.reversed);
       yield comment;
     }
   }

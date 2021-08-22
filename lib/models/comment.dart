@@ -2,19 +2,19 @@ import 'author.dart';
 
 class Comment {
   final int id;
-  final int parentId;
-  final int level;
+  final int? parentId;
+  final int? level;
   final bool banned;
-  final DateTime timePublished;
-  final DateTime timeChanged;
-  final List<int> children;
-  final Author author;
-  final String message;
+  final DateTime? timePublished;
+  final DateTime? timeChanged;
+  final List<int>? children;
+  final Author? author;
+  final String? message;
 
-  bool get notBanned => !banned;
+  bool get notBanned => banned;
 
   Comment({
-    this.id,
+    required this.id,
     this.parentId,
     this.level,
     this.timePublished,
@@ -22,19 +22,19 @@ class Comment {
     this.children,
     this.author,
     this.message,
-    this.banned,
+    required this.banned,
   });
 
   Comment copyWith({
-    int id,
-    int parentId,
-    int level,
-    bool banned,
-    DateTime timePublished,
-    DateTime timeChanged,
-    List<int> children,
-    Author author,
-    String message,
+    int? id,
+    int? parentId,
+    int? level,
+    bool? banned,
+    DateTime? timePublished,
+    DateTime? timeChanged,
+    List<int>? children,
+    Author? author,
+    String? message,
   }) {
     return Comment(
       id: id ?? this.id,
@@ -55,7 +55,7 @@ class Comments {
   final List<int> threads;
 
   Comments({
-    this.comments,
-    this.threads,
+    required this.comments,
+    required this.threads,
   });
 }

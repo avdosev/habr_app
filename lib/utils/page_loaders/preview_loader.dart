@@ -11,7 +11,7 @@ export 'page_loader.dart';
 
 class CachedPreviewLoader extends FlowPreviewLoader {
   final HabrStorage storage;
-  CachedPreviewLoader({this.storage})
+  CachedPreviewLoader({required this.storage})
       : super(flow: PostsFlow.saved, storage: storage);
 }
 
@@ -19,7 +19,7 @@ class FlowPreviewLoader extends PageLoader<Either<AppError, PostPreviews>> {
   final PostsFlow flow;
   final HabrStorage storage;
 
-  FlowPreviewLoader({this.flow, this.storage});
+  FlowPreviewLoader({required this.flow, required this.storage});
 
   Future<Either<AppError, PostPreviews>> load(int page) {
     return storage.posts(page: page, flow: flow);

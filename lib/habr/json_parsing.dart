@@ -2,7 +2,7 @@ import 'package:habr_app/models/author_info.dart';
 import 'package:habr_app/models/models.dart';
 import 'package:html/parser.dart' show parseFragment;
 
-AuthorAvatarInfo prepareAvatarUrl(String url) {
+AuthorAvatarInfo prepareAvatarUrl(String? url) {
   if (url == null) return AuthorAvatarInfo(url: null);
   if (url.startsWith("//")) url = url.replaceFirst("//", "https://");
   return AuthorAvatarInfo(url: url);
@@ -70,11 +70,11 @@ PostPreviews parsePostPreviewsFromJson(Map<String, dynamic> data) {
           corporative: article['isCorporative'],
           title: _prepareHtmlString(article['titleHtml']),
           hubs: article['hubs']
-              .map<String>((flow) => flow['title'] as String)
+              .map<String>((flow) => flow['title'] as String?)
               .toList(),
           htmlPreview: "<div>${article['leadData']['textHtml']}</div>",
           flows: article['flows']
-              .map<String>((flow) => flow['title'] as String)
+              .map<String>((flow) => flow['title'] as String?)
               .toList(),
           publishDate: DateTime.parse(article['timePublished']),
           author: parseAuthorFromJson(article['author']),
@@ -99,5 +99,5 @@ AuthorInfo parseAuthorInfoFromJson(Map<String, dynamic> data) {
 }
 
 String _prepareHtmlString(String str) {
-  return parseFragment(str).text.trim();
+  return parseFragment(str).text?.trim() ?? '';
 }

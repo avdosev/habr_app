@@ -20,10 +20,10 @@ class HabrStorage {
   final articles = Hive.lazyBox<CachedPost>('cached_articles');
   final authors = Hive.lazyBox<Author>('cached_authors');
 
-  HabrStorage({@required this.api, @required this.imgStore});
+  HabrStorage({required this.api, required this.imgStore});
 
   Future<Either<AppError, PostPreviews>> posts(
-      {int page = 1, PostsFlow flow}) async {
+      {int page = 1, required PostsFlow flow}) async {
     if (flow == PostsFlow.saved) {
       return cachedPosts(page: page); // TODO: make flows
     }
@@ -34,7 +34,7 @@ class HabrStorage {
     return cachedArticle(id).thenLeft((_) => api.article(id));
   }
 
-  Future<Either<AppError, Post>> cachedArticle(String id) async {
+  Future<Either<AppError, Post>> cachedArticle(String? id) async {
     final cachedPost = await articles.get(id);
     final cachedAuthor =
         cachedPost != null ? await authors.get(cachedPost.authorId) : null;
@@ -44,11 +44,11 @@ class HabrStorage {
           errCode: ErrorType.NotFound,
           message: "Article not found in local storage"),
       () => Post(
-        id: cachedPost.id,
+        id: cachedPost!.id,
         title: cachedPost.title,
         body: cachedPost.body,
         publishDate: cachedPost.publishDate,
-        author: cachedAuthor,
+        author: cachedAuthor!,
       ),
     );
   }
@@ -84,7 +84,7 @@ class HabrStorage {
         await Future.wait(authorsId.map((e) => this.authors.get(e))).then(
             (value) => value.where((element) => element != null).toList());
     final authorById = Map.fromEntries(
-        cachedAuthors.map((value) => MapEntry(value.id, value)));
+        cachedAuthors.map((value) => MapEntry(value!.id, value)));
     return Comments(
         comments: comments.comments.map((key, comment) {
           if (!comment.banned) {
@@ -101,12 +101,13 @@ class HabrStorage {
   Future<Either<AppError, PostPreviews>> cachedPosts({int page = 1}) async {
     final cachedPosts = await Future.wait(
         this.articles.keys.map(this.articles.get).toList(growable: false));
-    cachedPosts.sort((a, b) => a.insertDate.compareTo(b.insertDate));
+    cachedPosts.sort((a, b) => a!.insertDate.compareTo(b!.insertDate));
     final cachedAuthors = await Future.wait(
-        cachedPosts.map((post) => authors.get(post.authorId)));
+        cachedPosts.map((post) => authors.get(post!.authorId)));
     return Right(PostPreviews(
       previews:
-          zip2<CachedPost, Author>(cachedPosts, cachedAuthors).map((item) {
+          zip2<CachedPost, Author>(cachedPosts.notNull, cachedAuthors.notNull)
+              .map((item) {
         final post = item.item1;
         final author = item.item2;
 

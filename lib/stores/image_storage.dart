@@ -12,13 +12,13 @@ import 'package:hive/hive.dart';
 
 class ImageLocalStorage {
   final data = Hive.lazyBox<CachedImageInfo>('cached_images');
-  final HashComputer hashComputer;
-  final ImageLoader imageLoader;
-  String _path;
+  final HashComputer? hashComputer;
+  final ImageLoader? imageLoader;
+  String? _path;
 
-  ImageLocalStorage({this.hashComputer, this.imageLoader}) {}
+  ImageLocalStorage({this.hashComputer, this.imageLoader});
 
-  Future<String> get _localPath async {
+  Future<String?> get _localPath async {
     if (_path == null) {
       final directory = await getApplicationDocumentsDirectory();
       _path = directory.path;
@@ -34,7 +34,7 @@ class ImageLocalStorage {
   }
 
   Future<String> _generateImageName(String url) async {
-    final prefix1 = await hashComputer.hash(url);
+    final prefix1 = await hashComputer!.hash(url);
     final prefix2 = DateTime.now().millisecondsSinceEpoch.toRadixString(36);
     String postfix = url.split('.').last;
     postfix = postfix.length > 8 ? 'none' : postfix;
@@ -42,15 +42,15 @@ class ImageLocalStorage {
   }
 
   /// Return AppError or path to saved file
-  Future<Either<AppError, String>> saveImage(String url) async {
+  Future<Either<AppError, String?>> saveImage(String? url) async {
     final maybeImage = await data.get(url);
     if (maybeImage != null) {
       return Right(maybeImage.path);
     }
 
-    final filename = await _getImagePath(url);
+    final filename = await _getImagePath(url!);
     logInfo('Saving image to $filename');
-    final loaded = await imageLoader.loadImage(url, filename);
+    final loaded = await imageLoader!.loadImage(url, filename);
 
     if (!loaded) {
       return Left(AppError(
@@ -80,7 +80,7 @@ class ImageLocalStorage {
     // путь нужно брать из бд
     final optionalImage = await getImage(url);
     if (optionalImage.isLeft) return;
-    final path = optionalImage.right;
+    final path = optionalImage.right!;
     await data.delete(url);
     final file = File(path);
     if (await file.exists()) {
@@ -93,12 +93,12 @@ class ImageLocalStorage {
     }
   }
 
-  Future<Either<AppError, String>> getImage(String url) async {
+  Future<Either<AppError, String?>> getImage(String? url) async {
     final res = await data.get(url);
     return Either.condLazy(
         res != null,
         () => const AppError(
             errCode: ErrorType.NotFound, message: "Image in cache not found"),
-        () => res.path);
+        () => res!.path);
   }
 }

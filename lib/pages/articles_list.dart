@@ -11,7 +11,7 @@ import 'package:habr_app/stores/habr_storage.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ArticlesList extends StatelessWidget {
-  ArticlesList({Key key}) : super(key: key);
+  ArticlesList({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +23,7 @@ class ArticlesList extends StatelessWidget {
         title: Text("Habr"),
         actions: [
           IconButton(
-              tooltip: AppLocalizations.of(context).search,
+              tooltip: AppLocalizations.of(context)!.search,
               icon: const Icon(Icons.search),
               onPressed: () => openSearch(context))
         ],

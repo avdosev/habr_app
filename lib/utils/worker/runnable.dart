@@ -7,8 +7,8 @@ class Runnable<A, O> {
   final Fun<A, O> fun;
 
   Runnable({
-    this.arg,
-    this.fun,
+    required this.arg,
+    required this.fun,
   });
 
   FutureOr<O> call() {
