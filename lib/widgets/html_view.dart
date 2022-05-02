@@ -1,6 +1,4 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_highlight/themes/paraiso-dark.dart';
 import 'package:habr_app/stores/app_settings.dart';
 import 'package:provider/provider.dart';
 import 'package:itertools/itertools.dart';
@@ -61,6 +59,13 @@ class BuildParams {
     required this.imagesWithPadding,
     this.padding,
   });
+
+  BuildParams withoutPadding() {
+    return BuildParams(
+      textAlign: textAlign,
+      imagesWithPadding: false,
+    );
+  }
 }
 
 Widget wrapPadding(Widget child, BuildParams params) => params.padding != null
@@ -155,13 +160,23 @@ Widget? buildTree(
       themeNameLight: appSettings.lightCodeTheme,
     );
   } else if (element is view.BlockQuote) {
-    widget = BlockQuote(child: buildTree(element.child, context, params));
+    widget = BlockQuote(
+      child: buildTree(
+        element.child,
+        context,
+        params.withoutPadding(),
+      ),
+    );
     widget = wrapPadding(widget, params);
   } else if (element is view.BlockList) {
     // TODO: ordered list
     widget = UnorderedList(
         children: element.children
-            .map<Widget?>((li) => buildTree(li, context, params))
+            .map<Widget?>((li) => buildTree(
+                  li,
+                  context,
+                  params.withoutPadding(),
+                ))
             .notNull
             .toList());
     widget = wrapPadding(widget, params);
