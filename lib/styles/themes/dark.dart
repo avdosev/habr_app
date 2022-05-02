@@ -8,6 +8,9 @@ ThemeData buildDarkTheme({
   return ThemeData(
     textTheme: buildTextTheme(Colors.white70, mainFontSize, lineSpacing),
     accentColor: Colors.grey,
+    appBarTheme: AppBarTheme(
+      color: Colors.blueGrey[600],
+    ),
     primarySwatch: Colors.blueGrey,
     primaryColor: Colors.blueGrey[600],
     scaffoldBackgroundColor: const Color.fromRGBO(57, 57, 57, 1),
