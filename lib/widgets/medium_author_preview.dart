@@ -5,6 +5,7 @@ import 'package:habr_app/models/author.dart';
 import 'package:habr_app/stores/avatar_color_store.dart';
 
 import 'author_avatar_icon.dart';
+import 'package:habr_app/widgets/link.dart';
 
 class MediumAuthorPreview extends StatelessWidget {
   final Author author;
@@ -44,7 +45,7 @@ class MediumAuthorPreview extends StatelessWidget {
                       TextSpan(text: '@'),
                       TextSpan(text: author.alias),
                     ],
-                    style: TextStyle(color: theme.primaryColor),
+                    style: TextStyle(color: linkColorFrom(context)),
                   ),
                 ]),
                 maxLines: 2,

@@ -157,3 +157,12 @@ class Table implements Node {
   @override
   String get type => "table";
 }
+
+class MathFormula implements Node {
+  final String formula;
+
+  MathFormula(this.formula);
+
+  @override
+  String get type => "formula";
+}

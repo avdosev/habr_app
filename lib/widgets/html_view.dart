@@ -71,7 +71,12 @@ Widget wrapPadding(Widget child, BuildParams params) => params.padding != null
     : child;
 
 // may be null
-Widget? buildTree(view.Node element, BuildContext context, BuildParams params) {
+Widget? buildTree(
+  view.Node element,
+  BuildContext context,
+  BuildParams params, {
+  bool isInline = false,
+}) {
   final type = element.type;
   if (element is view.HeadLine) {
     logInfo('$type ${element.text}');
@@ -115,7 +120,11 @@ Widget? buildTree(view.Node element, BuildContext context, BuildParams params) {
       widget = WrappedContainer(
         children: [
           widget,
-          Text(element.caption!, style: Theme.of(context).textTheme.subtitle2)
+          wrapPadding(
+            Text(element.caption!,
+                style: Theme.of(context).textTheme.subtitle2),
+            params,
+          ),
         ],
         distance: 5,
       );
@@ -125,6 +134,15 @@ Widget? buildTree(view.Node element, BuildContext context, BuildParams params) {
         padding: params.padding!,
         child: widget,
       );
+    }
+  } else if (element is view.MathFormula) {
+    widget = Padding(
+      child: MathFormula(element.formula),
+      padding: const EdgeInsets.only(top: 10),
+    );
+    if (!isInline) {
+      widget = Center(child: widget);
+      widget = wrapPadding(widget, params);
     }
   } else if (element is view.Code) {
     final appSettings = Provider.of<AppSettings>(context, listen: false);
@@ -213,7 +231,8 @@ InlineSpan buildInline(
     span = InlineTextLink(
         title: element.text, url: element.link, context: context);
   } else if (element is view.BlockSpan) {
-    span = WidgetSpan(child: buildTree(element.child, context, params)!);
+    span = WidgetSpan(
+        child: buildTree(element.child, context, params, isInline: true)!);
   }
 
   return span;

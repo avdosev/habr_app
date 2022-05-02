@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:habr_app/widgets/link.dart';
 
 class Spoiler extends StatefulWidget {
   final String? title;
@@ -15,7 +16,7 @@ class _SpoilerState extends State<Spoiler> with TickerProviderStateMixin {
   late bool visible;
   late Animation _arrowAnimation;
   late AnimationController _arrowAnimationController;
-  static const duration = Duration(milliseconds: 300);
+  static const duration = Duration(milliseconds: 100);
 
   @override
   initState() {
@@ -25,6 +26,12 @@ class _SpoilerState extends State<Spoiler> with TickerProviderStateMixin {
         AnimationController(vsync: this, duration: duration);
     _arrowAnimation =
         Tween(begin: 0.0, end: pi / 2).animate(_arrowAnimationController);
+  }
+
+  @override
+  void dispose() {
+    _arrowAnimationController.dispose();
+    super.dispose();
   }
 
   onTap() {
@@ -50,14 +57,14 @@ class _SpoilerState extends State<Spoiler> with TickerProviderStateMixin {
                 animation: _arrowAnimationController,
                 builder: (context, child) => Transform.rotate(
                     angle: _arrowAnimation.value, child: child),
-                child: Icon(Icons.arrow_right, color: themeData.primaryColor),
+                child: Icon(Icons.arrow_right, color: linkColorFrom(context)),
               ),
               Expanded(
                   child: Text(
                 widget.title!,
                 style: TextStyle(
-                  color: themeData.primaryColor,
-                  decorationColor: themeData.primaryColor,
+                  color: linkColorFrom(context),
+                  decorationColor: linkColorFrom(context),
                   decoration: TextDecoration.underline,
                   decorationStyle: TextDecorationStyle.dashed,
                 ),
@@ -66,12 +73,15 @@ class _SpoilerState extends State<Spoiler> with TickerProviderStateMixin {
           ),
           onTap: onTap,
         ),
-        if (visible) ...[
-          const SizedBox(
-            height: 10,
-          ),
-          widget.child!,
-        ],
+        SizeTransition(
+          sizeFactor: Tween<double>(begin: 0, end: 1)
+              .animate(_arrowAnimationController),
+          axisAlignment: -1.0,
+          child: Column(children: [
+            const SizedBox(height: 10),
+            widget.child!,
+          ]),
+        )
       ],
     ));
   }

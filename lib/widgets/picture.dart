@@ -30,7 +30,7 @@ class Picture extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme.bodyText2;
+    final textTheme = Theme.of(context).textTheme.bodyText2!;
     final habrStorage = context.watch<HabrStorage>();
     return Container(
       height: height,
@@ -46,7 +46,7 @@ class Picture extends StatelessWidget {
                 child: Transform.scale(
               scale: 2,
               alignment: Alignment.center,
-              child: SvgPicture.file(file, color: textTheme!.color),
+              child: SvgPicture.file(file, color: textTheme.color),
             ));
           }
           Widget widget = Image.file(
@@ -68,7 +68,7 @@ class Picture extends StatelessWidget {
                 child: Transform.scale(
               scale: 2,
               alignment: Alignment.center,
-              child: SvgPicture.network(url!, color: textTheme!.color),
+              child: SvgPicture.network(url!, color: textTheme.color),
             ));
           }
           Widget widget = Image.network(

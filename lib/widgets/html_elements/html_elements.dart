@@ -4,3 +4,4 @@ export 'headline.dart';
 export 'unordered_list.dart';
 export 'highlight_code.dart';
 export 'iframe.dart';
+export 'math_formula.dart';

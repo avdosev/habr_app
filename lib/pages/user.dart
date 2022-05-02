@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:habr_app/utils/message_notifier.dart';
+import 'package:habr_app/widgets/link.dart';
 import 'package:provider/provider.dart';
 import 'package:habr_app/stores/habr_storage.dart';
 
@@ -177,7 +178,7 @@ class AuthorInfoView extends StatelessWidget {
               AvatarColorStore().getColor(info.alias, theme.brightness),
           borderWidth: 2,
         ),
-        Text('@' + info.alias, style: TextStyle(color: theme.primaryColor)),
+        Text('@' + info.alias, style: TextStyle(color: linkColorFrom(context))),
         if (info.fullName != null && info.fullName!.isNotEmpty)
           Text("a.k.a. ${info.fullName}"),
         Text(info.speciality == null || info.speciality!.isEmpty
