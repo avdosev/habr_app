@@ -14,16 +14,21 @@ class SmallAuthorPreview extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final themeData = Theme.of(context);
-    return Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
-      AuthorAvatarIcon(
-        key: ValueKey('avatar_${author.avatar.hashCode}'),
-        avatar: author.avatar,
-        defaultColor: AvatarColorStore().getColor(author.alias, themeData.brightness),
-      ),
-      SizedBox(
-        width: 5,
-      ),
-      Text(author.alias, style: textStyle),
-    ]);
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        AuthorAvatarIcon(
+          key: ValueKey('avatar_${author.avatar.hashCode}'),
+          avatar: author.avatar,
+          defaultColor:
+              AvatarColorStore().getColor(author.alias, themeData.brightness),
+        ),
+        SizedBox(
+          width: 5,
+        ),
+        Text(author.alias, style: textStyle),
+      ],
+      mainAxisSize: MainAxisSize.min,
+    );
   }
 }

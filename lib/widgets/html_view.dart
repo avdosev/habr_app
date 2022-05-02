@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_highlight/themes/paraiso-dark.dart';
 import 'package:habr_app/stores/app_settings.dart';
 import 'package:provider/provider.dart';
 import 'package:itertools/itertools.dart';
@@ -16,8 +17,15 @@ import 'package:habr_app/utils/log.dart';
 class HtmlView extends StatelessWidget {
   final view.Node node;
   final TextAlign? textAlign;
+  final bool imagesWithPadding;
+  final EdgeInsets? padding;
 
-  HtmlView(this.node, {this.textAlign});
+  HtmlView(
+    this.node, {
+    this.textAlign,
+    this.imagesWithPadding = true,
+    this.padding,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -25,21 +33,42 @@ class HtmlView extends StatelessWidget {
       children: inlineTree(
         node,
         context,
-        BuildParams(textAlign: textAlign),
+        BuildParams(
+          textAlign: textAlign,
+          imagesWithPadding: imagesWithPadding,
+          padding: padding,
+        ),
       ).toList(),
       crossAxisAlignment: CrossAxisAlignment.stretch,
     );
   }
 
-  HtmlView.unparsed(String? html, {this.textAlign})
-      : node = htmlAsParsedJson(html);
+  HtmlView.unparsed(
+    String? html, {
+    this.textAlign,
+    this.imagesWithPadding = false,
+    this.padding,
+  }) : node = htmlAsParsedJson(html);
 }
 
 class BuildParams {
   final TextAlign? textAlign;
+  final bool imagesWithPadding;
+  final EdgeInsets? padding;
 
-  BuildParams({this.textAlign});
+  BuildParams({
+    this.textAlign,
+    required this.imagesWithPadding,
+    this.padding,
+  });
 }
+
+Widget wrapPadding(Widget child, BuildParams params) => params.padding != null
+    ? Padding(
+        padding: params.padding!,
+        child: child,
+      )
+    : child;
 
 // may be null
 Widget? buildTree(view.Node element, BuildContext context, BuildParams params) {
@@ -56,11 +85,13 @@ Widget? buildTree(view.Node element, BuildContext context, BuildParams params) {
   if (element is view.HeadLine) {
     final mode = HeadLineType.values[int.parse(element.mode.substring(1)) - 1];
     widget = HeadLine(text: element.text, type: mode);
+    widget = wrapPadding(widget, params);
   } else if (element is view.TextParagraph) {
     widget = Text(
       element.text,
       textAlign: params.textAlign,
     );
+    widget = wrapPadding(widget, params);
   } else if (element is view.Paragraph) {
     widget = Text.rich(
       TextSpan(
@@ -69,6 +100,7 @@ Widget? buildTree(view.Node element, BuildContext context, BuildParams params) {
               .toList()),
       textAlign: params.textAlign,
     );
+    widget = wrapPadding(widget, params);
   } else if (element is view.Scrollable) {
     widget = SingleChildScrollView(
       child: buildTree(element.child, context, params),
@@ -88,6 +120,12 @@ Widget? buildTree(view.Node element, BuildContext context, BuildParams params) {
         distance: 5,
       );
     }
+    if (params.imagesWithPadding) {
+      widget = Padding(
+        padding: params.padding!,
+        child: widget,
+      );
+    }
   } else if (element is view.Code) {
     final appSettings = Provider.of<AppSettings>(context, listen: false);
     widget = HighlightCode(
@@ -100,6 +138,7 @@ Widget? buildTree(view.Node element, BuildContext context, BuildParams params) {
     );
   } else if (element is view.BlockQuote) {
     widget = BlockQuote(child: buildTree(element.child, context, params));
+    widget = wrapPadding(widget, params);
   } else if (element is view.BlockList) {
     // TODO: ordered list
     widget = UnorderedList(
@@ -107,21 +146,25 @@ Widget? buildTree(view.Node element, BuildContext context, BuildParams params) {
             .map<Widget?>((li) => buildTree(li, context, params))
             .notNull
             .toList());
+    widget = wrapPadding(widget, params);
   } else if (element is view.BlockColumn) {
     widget = WrappedContainer(
         children: element.children
             .map<Widget?>((child) => buildTree(child, context, params))
             .notNull
             .toList());
+    widget = wrapPadding(widget, params);
   } else if (element is view.Details) {
     widget = Spoiler(
       title: element.title,
       child: buildTree(element.child, context, params),
     );
+    widget = wrapPadding(widget, params);
   } else if (element is view.Iframe) {
     widget = Iframe(
       src: element.src,
     );
+    widget = wrapPadding(widget, params);
   } else if (element is view.Table) {
     try {
       widget = Table(
@@ -141,6 +184,7 @@ Widget? buildTree(view.Node element, BuildContext context, BuildParams params) {
     } catch (err) {
       widget = Text("Unsupported table");
     }
+    widget = wrapPadding(widget, params);
   } else {
     logInfo("Not found case for $type");
   }
@@ -186,7 +230,8 @@ Iterable<Widget> inlineTree(
     }
   } else if (element is view.BlockList) {
     for (final item in element.children) {
-      yield UnorderedItem(child: buildTree(item, context, params)!);
+      yield wrapPadding(
+          UnorderedItem(child: buildTree(item, context, params)!), params);
     }
   } else {
     yield buildTree(element!, context, params)!;

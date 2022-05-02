@@ -187,6 +187,8 @@ class _HighlightViewState extends State<_HighlightView> {
     }
 
     return Container(
+      constraints: BoxConstraints(
+          minWidth: MediaQuery.of(context).size.width.clamp(0, 880)),
       color:
           widget.theme![_rootKey]?.backgroundColor ?? _defaultBackgroundColor,
       padding: widget.padding,

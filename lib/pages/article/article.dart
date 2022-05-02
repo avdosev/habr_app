@@ -257,25 +257,34 @@ class ArticleView extends StatelessWidget {
   Widget build(BuildContext context) {
     final appSettings = context.watch<AppSettings>();
     final textAlign = appSettings.articleTextAlign;
+    const padding = EdgeInsets.symmetric(horizontal: 10);
     final listview = SingleChildScrollView(
-      padding: const EdgeInsets.all(10).copyWith(bottom: 20),
+      padding: const EdgeInsets.only(top: 10, bottom: 20),
       controller: controller,
       child: CenterAdaptiveConstrait(
         child: Column(
           children: [
-            ArticleInfo(
-              article: article,
+            Padding(
+              child: ArticleInfo(
+                article: article,
+              ),
+              padding: padding,
             ),
             SizedBox(
               height: 30,
             ),
-            HtmlView(article!.parsedBody, textAlign: textAlign),
+            HtmlView(
+              article!.parsedBody,
+              textAlign: textAlign,
+              imagesWithPadding: false,
+              padding: padding,
+            ),
             SizedBox(
               height: 20,
             ),
             InkWell(
               child: Padding(
-                  padding: const EdgeInsets.only(left: 5, top: 5, bottom: 5),
+                  padding: const EdgeInsets.only(left: 10, top: 5, bottom: 5),
                   child: MediumAuthorPreview(article!.author)),
               onTap: () =>
                   openUser(context, article!.author.alias), // open user page
@@ -283,9 +292,12 @@ class ArticleView extends StatelessWidget {
             SizedBox(
               height: 20,
             ),
-            CommentsButton(
-              onPressed: () => openCommentsPage(context, article!.id),
-            )
+            Padding(
+              child: CommentsButton(
+                onPressed: () => openCommentsPage(context, article!.id),
+              ),
+              padding: padding,
+            ),
           ],
         ),
       ),

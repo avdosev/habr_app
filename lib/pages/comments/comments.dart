@@ -114,9 +114,9 @@ class CommentView extends StatelessWidget {
     return Padding(
         padding: EdgeInsets.only(top: 5, bottom: 5),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Row(
+            Wrap(
               children: [
                 InkWell(
                   child: SmallAuthorPreview(comment.author!),
@@ -125,7 +125,8 @@ class CommentView extends StatelessWidget {
                 Text(dateToStr(
                     comment.timePublished!, Localizations.localeOf(context))),
               ],
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              alignment: WrapAlignment.spaceBetween,
             ),
             const SizedBox(
               height: 10,
