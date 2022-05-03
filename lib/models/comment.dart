@@ -11,7 +11,7 @@ class Comment {
   final Author? author;
   final String? message;
 
-  bool get notBanned => banned;
+  bool get notBanned => !banned;
 
   Comment({
     required this.id,

@@ -78,7 +78,7 @@ class HabrStorage {
   Future<Comments> _checkCachedCommentsAuthors(Comments comments) async {
     final authorsId = comments.comments.values
         .where((element) => element.notBanned)
-        .map((comment) => comment.author?.id)
+        .map((comment) => comment.author?.id ?? '')
         .toSet();
     final cachedAuthors =
         await Future.wait(authorsId.map((e) => this.authors.get(e))).then(
