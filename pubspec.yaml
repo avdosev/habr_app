@@ -33,6 +33,7 @@ dependencies:
   crypto: ">=2.1.5"
   provider: ^6.0.0
   itertools: ">=0.1.0"
+  cached_network_image: ^3.2.0
 
 dependency_overrides:
   platform: ^3.1.0

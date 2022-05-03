@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -47,8 +48,8 @@ class AuthorAvatarIcon extends StatelessWidget {
       if (avatar!.cached) {
         image = Image.file(File(avatar!.url!), height: height, width: width);
       } else {
-        image = Image.network(
-          avatar!.url!,
+        image = CachedNetworkImage(
+          imageUrl: avatar!.url!,
           height: height,
           width: width,
         );
