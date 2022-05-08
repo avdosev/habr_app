@@ -41,13 +41,7 @@ class Picture extends StatelessWidget {
         onRightBuilder: (context, dynamic filePath) {
           final file = File(filePath);
           if (url!.endsWith("svg")) {
-            // TODO: это костыль нужно нормально определять размер
-            return Center(
-                child: Transform.scale(
-              scale: 2,
-              alignment: Alignment.center,
-              child: SvgPicture.file(file, color: textTheme.color),
-            ));
+            return SvgPicture.file(file, color: textTheme.color);
           }
           Widget widget = Image.file(
             file,
@@ -63,13 +57,7 @@ class Picture extends StatelessWidget {
         onErrorBuilder: (context, err) {
           logError(err);
           if (url!.endsWith("svg")) {
-            // TODO: это костыль нужно нормально определять размер
-            return Center(
-                child: Transform.scale(
-              scale: 2,
-              alignment: Alignment.center,
-              child: SvgPicture.network(url!, color: textTheme.color),
-            ));
+            return SvgPicture.network(url!, color: textTheme.color);
           }
           Widget widget = Image.network(
             url!,
