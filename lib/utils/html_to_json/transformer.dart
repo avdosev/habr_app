@@ -218,8 +218,10 @@ Node prepareHtmlBlocElement(dom.Element element) {
         findLanguageFromClass(element.classes.toList()),
       );
     case 'img':
-      if (element.classes.contains('formula')) {
-        final alt = element.attributes['alt'] ?? '';
+      final isFormula = element.classes.contains('formula') ||
+          (element.attributes['data-tex']?.isNotEmpty ?? false);
+      if (isFormula) {
+        final alt = (element.attributes['alt'] ?? '').replaceAll(r'$', '');
         return MathFormula(alt);
       }
       final url = element.attributes['data-src'] ?? element.attributes['src'];
